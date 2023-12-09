@@ -187,6 +187,10 @@ exports.deleteAll = (req, res) => {
     });
 };
 
+exports.scheduleDoers = (req, res) => {
+
+}
+
 // find all published Tutorial
 // NOT USED
 exports.findAllPublished = (req, res) => {
