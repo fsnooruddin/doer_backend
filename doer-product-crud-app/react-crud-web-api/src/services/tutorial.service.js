@@ -34,7 +34,7 @@ class TutorialDataService {
   }
 
   scheduleDoers(data) {
-    return http.post("/scheduleDoers", data);
+    return http.post("/tutorials/scheduleDoers", data);
   }
 }
 

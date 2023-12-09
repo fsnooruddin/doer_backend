@@ -188,7 +188,8 @@ exports.deleteAll = (req, res) => {
 };
 
 exports.scheduleDoers = (req, res) => {
-
+    res.send({message: "Called scheduleDoers"});
+    console.log('in schedule doers');
 }
 
 // find all published Tutorial
