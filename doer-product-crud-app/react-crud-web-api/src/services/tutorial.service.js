@@ -32,6 +32,10 @@ class TutorialDataService {
   findByAvailability(availability) {
      return http.get(`/tutorials/find?availability=${availability}`);
   }
+
+  scheduleDoers(data) {
+    return http.post("/scheduleDoers", data);
+  }
 }
 
 export default new TutorialDataService();

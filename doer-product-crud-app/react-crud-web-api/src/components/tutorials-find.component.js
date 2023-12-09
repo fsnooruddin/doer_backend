@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import {Modal, Button} from 'react-bootstrap';
+import { useState } from 'react';
 import TutorialDataService from "../services/tutorial.service";
 import { Link } from "react-router-dom";
 
@@ -52,7 +54,20 @@ export default class TutorialsFind extends Component {
 
   scheduleDoers() {
         console.log(this.state.currentTutorials);
-        alert("Sent Scheduling Requests!");
+       // alert("Sent Scheduling Requests!");
+// Get the modal
+var modal = document.getElementById("overlay-content");
+modal.style.display = "block";
+    TutorialDataService.scheduleDoers(this.state.currentTutorials);
+  }
+
+ closeDialog() {
+       // console.log(this.state.currentTutorials);
+       // alert("Sent Scheduling Requests!");
+// Get the modal
+var modal = document.getElementById("overlay-content");
+modal.style.display = "none";
+
   }
 
   getDayFromAvailability(availability) {
@@ -250,7 +265,17 @@ getActiveLabel(event, tutorial)
         </div>
         <div className="col-md-6">
         </div>
-      </div>
+
+<div className="overlay-bg">
+</div>
+<div id="overlay-content" className="overlay-content popup1">
+<div id="overlay-content" className="overlay-content popup1"></div>
+<p>Sent Scheduling Request!</p>
+    <button className="close-btn" onClick={this.closeDialog}>Close</button>
+</div>
+
+ </div>
+
     );
   }
 }
