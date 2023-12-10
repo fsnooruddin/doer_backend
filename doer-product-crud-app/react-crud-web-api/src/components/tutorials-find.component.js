@@ -52,14 +52,23 @@ export default class TutorialsFind extends Component {
     });
   }
 
-  scheduleDoers() {
-        console.log(this.state.currentTutorials);
-       // alert("Sent Scheduling Requests!");
-// Get the modal
-var modal = document.getElementById("overlay-content");
-modal.style.display = "block";
+scheduleDoers() {
+
+   console.log(this.state.currentTutorials);
+   // alert("Sent Scheduling Requests!");
+    // Get the modal
+    var modal = document.getElementById("overlay-content");
+    modal.style.display = "block";
     TutorialDataService.scheduleDoers(this.state.currentTutorials);
+
+    var doers_list = document.getElementsByClassName("doersRow");
+    for(let i=0;i<doers_list.length;i++) {
+        doers_list[i].bgColor = "";
+        doers_list[i].childNodes[0].className = "cell-name-highlight";
+    }
   }
+
+
 
  closeDialog() {
        // console.log(this.state.currentTutorials);
