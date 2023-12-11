@@ -20,5 +20,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
+db.reservationRequests = require("./reservationRequest.model.js")(sequelize, Sequelize);
+db.doers = require("./doer.model.js")(sequelize, Sequelize);
 
 module.exports = db;
