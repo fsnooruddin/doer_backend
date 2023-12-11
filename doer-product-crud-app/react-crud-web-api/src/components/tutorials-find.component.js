@@ -59,7 +59,8 @@ scheduleDoers() {
     // Get the modal
     var modal = document.getElementById("overlay-content");
     modal.style.display = "block";
-    TutorialDataService.scheduleDoers(this.state.currentTutorials);
+
+    TutorialDataService.scheduleDoers(this.state.currentTutorials, this.state.searchAvailability);
 
     var doers_list = document.getElementsByClassName("doersRow");
     for(let i=0;i<doers_list.length;i++) {
@@ -68,15 +69,10 @@ scheduleDoers() {
     }
   }
 
-
-
  closeDialog() {
-       // console.log(this.state.currentTutorials);
-       // alert("Sent Scheduling Requests!");
-// Get the modal
-var modal = document.getElementById("overlay-content");
-modal.style.display = "none";
-
+    // Get the modal
+    var modal = document.getElementById("overlay-content");
+    modal.style.display = "none";
   }
 
   getDayFromAvailability(availability) {

@@ -33,7 +33,13 @@ class TutorialDataService {
      return http.get(`/tutorials/find?availability=${availability}`);
   }
 
-  scheduleDoers(data) {
+  scheduleDoers(doers, searchAvailability) {
+    var data = {
+        "doers_requested": doers,
+        "searchAvailability": searchAvailability
+    } ;
+    console.log("data in schedule doers is:");
+    console.log(data);
     return http.post("/tutorials/scheduleDoers", data);
   }
 }
