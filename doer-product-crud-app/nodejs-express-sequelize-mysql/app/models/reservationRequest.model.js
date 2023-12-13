@@ -1,15 +1,17 @@
-const Tutorial = require ("./tutorial.model.js");
 
 module.exports = (sequelize, Sequelize) => {
   const ReservationRequest = sequelize.define("reservationRequest", {
     request_date_time: {
       type: Sequelize.STRING
     },
-    request_services: {
+    requested_services: {
       type: Sequelize.STRING
     },
-    published: {
-      type: Sequelize.STRING
+    requested_time: {
+          type: Sequelize.STRING
+    },
+    state: {
+      type: Sequelize.INTEGER
     }
   } , {
     tableName: 'reservation_requests'

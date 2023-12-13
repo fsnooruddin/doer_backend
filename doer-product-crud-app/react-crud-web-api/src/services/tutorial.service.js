@@ -40,7 +40,7 @@ class TutorialDataService {
     } ;
     console.log("data in schedule doers is:");
     console.log(data);
-    return http.post("/tutorials/scheduleDoers", data);
+    return http.post("/tutorials/createScheduleRequests", data);
   }
 }
 

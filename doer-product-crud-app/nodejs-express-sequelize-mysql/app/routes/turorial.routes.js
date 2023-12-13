@@ -1,5 +1,6 @@
 module.exports = app => {
-  const tutorials = require("../controllers/tutorial.controller.js");
+    const tutorials = require("../controllers/tutorial.controller.js");
+  const reservationRequests = require("../controllers/reservationRequest.controller.js");
 
   var router = require("express").Router();
 
@@ -27,7 +28,7 @@ module.exports = app => {
   // Delete all Tutorials
   router.delete("/", tutorials.deleteAll);
 
-  router.post("/scheduleDoers", tutorials.scheduleDoers)
+  router.post("/createScheduleRequests", reservationRequests.createScheduleRequests);
 
   app.use('/api/tutorials', router);
 };

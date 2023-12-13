@@ -1,5 +1,5 @@
 const db = require("../models");
-const ReservationRequest = db.reservation_requests;
+const ReservationRequest = db.reservationRequests;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Tutorial
@@ -31,6 +31,48 @@ exports.create = (req, res) => {
           err.message || "Some error occurred while creating the Tutorial."
       });
     });
+};
+
+exports.createScheduleRequests = (req, res) => {
+
+    const tutorials = req.body.doers_requested;
+    const searchRequest = req.body.searchAvailability;
+
+    let errFlag = false;
+    for(let i=0;i<tutorials.length;i++) {
+
+         // Create a Tutorial
+          const reservationRequest = {
+            tutorialId: tutorials[i].id,
+            requested_time: searchRequest,
+          };
+
+          console.log(reservationRequest);
+
+                   // Save Tutorial in the database
+                    ReservationRequest.create(reservationRequest)
+                      .then(data => {
+                       console.log("created new reservation request");
+                       console.log(data);
+                      })
+                      .catch(err => {
+                        console.log("failed to create new reservation request");
+                        errFlag = true;
+                        if(err.message) {
+                            console.log(err.message);
+                        }
+                      });
+
+
+    }
+    console.log("Reservation Request object: ");
+    console.log(ReservationRequest);
+    res.status(500).send({
+        message: "500 from createScheduleRequests"
+      });
+
+
+
 };
 
 // Retrieve all Tutorials from the database
@@ -113,4 +155,4 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
-};
+
