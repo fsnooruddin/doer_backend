@@ -48,10 +48,22 @@ exports.create = (req, res) => {
   };
 
 exports.findByAvailability = (req, res) => {
-  const title = req.query.availability;
-  const retArray = title.split(":");
-  var condition = retArray ? { availability: { [Op.like]: `%${retArray[0]}%` } } : null;
-  console.log("in find by availability");
+  const availability = req.query.availability;
+  var retArray = null;
+  if(availability) {
+    retArray = availability.split(":");
+  }
+  const services = req.query.services;
+  var condition = null;
+  condition = { description: { [Op.like]: `%${services}%` } };
+
+  if(retArray) {
+       condition = { description: { [Op.like]: `%${services}%` } ,availability: {[Op.like]: `%${retArray[0]}%`} };
+  } else {
+     condition = { description: { [Op.like]: `%${services}%` } };
+  }
+
+  console.log("in find by availability: " + condition);
   console.log(req.query);
   Tutorial.findAll({ where: condition })
     .then(data => {
@@ -102,7 +114,7 @@ exports.findAll = (req, res) => {
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-
+  console.log("tutorial-controller findOne");
   Tutorial.findByPk(id)
     .then(data => {
       if (data) {

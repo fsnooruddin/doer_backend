@@ -17,6 +17,7 @@ exports.create = (req, res) => {
     title: req.body.title,
     description: req.body.description,
     availability: req.body.availability,
+    services: req.body.services,
     published: req.body.published
   };
 
@@ -37,6 +38,7 @@ exports.createScheduleRequests = (req, res) => {
 
     const tutorials = req.body.doers_requested;
     const searchRequest = req.body.searchAvailability;
+    const searchServices = req.body.searchServices;
 
     let errFlag = false;
     for(let i=0;i<tutorials.length;i++) {
@@ -45,6 +47,7 @@ exports.createScheduleRequests = (req, res) => {
           const reservationRequest = {
             tutorialId: tutorials[i].id,
             requested_time: searchRequest,
+            requested_services: searchServices
           };
 
           console.log(reservationRequest);
@@ -67,22 +70,37 @@ exports.createScheduleRequests = (req, res) => {
     }
     console.log("Reservation Request object: ");
     console.log(ReservationRequest);
-    res.status(500).send({
-        message: "500 from createScheduleRequests"
-      });
-
-
-
+    if(errFlag) {
+        res.status(500).send({
+            message: "500 from createScheduleRequests"
+          });
+        } else {
+          res.status(200).send();
+    }
 };
 
 // Retrieve all Tutorials from the database
 // or only those whose title  matches
 exports.findAll = (req, res) => {
-  const title = req.query.title;
-  var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+//  console.log("in reservation request findAll");
+  var condition =  null;
 
-  Tutorial.findAll({ where: condition })
+  ReservationRequest.findAll({
+    attributes: {
+            include: [
+                [
+                    // Note the wrapping parentheses in the call below!
+                    db.sequelize.literal(`(
+                       SELECT title FROM tutorials WHERE tutorials.id = ReservationRequest.tutorialId
+                    )`),
+                    'doer_name'
+                ]
+            ]
+        }
+    })
     .then(data => {
+//    console.log("return data from get all reservation requests");
+ //   console.log(data);
       res.send(data);
     })
     .catch(err => {
@@ -96,7 +114,7 @@ exports.findAll = (req, res) => {
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-
+console.log("in reservation request findOne");
   Tutorial.findByPk(id)
     .then(data => {
       if (data) {
