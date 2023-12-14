@@ -8,6 +8,7 @@ export default class TutorialsFind extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchAvailability = this.onChangeSearchAvailability.bind(this);
+    this.onChangeSearchServices = this.onChangeSearchServices.bind(this);
     this.retrieveTutorials = this.retrieveTutorials.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.scheduleDoers = this.scheduleDoers.bind(this);
@@ -17,6 +18,7 @@ export default class TutorialsFind extends Component {
       tutorials: [],
       currentTutorials: [],
       searchAvailability: "",
+      searchServices: "",
       searchTitle: ""
     };
   }
@@ -32,7 +34,15 @@ export default class TutorialsFind extends Component {
     });
   }
 
+  onChangeSearchServices(e) {
+      const searchServices = e.target.value;
+      this.setState({
+        searchServices: searchServices
+      });
+    }
+
   retrieveTutorials() {
+
     TutorialDataService.getAll()
       .then(response => {
         this.setState({
@@ -60,7 +70,7 @@ scheduleDoers() {
     var modal = document.getElementById("overlay-content");
     modal.style.display = "block";
 
-    TutorialDataService.scheduleDoers(this.state.currentTutorials, this.state.searchAvailability);
+    TutorialDataService.scheduleDoers(this.state.currentTutorials, this.state.searchAvailability, this.state.searchServices);
 
     var doers_list = document.getElementsByClassName("doersRow");
     for(let i=0;i<doers_list.length;i++) {
@@ -174,7 +184,7 @@ filterResultsByTime(tutorials) {
 	 currentTutorials: [],
      });
      
-     TutorialDataService.findByAvailability(this.state.searchAvailability)
+     TutorialDataService.findByAvailability(this.state.searchAvailability, this.state.searchServices)
 	 .then(response => {
 	 	     console.log("in search availability ... DB response response");
      	     console.log(response.data);
@@ -206,12 +216,20 @@ getActiveLabel(event, tutorial)
 }
 
   render() {
-    const { searchAvailability, tutorials } = this.state;
+    const { searchAvailability, searchServices, tutorials } = this.state;
 
     return (
       <div className="list row">
         <div className="col-md-8">
           <div className="input-group mb-3">
+
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by Services"
+            value={searchServices}
+            onChange={this.onChangeSearchServices}
+            />
             <input
               type="text"
               className="form-control"

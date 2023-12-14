@@ -8,21 +8,24 @@ export default class ReservationsFind extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchAvailability = this.onChangeSearchAvailability.bind(this);
-    this.retrieveTutorials = this.retrieveTutorials.bind(this);
+    this.onChangeSearchServices = this.onChangeSearchServices.bind(this);
+    this.retrieveReservations = this.retrieveReservations.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.scheduleDoers = this.scheduleDoers.bind(this);
     this.searchAvailability = this.searchAvailability.bind(this);
+    //this.searchServices = this.searchServices.bind(this);
 
     this.state = {
-      tutorials: [],
-      currentTutorials: [],
+      reservationRequests: [],
       searchAvailability: "",
-      searchTitle: ""
+      searchTitle: "",
+      searchServices: "",
+      currentReservations: []
     };
   }
 
   componentDidMount() {
-    this.retrieveTutorials();
+    this.retrieveReservations();
   }
 
   onChangeSearchAvailability(e) {
@@ -32,23 +35,18 @@ export default class ReservationsFind extends Component {
     });
   }
 
-  retrieveTutorials() {
-    TutorialDataService.getAll()
-      .then(response => {
-        this.setState({
-          tutorials: response.data
-        });
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
+  onChangeSearchServices(e) {
+      const searchServices = e.target.value;
+      this.setState({
+        searchServices: searchServices
       });
-  }
+    }
 
   refreshList() {
-    this.retrieveTutorials();
+    this.retrieveReservations();
     this.setState({
-      currentTutorials: []
+      currentTutorials: [],
+      currentReservations: []
     });
   }
 
@@ -67,6 +65,24 @@ scheduleDoers() {
         doers_list[i].bgColor = "";
         doers_list[i].childNodes[0].className = "cell-name-highlight";
     }
+  }
+
+  retrieveReservations() {
+    console.log("In reservation-find.componennt.js retreiveReservations");
+    console.log("this.state");
+    console.log(this.state);
+    TutorialDataService.getAllReservationsRequests()
+         .then(response => {
+            console.log("response from TutorialDataService.getAllReservationsRequests is");
+            console.log(response);
+            this.setState({
+              reservationRequests: response.data
+            });
+            console.log(response.data);
+          })
+          .catch(e => {
+            console.log(e);
+          });
   }
 
  closeDialog() {
@@ -206,7 +222,7 @@ getActiveLabel(event, tutorial)
 }
 
   render() {
-    const { searchAvailability, tutorials } = this.state;
+    const { searchAvailability, searchServices, reservationRequests } = this.state;
 
     return (
       <div className="list row">
@@ -219,6 +235,14 @@ getActiveLabel(event, tutorial)
               value={searchAvailability}
               onChange={this.onChangeSearchAvailability}
             />
+
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search by Servics"
+                        value={searchServices}
+                        onChange={this.onChangeSearchServices}
+                  />
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
@@ -240,18 +264,20 @@ getActiveLabel(event, tutorial)
           <table className="doers-table">
           <thead>
            <tr>
-              <td>Name</td>
-              <td>Services Offered</td>
-              <td>Availability</td>
+              <td>Doer Name</td>
+              <td>Services Requested</td>
+              <td>Time Requested</td>
+              <td>Request Time</td>
             </tr>
             </thead>
             <tbody>
-            {tutorials &&
-              tutorials.map((tutorial, index) => (
-                <tr className="doersRow" id={tutorial.title} onClick={(event) => this.getActiveLabel(event, tutorial)} key={index}>
-                  <td className="cell-name-highlight">{tutorial.title} </td>
-                  <td>{tutorial.description} </td>
-                  <td> {tutorial.availability} </td>
+            {reservationRequests &&
+              reservationRequests.map((reservation, index) => (
+                <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
+                  <td className="cell-name-highlight">{reservation.doer_name} </td>
+                  <td>{reservation.requested_services} </td>
+                  <td> {reservation.requested_time} </td>
+                   <td> {reservation.createdAt} </td>
                 </tr>
 
               ))}

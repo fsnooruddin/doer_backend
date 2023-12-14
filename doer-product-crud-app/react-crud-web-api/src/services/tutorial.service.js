@@ -29,14 +29,19 @@ class TutorialDataService {
     return http.get(`/tutorials?title=${title}`);
   }
 
-  findByAvailability(availability) {
-     return http.get(`/tutorials/find?availability=${availability}`);
+  findByAvailability(availability, services) {
+     return http.get(`/tutorials/find?availability=${availability}&services=${services}`);
   }
 
-  scheduleDoers(doers, searchAvailability) {
+  getAllReservationsRequests() {
+   return http.get(`/tutorials/getAllReservationsRequests`);
+  }
+
+  scheduleDoers(doers, searchAvailability, searchServices) {
     var data = {
         "doers_requested": doers,
-        "searchAvailability": searchAvailability
+        "searchAvailability": searchAvailability,
+        "searchServices": searchServices
     } ;
     console.log("data in schedule doers is:");
     console.log(data);
