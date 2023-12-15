@@ -221,45 +221,26 @@ getActiveLabel(event, tutorial)
   this.state.currentTutorials.push(tutorial);
 }
 
+getJSDateTime(mysqlDateTime)
+{
+ var t = mysqlDateTime.split("T");
+ var r = t[1].split(".");
+ return (t[0]+ " " + r[0]);
+}
+
   render() {
     const { searchAvailability, searchServices, reservationRequests } = this.state;
 
     return (
       <div className="list row">
         <div className="col-md-8">
-          <div className="input-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by Schedule"
-              value={searchAvailability}
-              onChange={this.onChangeSearchAvailability}
-            />
-
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by Servics"
-                        value={searchServices}
-                        onChange={this.onChangeSearchServices}
-                  />
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={this.searchAvailability}
-              >
-                Search
-              </button>
-            </div>
-          </div>
         </div>
         <div>
         <br />
         <br />
         </div>
         <div className="col-md-6">
-          <h4>{"Doers List Available During: " + this.state.searchAvailability}</h4>
+          <h4>{"Pending Reservation Requests: "}</h4>
 
           <table className="doers-table">
           <thead>
@@ -267,7 +248,7 @@ getActiveLabel(event, tutorial)
               <td>Doer Name</td>
               <td>Services Requested</td>
               <td>Time Requested</td>
-              <td>Request Time</td>
+              <td>Time Request Sent to Doer</td>
             </tr>
             </thead>
             <tbody>
@@ -277,19 +258,12 @@ getActiveLabel(event, tutorial)
                   <td className="cell-name-highlight">{reservation.doer_name} </td>
                   <td>{reservation.requested_services} </td>
                   <td> {reservation.requested_time} </td>
-                   <td> {reservation.createdAt} </td>
+                  <td>{this.getJSDateTime(reservation.createdAt)}</td>
                 </tr>
 
               ))}
               </tbody>
           </table>
-
-          <button
-            className="m-3 btn btn-sm btn-info"
-            onClick={this.scheduleDoers}
-          >
-            Schedule Doers!
-          </button>
         </div>
         <br />
         <div>
