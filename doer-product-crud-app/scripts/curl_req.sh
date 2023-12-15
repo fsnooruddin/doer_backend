@@ -23,6 +23,15 @@ curl --header "Content-Type: application/json" \
     --data '{ "title":"Molly Maid", "description":"Cleaning, Dusting", "availability":"Sat: 12-17, Sun: 17-23", "published":"4"}' \
     http://localhost:8080/api/tutorials
 
+curl --header "Content-Type: application/json" \
+    --request POST \
+    --data '{ "title":"ServicePro", "description":"Plumbers", "availability":"Sat: 12-17, Sun: 17-23", "published":"3"}' \
+    http://localhost:8080/api/tutorials
+
+curl --header "Content-Type: application/json" \
+    --request POST \
+    --data '{ "title":"Singhs Plumbing", "description":"Plumbers", "availability":"Sat: 12-17, Sun: 17-23", "published":"4"}' \
+    http://localhost:8080/api/tutorials
 
 curl --header "Content-Type: application/json" \
   --request GET \
