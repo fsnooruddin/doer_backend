@@ -230,6 +230,7 @@ getActiveLabel(event, tutorial)
             value={searchServices}
             onChange={this.onChangeSearchServices}
             />
+            &nbsp;
             <input
               type="text"
               className="form-control"
