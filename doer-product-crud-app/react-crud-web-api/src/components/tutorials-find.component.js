@@ -243,6 +243,8 @@ getActiveLabel(event, tutorial)
               value={searchAvailability}
               onChange={this.onChangeSearchAvailability}
             />
+            &nbsp;
+            &nbsp;
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
