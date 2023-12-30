@@ -6,15 +6,45 @@ table {
 }
 
 thead {
-   font-weight: bold;
-     text-align: center;
-     background-color: #EAAE56;
-     font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #EAAE56;
+    font-size: 20px;
 }
 
 thead td {
     border: 2px solid black;
     colspan: 1;
+}
+
+.col-md-6 {
+ margin-left: 20%;
+ margin-right: 20%;
+ display: inline-block;
+}
+
+td {
+ width: 20%;
+}
+
+.cell-createtime-highlight {
+   width: 25%;
+    background-color: grey;
+}
+
+.cell-description-highlight {
+    width: 40%;
+}
+
+.cell-availability-highlight {
+    width: 25%;
+}
+
+
+.cell-name-highlight {
+  background-color: gold;
+  font-weight: bold;
+    width: 35%;
 }
 
 tbody {
@@ -24,14 +54,10 @@ tbody {
 
 tbody td {
     border: 2px solid black;
-      colspan: 1;
+    colspan: 1;
 }
 
 
-.cell-name-highlight {
-  background-color: gold;
-  font-weight: bold;
-}
 
 .overlay-content {
     display: none;
@@ -39,14 +65,16 @@ tbody td {
     padding: 1%;
   /*  width: 40%; */
     position: absolute;
-    top: 15%;
+    top: 25%;
     left: 50%;
     margin: 0 0 0 -20%; /* add negative left margin for half the width to center the div */
     cursor: default;
     z-index: 10001;
     border-radius: 4px;
     box-shadow: 0 0 5px rgba(0,0,0,0.9);
-    height: 85px;
+    height: 135px;
+    font-weight: bold;
+    background-color: #AEFA98;
 }
 
 .close-btn {
@@ -63,10 +91,10 @@ tbody td {
     border-radius: 4px;
     box-shadow: 0 0 4px rgba(0,0,0,0.3);
     position: absolute;
-    top: 50%;
-    left: 65%;
+    bottom: 15%;
+    left: 75%;
 }
 
 .close-btn:hover {
-    background: #05abe0;
+    background: #93CFFF;
 }

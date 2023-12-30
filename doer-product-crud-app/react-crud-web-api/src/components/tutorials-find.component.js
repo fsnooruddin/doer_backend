@@ -77,6 +77,11 @@ scheduleDoers() {
         doers_list[i].bgColor = "";
         doers_list[i].childNodes[0].className = "cell-name-highlight";
     }
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
   }
 
  closeDialog() {
@@ -269,8 +274,8 @@ getActiveLabel(event, tutorial)
               tutorials.map((tutorial, index) => (
                 <tr className="doersRow" id={tutorial.title} onClick={(event) => this.getActiveLabel(event, tutorial)} key={index}>
                   <td className="cell-name-highlight">{tutorial.title} </td>
-                  <td>{tutorial.description} </td>
-                  <td> {tutorial.availability} </td>
+                  <td className="cell-description-highlight">{tutorial.description} </td>
+                  <td className="cell-availability-highlight"> {tutorial.availability} </td>
                 </tr>
 
               ))}
@@ -291,15 +296,14 @@ getActiveLabel(event, tutorial)
         </div>
 
 <div className="overlay-bg">
-</div>
+
 <div id="overlay-content" className="overlay-content popup1">
-<div id="overlay-content" className="overlay-content popup1"></div>
-<p>Sent Scheduling Request!</p>
+<p>Your request has been sent to Doers! Sit tight, will confirm soon!</p><br/>
+<p></p>
     <button className="close-btn" onClick={this.closeDialog}>Close</button>
 </div>
-
  </div>
-
+</div>
     );
   }
 }

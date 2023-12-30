@@ -233,12 +233,7 @@ getJSDateTime(mysqlDateTime)
 
     return (
       <div className="list row">
-        <div className="col-md-8">
-        </div>
-        <div>
-        <br />
-        <br />
-        </div>
+
         <div className="col-md-6">
           <h4>{"Pending Reservation Requests: "}</h4>
 
@@ -256,9 +251,9 @@ getJSDateTime(mysqlDateTime)
               reservationRequests.map((reservation, index) => (
                 <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
                   <td className="cell-name-highlight">{reservation.doer_name} </td>
-                  <td>{reservation.requested_services} </td>
-                  <td> {reservation.requested_time} </td>
-                  <td>{this.getJSDateTime(reservation.createdAt)}</td>
+                  <td className="cell-svcs-highlight">{reservation.requested_services} </td>
+                  <td className="cell-time-highlight">{reservation.requested_time}</td>
+                  <td className="cell-createtime-highlight">{this.getJSDateTime(reservation.createdAt)}</td>
                 </tr>
 
               ))}
@@ -272,15 +267,13 @@ getJSDateTime(mysqlDateTime)
         </div>
 
 <div className="overlay-bg">
-</div>
+
 <div id="overlay-content" className="overlay-content popup1">
-<div id="overlay-content" className="overlay-content popup1"></div>
 <p>Sent Scheduling Request!</p>
     <button className="close-btn" onClick={this.closeDialog}>Close</button>
 </div>
-
  </div>
-
+</div>
     );
   }
 }
