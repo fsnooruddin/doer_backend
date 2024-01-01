@@ -272,7 +272,9 @@ getActiveLabel(event, tutorial)
             {tutorials &&
               tutorials.map((tutorial, index) => (
                 <tr className="doersRow" id={tutorial.title} onClick={(event) => this.getActiveLabel(event, tutorial)} key={index}>
-                  <td className="cell-name-highlight">{tutorial.title} </td>
+                  <td className="cell-name-highlight"  >
+                   <span class="tooltiptext">{tutorial.title}</span>
+                  </td>
                   <td className="cell-description-highlight">{tutorial.description} </td>
                   <td className="cell-availability-highlight"> {tutorial.availability} </td>
                 </tr>
