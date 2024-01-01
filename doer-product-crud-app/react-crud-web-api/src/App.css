@@ -1,60 +1,47 @@
 
-table {
+.doers-table {
   	border: 2px solid black;
   	cursor: pointer;
+  	width: 95%;
 
 }
 
-thead {
+thead td {
     font-weight: bold;
     text-align: center;
     background-color: #EAAE56;
     font-size: 20px;
+     border: 2px solid black;
 }
 
-thead td {
-    border: 2px solid black;
-    colspan: 1;
-}
 
 .col-md-6 {
- margin-left: 20%;
- margin-right: 20%;
- display: inline-block;
-}
 
-td {
- width: 20%;
+
 }
 
 .cell-createtime-highlight {
-   width: 25%;
     background-color: grey;
 }
 
 .cell-description-highlight {
-    width: 40%;
+
 }
 
 .cell-availability-highlight {
-    width: 25%;
+
 }
 
 
 .cell-name-highlight {
   background-color: gold;
   font-weight: bold;
-    width: 35%;
-}
 
-tbody {
-    text-align: center
 }
-
 
 tbody td {
     border: 2px solid black;
-
+     text-align: center;
 }
 
 

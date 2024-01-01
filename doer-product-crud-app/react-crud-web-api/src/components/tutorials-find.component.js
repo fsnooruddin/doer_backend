@@ -256,11 +256,8 @@ getActiveLabel(event, tutorial)
             </div>
           </div>
         </div>
-        <div>
-        <br />
-        <br />
-        </div>
-        <div className="col-md-6">
+
+        <div className="col-md-666">
           <h4>{"Doers List Available During: " + this.state.searchAvailability}</h4>
 
           <table className="doers-table">
