@@ -28,18 +28,18 @@ thead td {
 
 
 .cell-name-highlight {
-  background-color: gold;
+  background-color: MediumSeaGreen;
   font-weight: bold;
-
 }
+
 
 tbody td {
     border: 2px solid black;
      text-align: center;
 }
 
-.tooltip .tooltiptext {
-  visibility: hidden;
+.tooltiptext {
+  visibility: block;
   width: 120px;
   background-color: black;
   color: #fff;
@@ -50,10 +50,6 @@ tbody td {
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
 }
 
 .overlay-content {
