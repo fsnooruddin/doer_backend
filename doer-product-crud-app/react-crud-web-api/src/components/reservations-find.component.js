@@ -233,10 +233,7 @@ getJSDateTime(mysqlDateTime)
 
     return (
       <div className="list row">
-
-        <div className="col-md-6">
           <h4>{"Pending Reservation Requests: "}</h4>
-
           <table className="doers-table">
           <thead>
            <tr>
@@ -259,7 +256,6 @@ getJSDateTime(mysqlDateTime)
               ))}
               </tbody>
           </table>
-        </div>
         <br />
         <div>
         </div>

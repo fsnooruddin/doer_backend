@@ -89,7 +89,7 @@ export default class AddTutorial extends Component {
         ) : (
           <div>
             <div className="form-group">
-              <label htmlFor="title">Title</label>
+              <label htmlFor="title">Name of Business</label>
               <input
                 type="text"
                 className="form-control"
@@ -102,7 +102,7 @@ export default class AddTutorial extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">Services Offered</label>
               <input
                 type="text"
                 className="form-control"
