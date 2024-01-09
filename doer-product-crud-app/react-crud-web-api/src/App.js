@@ -8,6 +8,7 @@ import Tutorial from "./components/tutorial.component";
 import TutorialsList from "./components/tutorials-list.component";
 import TutorialsFind from "./components/tutorials-find.component";
 import ReservationsFind from "./components/reservations-find.component";
+import DoerApp from "./components/doer-app.component";
 
 class App extends Component {
   render() {
@@ -38,6 +39,11 @@ class App extends Component {
                   Reservation Requests
                 </Link>
             </li>
+           <li className="nav-item">
+                <Link to={"/doerapp"} className="nav-link">
+                  Doer App
+                </Link>
+            </li>
           </div>
         </nav>
 
@@ -49,6 +55,7 @@ class App extends Component {
             <Route path="/find" element={<TutorialsFind/>} />
             <Route path="/reservations" element={<ReservationsFind/>} />
             <Route path="/tutorials/:id" element={<Tutorial/>} />
+            <Route path="/doerapp" element={<DoerApp/>} />
           </Routes>
         </div>
       </div>
