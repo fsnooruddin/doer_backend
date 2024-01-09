@@ -11,11 +11,11 @@ thead td {
     text-align: center;
     background-color: #EAAE56;
     font-size: 20px;
-     border: 2px solid black;
+    border: 2px solid black;
 }
 
 .cell-createtime-highlight {
-    background-color: grey;
+    background-color: CornSilk;
 }
 
 .cell-description-highlight {
@@ -28,7 +28,7 @@ thead td {
 
 
 .cell-name-highlight {
-  background-color: MediumSeaGreen;
+  background-color: PeachPuff;
   font-weight: bold;
 }
 
@@ -67,7 +67,7 @@ tbody td {
     box-shadow: 0 0 5px rgba(0,0,0,0.9);
     height: 135px;
     font-weight: bold;
-    background-color: #AEFA98;
+    background-color: #d0ece3;
 }
 
 .close-btn {

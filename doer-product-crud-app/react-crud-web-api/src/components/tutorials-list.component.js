@@ -159,7 +159,7 @@ export default class TutorialsList extends Component {
               </div>
               <div>
                 <label>
-                  <strong>Description:</strong>
+                  <strong>Offered Services:</strong>
                 </label>{" "}
                 {currentTutorial.description}
               </div>
@@ -173,7 +173,7 @@ export default class TutorialsList extends Component {
                 <label>
                   <strong>Rating:</strong>
                 </label>{" "}
-                {currentTutorial.published ? "Published" : "No Rating Yet"}
+                {Math.floor(Math.random() * 99)}
               </div>
 
               <Link
