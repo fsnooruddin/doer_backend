@@ -12,7 +12,7 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Tutorial
+  // Create a reservation Request
   const reservationRequest = {
     title: req.body.title,
     description: req.body.description,
@@ -47,7 +47,8 @@ exports.createScheduleRequests = (req, res) => {
           const reservationRequest = {
             tutorialId: tutorials[i].id,
             requested_time: searchRequest,
-            requested_services: searchServices
+            requested_services: searchServices,
+            state: 1
           };
 
           console.log(reservationRequest);
