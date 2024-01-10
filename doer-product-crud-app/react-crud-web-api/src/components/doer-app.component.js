@@ -232,18 +232,45 @@ getJSDateTime(mysqlDateTime)
     const { searchAvailability, searchServices, reservationRequests } = this.state;
 
     return (
-      <div className="list row">
-          <h4>{"Pending Reservation Requests: "}</h4>
-          <table className="doers-table">
-          <thead>
-           <tr>
-              <td>Doer Name</td>
-              <td>Services Requested</td>
-              <td>Time Requested</td>
-              <td>Time Request Sent to Doer</td>
-            </tr>
-            </thead>
-            <tbody>
+         <div className="list row">
+           <div className="col-md-8">
+             <div className="input-group mb-3">
+
+             <input
+               type="text"
+               className="form-control"
+               placeholder="Doer Login"
+               value={searchServices}
+               onChange={this.onChangeSearchServices}
+               />
+               &nbsp;
+               &nbsp;
+               &nbsp;
+               <div className="input-group-append">
+                 <button
+                   className="btn btn-outline-secondary"
+                   type="button"
+                   onClick={this.searchAvailability}
+                 >
+                   Search
+                 </button>
+               </div>
+             </div>
+           </div>
+
+           <div className="col-md-666">
+             <h4>{"Doers List Available During: " + this.state.searchAvailability}</h4>
+
+             <table className="doers-table">
+             <thead>
+              <tr>
+                 <td>Name</td>
+                 <td>Services Requested</td>
+                 <td>Time Request</td>
+                 <td>Request Sent At</td>
+               </tr>
+               </thead>
+               <tbody>
             {reservationRequests &&
               reservationRequests.map((reservation, index) => (
                 <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
@@ -254,22 +281,31 @@ getJSDateTime(mysqlDateTime)
                 </tr>
 
               ))}
-              </tbody>
-          </table>
-        <br />
-        <div>
-        </div>
-        <div className="col-md-6">
-        </div>
+               </tbody>
+             </table>
 
-<div className="overlay-bg">
+             <button
+               className="m-3 btn btn-sm btn-info"
+               onClick={this.scheduleDoers}
+             >
+               Schedule Doers!
+             </button>
+           </div>
+           <br />
+           <div>
+           </div>
+           <div className="col-md-6">
+           </div>
 
-<div id="overlay-content" className="overlay-content popup1">
-<p>Sent Scheduling Request!</p>
-    <button className="close-btn" onClick={this.closeDialog}>Close</button>
-</div>
- </div>
-</div>
-    );
+   <div className="overlay-bg">
+
+   <div id="overlay-content" className="overlay-content popup1">
+   <p>Your request has been sent to Doers! Sit tight, will confirm soon!</p><br/>
+   <p></p>
+       <button className="close-btn" onClick={this.closeDialog}>Close</button>
+   </div>
+    </div>
+   </div>
+       );
   }
 }
