@@ -32,5 +32,7 @@ module.exports = app => {
 
   router.post("/createScheduleRequests", reservationRequests.createScheduleRequests);
 
+  router.post("/acceptReservationRequests", reservationRequests.updateScheduleRequests);
+
   app.use('/api/tutorials', router);
 };

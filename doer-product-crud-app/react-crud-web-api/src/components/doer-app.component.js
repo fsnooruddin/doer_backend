@@ -7,19 +7,16 @@ import { Link } from "react-router-dom";
 export default class DoerApp extends Component {
   constructor(props) {
     super(props);
-    this.onChangeSearchAvailability = this.onChangeSearchAvailability.bind(this);
-    this.onChangeSearchServices = this.onChangeSearchServices.bind(this);
     this.retrieveReservations = this.retrieveReservations.bind(this);
     this.refreshList = this.refreshList.bind(this);
+    this.onChangeDoerLogin = this.onChangeDoerLogin.bind(this);
     this.scheduleDoers = this.scheduleDoers.bind(this);
-    this.searchAvailability = this.searchAvailability.bind(this);
-    //this.searchServices = this.searchServices.bind(this);
+    this.acceptJobs = this.acceptJobs.bind(this);
+    this.processDoerLogin = this.processDoerLogin.bind(this);
 
     this.state = {
-      reservationRequests: [],
-      searchAvailability: "",
-      searchTitle: "",
-      searchServices: "",
+      loginName: "",
+      doerId: "",
       currentReservations: []
     };
   }
@@ -28,27 +25,40 @@ export default class DoerApp extends Component {
     this.retrieveReservations();
   }
 
-  onChangeSearchAvailability(e) {
-    const searchAvailability = e.target.value;
+onChangeDoerLogin(e) {
+    const doerId = e.target.value;
     this.setState({
-      searchAvailability: searchAvailability
+      doerId: doerId
     });
   }
-
-  onChangeSearchServices(e) {
-      const searchServices = e.target.value;
-      this.setState({
-        searchServices: searchServices
-      });
-    }
 
   refreshList() {
     this.retrieveReservations();
     this.setState({
-      currentTutorials: [],
       currentReservations: []
     });
   }
+
+  acceptJobs() {
+
+     console.log(this.state.currentReservations);
+     // alert("Sent Scheduling Requests!");
+      // Get the modal
+      var modal = document.getElementById("overlay-content");
+      modal.style.display = "block";
+
+      TutorialDataService.acceptJobs(this.state.currentReservations, this.state.doerID);
+
+      var doers_list = document.getElementsByClassName("doersRow");
+      for(let i=0;i<doers_list.length;i++) {
+          doers_list[i].bgColor = "";
+          doers_list[i].childNodes[0].className = "cell-name-highlight";
+      }
+
+    this.setState({
+        currentReservations: []
+      });
+    }
 
 scheduleDoers() {
 
@@ -129,75 +139,37 @@ scheduleDoers() {
     return false;
   }
 
-  processTimeMatch(reqSlot, avail) {
-
-        let reqSlotDay=this.getDayFromAvailability(reqSlot);
-        console.log("reqSlot " + reqSlotDay);
-
-        let reqSlotTime=this.getTimeFromAvailability(reqSlot);
-        console.log("reqSlot " + reqSlotTime);
-
-        const availArray = avail.split(",");
-        const len = availArray.length;
-
-        for(let i=0;i<len;i++) {
-            let dayMatch = false;
-            let timeMatch = false;
-
-            let slot=availArray[i];
-            console.log("slot = " + slot);
-
-            let slotDay=this.getDayFromAvailability(slot);
-            console.log(slotDay);
-
-            let slotTime=this.getTimeFromAvailability(slot);
-            console.log(slotTime);
-
-            if(slotDay.indexOf(reqSlotDay) !== -1) {
-                    dayMatch = true;
-            }
-
-            timeMatch = this.timesMatch(reqSlotTime, slotTime);
-
-            if(dayMatch === true && timeMatch === true) {
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-filterResultsByTime(tutorials) {
-    if(this.state.searchAvailability == null) {
+filterResultsByDoerId(tutorials) {
+    if(this.state.doerId == null) {
         return tutorials;
     }
 
-    const filteredTutorials = tutorials.filter(filterTimeFunction, this);
+    const filteredTutorials = tutorials.filter(filterIdFunction, this);
 
-    function filterTimeFunction(value, index, array) {
+    function filterIdFunction(value, index, array) {
         console.log("...filtering...");
         console.log(value);
         //console.log(time);
         console.log(this.state);
-        return this.processTimeMatch(this.state.searchAvailability, value.availability);
+        return (this.state.doerId == value.tutorialId);
     }
 
     return filteredTutorials;
 }
 
- searchAvailability() {
+processDoerLogin() {
      this.setState({
 	 currentTutorials: [],
      });
 
-     TutorialDataService.findByAvailability(this.state.searchAvailability)
+     TutorialDataService.getAllReservationsRequests()
 	 .then(response => {
-	 	     console.log("in search availability ... DB response response");
+	 	     console.log("in processDoerLogin ... DB response response");
      	     console.log(response.data);
 
-             const filteredResponse = this.filterResultsByTime(response.data);
+             const filteredResponse = this.filterResultsByDoerId(response.data);
              this.setState({
-		        tutorials: filteredResponse
+		        reservationRequests: filteredResponse
              });
 	     console.log("in search availability ... filtered response");
 	     console.log(filteredResponse);
@@ -218,7 +190,7 @@ getActiveLabel(event, tutorial)
         event.currentTarget.childNodes[0].className = "";
     }
   }
-  this.state.currentTutorials.push(tutorial);
+  this.state.currentReservations.push(tutorial);
 }
 
 getJSDateTime(mysqlDateTime)
@@ -229,7 +201,7 @@ getJSDateTime(mysqlDateTime)
 }
 
   render() {
-    const { searchAvailability, searchServices, reservationRequests } = this.state;
+    const { processDoerLogin, searchServices, reservationRequests } = this.state;
 
     return (
          <div className="list row">
@@ -241,7 +213,7 @@ getJSDateTime(mysqlDateTime)
                className="form-control"
                placeholder="Doer Login"
                value={searchServices}
-               onChange={this.onChangeSearchServices}
+               onChange={this.onChangeDoerLogin}
                />
                &nbsp;
                &nbsp;
@@ -250,16 +222,16 @@ getJSDateTime(mysqlDateTime)
                  <button
                    className="btn btn-outline-secondary"
                    type="button"
-                   onClick={this.searchAvailability}
+                   onClick={this.processDoerLogin}
                  >
-                   Search
+                   Login
                  </button>
                </div>
              </div>
            </div>
 
            <div className="col-md-666">
-             <h4>{"Doers List Available During: " + this.state.searchAvailability}</h4>
+             <h4>{"Job requests sent -- select the ones that you are interested in... "}</h4>
 
              <table className="doers-table">
              <thead>
@@ -286,9 +258,9 @@ getJSDateTime(mysqlDateTime)
 
              <button
                className="m-3 btn btn-sm btn-info"
-               onClick={this.scheduleDoers}
+               onClick={this.acceptJobs}
              >
-               Schedule Doers!
+               Accept Job Requests!
              </button>
            </div>
            <br />
@@ -299,10 +271,10 @@ getJSDateTime(mysqlDateTime)
 
    <div className="overlay-bg">
 
-   <div id="overlay-content" className="overlay-content popup1">
-   <p>Your request has been sent to Doers! Sit tight, will confirm soon!</p><br/>
+   <div id="overlay-content" className="overlay-content popup-doer-app">
+   <p>Accepted Jobs! Goodluck!</p><br/>
    <p></p>
-       <button className="close-btn" onClick={this.closeDialog}>Close</button>
+       <button className="close-btn-doer-app" onClick={this.closeDialog}>Close</button>
    </div>
     </div>
    </div>

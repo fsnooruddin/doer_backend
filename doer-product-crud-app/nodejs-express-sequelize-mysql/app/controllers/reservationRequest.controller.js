@@ -18,7 +18,7 @@ exports.create = (req, res) => {
     description: req.body.description,
     availability: req.body.availability,
     services: req.body.services,
-    published: req.body.published
+    state: req.body.published
   };
 
   // Save Tutorial in the database
@@ -78,6 +78,55 @@ exports.createScheduleRequests = (req, res) => {
         } else {
           res.status(200).send();
     }
+};
+
+exports.updateScheduleRequests = (req, res) => {
+
+    const reservation = req.body.reservationRequests;
+    const doerId = req.body.doerId;
+
+/*
+    let errFlag = false;
+    for(let i=0;i<tutorials.length;i++) {
+
+         // Create a Tutorial
+          const reservationRequest = {
+            tutorialId: tutorials[i].id,
+            requested_time: searchRequest,
+            requested_services: searchServices,
+            state: 1
+          };
+
+          console.log(reservationRequest);
+
+                   // Save Tutorial in the database
+                    ReservationRequest.create(reservationRequest)
+                      .then(data => {
+                       console.log("created new reservation request");
+                       console.log(data);
+                      })
+                      .catch(err => {
+                        console.log("failed to create new reservation request");
+                        errFlag = true;
+                        if(err.message) {
+                            console.log(err.message);
+                        }
+                      });
+
+
+    }
+    console.log("Reservation Request object: ");
+    console.log(ReservationRequest);
+    x
+    if(errFlag) {
+        res.status(500).send({
+            message: "500 from updateScheduleRequests"
+          });
+        } else {
+          res.status(200).send();
+    }
+    */
+    res.status(200).send();
 };
 
 // Retrieve all Tutorials from the database

@@ -33,6 +33,10 @@ class TutorialDataService {
      return http.get(`/tutorials/find?availability=${availability}&services=${services}`);
   }
 
+  findByDoerId(doerId) {
+     return http.get(`/tutorials/findByDoerId?doerId=${doerId}`);
+  }
+
   getAllReservationsRequests() {
    return http.get(`/tutorials/getAllReservationsRequests`);
   }
@@ -46,6 +50,16 @@ class TutorialDataService {
     console.log("data in schedule doers is:");
     console.log(data);
     return http.post("/tutorials/createScheduleRequests", data);
+  }
+
+  acceptJobs(reservations, doerId) {
+    var data = {
+        "doers_requested": doerId,
+        "reservations": reservations
+    } ;
+    console.log("data in acceptJobs is:");
+    console.log(data);
+    return http.post("/tutorials/acceptReservationRequests", data);
   }
 }
 
