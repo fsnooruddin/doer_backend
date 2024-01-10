@@ -82,31 +82,28 @@ exports.createScheduleRequests = (req, res) => {
 
 exports.updateScheduleRequests = (req, res) => {
 
-    const reservation = req.body.reservationRequests;
+    console.log(req.body.reservations);
+    const reservations = req.body.reservations;
     const doerId = req.body.doerId;
 
-/*
+
     let errFlag = false;
-    for(let i=0;i<tutorials.length;i++) {
-
-         // Create a Tutorial
-          const reservationRequest = {
-            tutorialId: tutorials[i].id,
-            requested_time: searchRequest,
-            requested_services: searchServices,
-            state: 1
-          };
-
-          console.log(reservationRequest);
+    for(let i=0;i<reservations.length;i++) {
 
                    // Save Tutorial in the database
-                    ReservationRequest.create(reservationRequest)
+                    ReservationRequest.update(
+                        {state: 3}, {
+                        where:
+                            {
+                                id : reservations[i].id
+                             }
+                       })
                       .then(data => {
-                       console.log("created new reservation request");
+                       console.log("updatedreservation request");
                        console.log(data);
                       })
                       .catch(err => {
-                        console.log("failed to create new reservation request");
+                        console.log("failed to update reservation request");
                         errFlag = true;
                         if(err.message) {
                             console.log(err.message);
@@ -115,9 +112,9 @@ exports.updateScheduleRequests = (req, res) => {
 
 
     }
-    console.log("Reservation Request object: ");
-    console.log(ReservationRequest);
-    x
+    console.log("Update reservations. ");
+
+
     if(errFlag) {
         res.status(500).send({
             message: "500 from updateScheduleRequests"
@@ -125,8 +122,7 @@ exports.updateScheduleRequests = (req, res) => {
         } else {
           res.status(200).send();
     }
-    */
-    res.status(200).send();
+
 };
 
 // Retrieve all Tutorials from the database
