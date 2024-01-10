@@ -34,14 +34,14 @@ class App extends Component {
                 Find
               </Link>
             </li>
-            <li className="nav-item">
-                <Link to={"/reservations"} className="nav-link">
-                  Reservation Requests
-                </Link>
-            </li>
            <li className="nav-item">
                 <Link to={"/doerapp"} className="nav-link">
                   Doer App
+                </Link>
+            </li>
+           <li className="nav-item">
+                <Link to={"/reservations"} className="nav-link">
+                  Reservation Requests
                 </Link>
             </li>
           </div>
