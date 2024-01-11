@@ -18,8 +18,7 @@ export default class TutorialsFind extends Component {
       tutorials: [],
       currentTutorials: [],
       searchAvailability: "",
-      searchServices: "",
-      searchTitle: ""
+      searchServices: ""
     };
   }
 
@@ -63,6 +62,17 @@ export default class TutorialsFind extends Component {
   }
 
 scheduleDoers() {
+
+  if(this.state.searchAvailability.length == 0 && this.state.searchServices.length == 0) {
+    alert("please select services and timeslot");
+    return;
+  }
+
+  if(this.state.currentTutorials.length == 0 ) {
+    alert("please select doers!");
+    return;
+  }
+
 
    console.log(this.state.currentTutorials);
    // alert("Sent Scheduling Requests!");
@@ -167,7 +177,7 @@ scheduleDoers() {
     }
 
 filterResultsByTime(tutorials) {
-    if(this.state.searchAvailability == null) {
+    if(this.state.searchAvailability.length == 0) {
         return tutorials;
     }
     

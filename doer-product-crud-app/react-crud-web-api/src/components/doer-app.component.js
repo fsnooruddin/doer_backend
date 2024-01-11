@@ -45,7 +45,7 @@ onChangeDoerLogin(e) {
      console.log(this.state.currentReservations);
      // alert("Sent Scheduling Requests!");
       // Get the modal
-      var modal = document.getElementById("overlay-content-1");
+      var modal = document.getElementById("overlay-content");
       modal.style.display = "block";
 
       TutorialDataService.acceptJobs(this.state.currentReservations, this.state.doerID);
