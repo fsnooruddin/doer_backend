@@ -1,0 +1,16 @@
+
+
+- Doer App -- table needs to show only pending requests
+
+rename tutorials to doer
+
+high level links
+
+users
+doers
+management
+
+- reservations need to be in following states: requested, accepted, declined, completed
+
+- should we have a seperate table for reservations in each state?
+
