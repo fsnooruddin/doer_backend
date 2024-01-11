@@ -61,6 +61,16 @@ class TutorialDataService {
     console.log(data);
     return http.post("/tutorials/acceptReservationRequests", data);
   }
+
+   declineJobs(reservations, doerId) {
+      var data = {
+          "doers_requested": doerId,
+          "reservations": reservations
+      } ;
+      console.log("data in acceptJobs is:");
+      console.log(data);
+      return http.post("/tutorials/declineReservationRequests", data);
+    }
 }
 
 export default new TutorialDataService();

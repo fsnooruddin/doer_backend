@@ -12,6 +12,7 @@ export default class DoerApp extends Component {
     this.onChangeDoerLogin = this.onChangeDoerLogin.bind(this);
     this.scheduleDoers = this.scheduleDoers.bind(this);
     this.acceptJobs = this.acceptJobs.bind(this);
+    this.declineJobs = this.declineJobs.bind(this);
     this.processDoerLogin = this.processDoerLogin.bind(this);
 
     this.state = {
@@ -44,10 +45,31 @@ onChangeDoerLogin(e) {
      console.log(this.state.currentReservations);
      // alert("Sent Scheduling Requests!");
       // Get the modal
-      var modal = document.getElementById("overlay-content");
+      var modal = document.getElementById("overlay-content-1");
       modal.style.display = "block";
 
       TutorialDataService.acceptJobs(this.state.currentReservations, this.state.doerID);
+
+      var doers_list = document.getElementsByClassName("doersRow");
+      for(let i=0;i<doers_list.length;i++) {
+          doers_list[i].bgColor = "";
+          doers_list[i].childNodes[0].className = "cell-name-highlight";
+      }
+
+    this.setState({
+        currentReservations: []
+      });
+    }
+
+    declineJobs() {
+
+     console.log(this.state.currentReservations);
+     // alert("Sent Scheduling Requests!");
+      // Get the modal
+      var modal = document.getElementById("overlay-content-2");
+      modal.style.display = "block";
+
+      TutorialDataService.declineJobs(this.state.currentReservations, this.state.doerID);
 
       var doers_list = document.getElementsByClassName("doersRow");
       for(let i=0;i<doers_list.length;i++) {
@@ -95,9 +117,15 @@ scheduleDoers() {
           });
   }
 
- closeDialog() {
+ closeDialog1() {
     // Get the modal
     var modal = document.getElementById("overlay-content");
+    modal.style.display = "none";
+  }
+
+ closeDialog2() {
+    // Get the modal
+    var modal = document.getElementById("overlay-content-2");
     modal.style.display = "none";
   }
 
@@ -262,7 +290,16 @@ getJSDateTime(mysqlDateTime)
              >
                Accept Job Requests!
              </button>
-           </div>
+
+                         <button
+                            className="btn btn-sm btn-danger"
+                            onClick={this.declineJobs}
+                          >
+                            Decline Job Requests!
+                          </button>
+                              </div>
+
+
            <br />
            <div>
            </div>
@@ -274,10 +311,22 @@ getJSDateTime(mysqlDateTime)
    <div id="overlay-content" className="overlay-content popup-doer-app">
    <p>Accepted Jobs! Goodluck!</p><br/>
    <p></p>
-       <button className="close-btn-doer-app" onClick={this.closeDialog}>Close</button>
+       <button className="close-btn-doer-app" onClick={this.closeDialog1}>Close</button>
    </div>
     </div>
+
+     <div className="overlay-bg">
+
+       <div id="overlay-content-2" className="overlay-content popup-doer-app">
+       <p>Declined Jobs Check back soon for more jobs!</p><br/>
+       <p></p>
+           <button className="close-btn-doer-app" onClick={this.closeDialog2}>Close</button>
+           <button className="close-btn-doer-app" onClick={this.closeDialog2}>Close</button>
+       </div>
+        </div>
+
    </div>
-       );
+
+    ); // end return
   }
 }

@@ -113,3 +113,27 @@ tbody td {
 .close-btn-doer-app:hover {
     background: #93CFFF;
 }
+
+    .container-1 {
+      border: 1px solid black;
+      height: 75px;
+      position: relative;
+    }
+
+    .container-2 {
+      border: 1px solid black;
+      height: 200px;
+      position: relative;
+    }
+
+    .button-1 {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .button-2 {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }

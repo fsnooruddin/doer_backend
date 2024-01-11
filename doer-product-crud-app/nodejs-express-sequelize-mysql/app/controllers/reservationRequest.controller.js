@@ -125,6 +125,52 @@ exports.updateScheduleRequests = (req, res) => {
 
 };
 
+
+exports.declineReservationRequests = (req, res) => {
+
+    console.log(req.body.reservations);
+    const reservations = req.body.reservations;
+    const doerId = req.body.doerId;
+
+
+    let errFlag = false;
+    for(let i=0;i<reservations.length;i++) {
+
+                   // Save Tutorial in the database
+                    ReservationRequest.update(
+                        {state: 5}, {
+                        where:
+                            {
+                                id : reservations[i].id
+                             }
+                       })
+                      .then(data => {
+                       console.log("updatedreservation request");
+                       console.log(data);
+                      })
+                      .catch(err => {
+                        console.log("failed to update reservation request");
+                        errFlag = true;
+                        if(err.message) {
+                            console.log(err.message);
+                        }
+                      });
+
+
+    }
+    console.log("Update reservations. ");
+
+
+    if(errFlag) {
+        res.status(500).send({
+            message: "500 from updateScheduleRequests"
+          });
+        } else {
+          res.status(200).send();
+    }
+
+};
+
 // Retrieve all Tutorials from the database
 // or only those whose title  matches
 exports.findAll = (req, res) => {
