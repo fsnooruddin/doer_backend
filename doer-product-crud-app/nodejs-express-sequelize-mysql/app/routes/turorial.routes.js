@@ -10,8 +10,8 @@ module.exports = app => {
   // Retrieve all Tutorials
   router.get("/", tutorials.findAllByDescription);
 
-  // Retrieve all published Tutorials
-  router.get("/published", tutorials.findAllPublished);
+ // Retrieve all Tutorials
+  router.get("/management", tutorials.findAllByDescription);
 
   router.get("/getAllReservationsRequests", reservationRequests.findAll);
 
