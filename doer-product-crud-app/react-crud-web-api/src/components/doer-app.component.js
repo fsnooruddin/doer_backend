@@ -317,10 +317,9 @@ getJSDateTime(mysqlDateTime)
 
      <div className="overlay-bg">
 
-       <div id="overlay-content-2" className="overlay-content popup-doer-app">
-       <p>Declined Jobs Check back soon for more jobs!</p><br/>
-       <p></p>
-           <button className="close-btn-doer-app" onClick={this.closeDialog2}>Close</button>
+       <div id="overlay-content-2" className="overlay-content-2 popup-doer-app">
+       <p>Declined Jobs Check back soon for more jobs!</p>
+
            <button className="close-btn-doer-app" onClick={this.closeDialog2}>Close</button>
        </div>
         </div>
