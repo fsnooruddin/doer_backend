@@ -20,13 +20,8 @@ class App extends Component {
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
-              <Link to={"/add"} className="nav-link">
-                Add
-              </Link>
-            </li>
-            <li className="nav-item">
               <Link to={"/find"} className="nav-link">
-                Find
+                Find Doers
               </Link>
             </li>
            <li className="nav-item">
@@ -35,14 +30,16 @@ class App extends Component {
                 </Link>
             </li>
            <li className="nav-item">
-              <Link to={"/management"} className="nav-link">
-                Management
-              </Link>
-            </li>
-           <li className="nav-item">
-                <Link to={"/reservations"} className="nav-link">
-                  Reservation Requests
-                </Link>
+                <div class="dropdown">
+                  <Link to={"/management"} className="nav-link">
+                    Management
+                  </Link>
+                  <div class="dropdown-content">
+                       <a href="/reservations">Reservation Stats</a>
+                       <a href="/">Doer Stats</a>
+                       <a href="/add">Add Doers</a>
+                  </div>
+                </div>
             </li>
           </div>
         </nav>

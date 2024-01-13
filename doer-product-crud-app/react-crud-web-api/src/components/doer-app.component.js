@@ -10,7 +10,6 @@ export default class DoerApp extends Component {
     this.retrieveReservations = this.retrieveReservations.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.onChangeDoerLogin = this.onChangeDoerLogin.bind(this);
-    this.scheduleDoers = this.scheduleDoers.bind(this);
     this.acceptJobs = this.acceptJobs.bind(this);
     this.declineJobs = this.declineJobs.bind(this);
     this.processDoerLogin = this.processDoerLogin.bind(this);
@@ -81,23 +80,6 @@ onChangeDoerLogin(e) {
         currentReservations: []
       });
     }
-
-scheduleDoers() {
-
-   console.log(this.state.currentTutorials);
-   // alert("Sent Scheduling Requests!");
-    // Get the modal
-    var modal = document.getElementById("overlay-content");
-    modal.style.display = "block";
-
-    TutorialDataService.scheduleDoers(this.state.currentTutorials, this.state.searchAvailability);
-
-    var doers_list = document.getElementsByClassName("doersRow");
-    for(let i=0;i<doers_list.length;i++) {
-        doers_list[i].bgColor = "";
-        doers_list[i].childNodes[0].className = "cell-name-highlight";
-    }
-  }
 
   retrieveReservations() {
     console.log("In reservation-find.componennt.js retreiveReservations");

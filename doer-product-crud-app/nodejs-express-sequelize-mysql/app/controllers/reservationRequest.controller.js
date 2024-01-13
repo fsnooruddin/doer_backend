@@ -1,4 +1,5 @@
 const db = require("../models");
+const utils = require("../utils/Utils.js")
 const ReservationRequest = db.reservationRequests;
 const Op = db.Sequelize.Op;
 
@@ -43,17 +44,17 @@ exports.createScheduleRequests = (req, res) => {
     let errFlag = false;
     for(let i=0;i<tutorials.length;i++) {
 
-         // Create a Tutorial
+         // Create a reservation
           const reservationRequest = {
             tutorialId: tutorials[i].id,
             requested_time: searchRequest,
             requested_services: searchServices,
-            state: 1
+            state: utils.ReservationStates.Requested
           };
 
           console.log(reservationRequest);
 
-                   // Save Tutorial in the database
+                   // Save it in the database
                     ReservationRequest.create(reservationRequest)
                       .then(data => {
                        console.log("created new reservation request");
@@ -80,26 +81,27 @@ exports.createScheduleRequests = (req, res) => {
     }
 };
 
-exports.updateScheduleRequests = (req, res) => {
+exports.acceptReservationRequests = (req, res) => {
 
     console.log(req.body.reservations);
     const reservations = req.body.reservations;
     const doerId = req.body.doerId;
 
+    console.log(utils.ReservationStates.Accepted);
 
     let errFlag = false;
     for(let i=0;i<reservations.length;i++) {
 
                    // Save Tutorial in the database
                     ReservationRequest.update(
-                        {state: 3}, {
+                        {state: utils.ReservationStates.Accepted}, {
                         where:
                             {
                                 id : reservations[i].id
                              }
                        })
                       .then(data => {
-                       console.log("updatedreservation request");
+                       console.log("accepted reservation request");
                        console.log(data);
                       })
                       .catch(err => {

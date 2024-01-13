@@ -32,7 +32,7 @@ module.exports = app => {
 
   router.post("/createScheduleRequests", reservationRequests.createScheduleRequests);
 
-  router.post("/acceptReservationRequests", reservationRequests.updateScheduleRequests);
+  router.post("/acceptReservationRequests", reservationRequests.acceptReservationRequests);
 
   router.post("/declineReservationRequests", reservationRequests.declineReservationRequests);
 
