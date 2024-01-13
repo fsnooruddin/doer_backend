@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 export default class DoerApp extends Component {
   constructor(props) {
     super(props);
-    this.retrieveReservations = this.retrieveReservations.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.onChangeDoerLogin = this.onChangeDoerLogin.bind(this);
     this.acceptJobs = this.acceptJobs.bind(this);
@@ -17,12 +16,14 @@ export default class DoerApp extends Component {
     this.state = {
       loginName: "",
       doerId: "",
-      currentReservations: []
+      currentReservations: [],
+      reservationRequests: [],
+      loggedIn: false
     };
   }
 
   componentDidMount() {
-    this.retrieveReservations();
+    this.processDoerLogin();
   }
 
 onChangeDoerLogin(e) {
@@ -33,7 +34,10 @@ onChangeDoerLogin(e) {
   }
 
   refreshList() {
-    this.retrieveReservations();
+
+        this.processDoerLogin();
+
+
     this.setState({
       currentReservations: []
     });
@@ -81,24 +85,6 @@ onChangeDoerLogin(e) {
       });
     }
 
-  retrieveReservations() {
-    console.log("In reservation-find.componennt.js retreiveReservations");
-    console.log("this.state");
-    console.log(this.state);
-    TutorialDataService.getAllReservationsRequests()
-         .then(response => {
-            console.log("response from TutorialDataService.getAllReservationsRequests is");
-            console.log(response);
-            this.setState({
-              reservationRequests: response.data
-            });
-            console.log(response.data);
-          })
-          .catch(e => {
-            console.log(e);
-          });
-  }
-
  closeDialog1() {
     // Get the modal
     var modal = document.getElementById("overlay-content");
@@ -125,29 +111,6 @@ onChangeDoerLogin(e) {
     }
   }
 
-  timesMatch(reqSlotTime, slotTime) {
-
-    let retArray=slotTime.split("-");
-    let doerStartTime = parseInt(retArray[0]);
-    let doerCloseTime = parseInt(retArray[1]);
-    console.log("doer start time = " + doerStartTime);
-    console.log("doer end time = " + doerCloseTime);
-
-    retArray=reqSlotTime.split("-");
-    let reqStartTime = parseInt(retArray[0]);
-    let reqCloseTime = parseInt(retArray[1]);
-    console.log("req start time = " + reqStartTime);
-    console.log("req end time = " + reqCloseTime);
-
-	if(reqStartTime >= doerStartTime) {
-      console.log("start times match...");
-      if(reqCloseTime <= doerCloseTime) {
-     	 console.log("close times match...");
-      	 return true;
-      }
-    }
-    return false;
-  }
 
 filterResultsByDoerId(tutorials) {
     if(this.state.doerId == null) {
@@ -168,9 +131,17 @@ filterResultsByDoerId(tutorials) {
 }
 
 processDoerLogin() {
+
+
      this.setState({
 	 currentTutorials: [],
+	 reservationRequests: []
+
      });
+
+    if(this.state.doerId.length == 0) {
+        return;
+    }
 
      TutorialDataService.getAllReservationsRequests()
 	 .then(response => {
@@ -181,6 +152,10 @@ processDoerLogin() {
              this.setState({
 		        reservationRequests: filteredResponse
              });
+               this.setState({
+
+             	 loggedIn: true
+                  });
 	     console.log("in search availability ... filtered response");
 	     console.log(filteredResponse);
 	 })
@@ -240,6 +215,7 @@ getJSDateTime(mysqlDateTime)
              </div>
            </div>
 
+           { this.state.loggedIn ? (
            <div className="col-md-666">
              <h4>{"Job requests sent -- select the ones that you are interested in... "}</h4>
 
@@ -251,19 +227,18 @@ getJSDateTime(mysqlDateTime)
                  <td>Time Request</td>
                  <td>Request Sent At</td>
                </tr>
-               </thead>
-               <tbody>
-            {reservationRequests &&
-              reservationRequests.map((reservation, index) => (
-                <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
-                  <td className="cell-name-highlight">{reservation.doer_name} </td>
-                  <td className="cell-svcs-highlight">{reservation.requested_services} </td>
-                  <td className="cell-time-highlight">{reservation.requested_time}</td>
-                  <td className="cell-createtime-highlight">{this.getJSDateTime(reservation.createdAt)}</td>
-                </tr>
-
-              ))}
-               </tbody>
+             </thead>
+             <tbody>
+                    {reservationRequests &&
+                      reservationRequests.map((reservation, index) => (
+                        <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
+                          <td className="cell-name-highlight">{reservation.doer_name} </td>
+                          <td className="cell-svcs-highlight">{reservation.requested_services} </td>
+                          <td className="cell-time-highlight">{reservation.requested_time}</td>
+                          <td className="cell-createtime-highlight">{this.getJSDateTime(reservation.createdAt)}</td>
+                        </tr>
+                      ))}
+             </tbody>
              </table>
 
              <button
@@ -279,33 +254,23 @@ getJSDateTime(mysqlDateTime)
                           >
                             Decline Job Requests!
                           </button>
-                              </div>
-
-
-           <br />
-           <div>
-           </div>
-           <div className="col-md-6">
-           </div>
+         </div>) : (
+<div></div>
+         )}
 
    <div className="overlay-bg">
-
-   <div id="overlay-content" className="overlay-content popup-doer-app">
-   <p>Accepted Jobs! Goodluck!</p><br/>
-   <p></p>
-       <button className="close-btn-doer-app" onClick={this.closeDialog1}>Close</button>
-   </div>
+       <div id="overlay-content" className="overlay-content popup-doer-app">
+         <p>Accepted Jobs! Goodluck!</p><br/>
+         <button className="close-btn-doer-app" onClick={this.closeDialog1}>Close</button>
+       </div>
     </div>
 
      <div className="overlay-bg">
-
        <div id="overlay-content-2" className="overlay-content-2 popup-doer-app">
-       <p>Declined Jobs Check back soon for more jobs!</p>
-
-           <button className="close-btn-doer-app" onClick={this.closeDialog2}>Close</button>
-       </div>
+          <p>Declined Jobs Check back soon for more jobs!</p>
+          <button className="close-btn-doer-app" onClick={this.closeDialog2}>Close</button>
         </div>
-
+     </div>
    </div>
 
     ); // end return
