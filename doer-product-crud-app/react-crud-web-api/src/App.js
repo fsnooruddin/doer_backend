@@ -30,11 +30,11 @@ class App extends Component {
                 </Link>
             </li>
            <li className="nav-item">
-                <div class="dropdown">
+                <div className="dropdown">
                   <Link to={"/management"} className="nav-link">
                     Management
                   </Link>
-                  <div class="dropdown-content">
+                  <div className="dropdown-content">
                        <a href="/reservations">Reservation Stats</a>
                        <a href="/">Doer Stats</a>
                        <a href="/add">Add Doers</a>
