@@ -175,7 +175,13 @@ export default class TutorialsList extends Component {
                 </label>{" "}
                 {Math.floor(Math.random() * 99)}
               </div>
-
+              <div>
+                <label>
+                  <strong>Id:</strong>
+                </label>{" "}
+                {currentTutorial.id}
+              </div>
+// TO DO -- Add stats around jobs completed, declined, requested
               <Link
                 to={"/tutorials/" + currentTutorial.id}
                 className="badge badge-warning"
