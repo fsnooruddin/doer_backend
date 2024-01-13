@@ -77,7 +77,7 @@ scheduleDoers() {
    console.log(this.state.currentTutorials);
    // alert("Sent Scheduling Requests!");
     // Get the modal
-    var modal = document.getElementById("overlay-content");
+    var modal = document.getElementById("overlay-content-find-doers");
     modal.style.display = "block";
 
     TutorialDataService.scheduleDoers(this.state.currentTutorials, this.state.searchAvailability, this.state.searchServices);
@@ -96,7 +96,7 @@ scheduleDoers() {
 
  closeDialog() {
     // Get the modal
-    var modal = document.getElementById("overlay-content");
+    var modal = document.getElementById("overlay-content-find-doers");
     modal.style.display = "none";
   }
 
@@ -307,10 +307,10 @@ getActiveLabel(event, tutorial)
 
 <div className="overlay-bg">
 
-<div id="overlay-content" className="overlay-content popup1">
+<div id="overlay-content-find-doers" className="overlay-content-find-doers">
 <p>Your request has been sent to Doers! Sit tight, will confirm soon!</p><br/>
 <p></p>
-    <button className="close-btn" onClick={this.closeDialog}>Close</button>
+    <button className="close-btn-find-doers" onClick={this.closeDialog}>Close</button>
 </div>
  </div>
 </div>
