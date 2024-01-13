@@ -1,9 +1,6 @@
 
 module.exports = (sequelize, Sequelize) => {
   const ReservationRequest = sequelize.define("reservationRequest", {
-    request_date_time: {
-      type: Sequelize.STRING
-    },
     requested_services: {
       type: Sequelize.STRING
     },
@@ -11,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
           type: Sequelize.STRING
     },
     state: {
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING
     }
   } , {
     tableName: 'reservation_requests'
