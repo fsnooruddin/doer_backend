@@ -15,6 +15,9 @@ export default class DoerApp extends Component {
     this.completeJobs = this.completeJobs.bind(this);
     this.abandonJobs = this.abandonJobs.bind(this);
     this.processDoerLogin = this.processDoerLogin.bind(this);
+    this.getAcceptedJobsLabel = this.getAcceptedJobsLabel.bind(this);
+    this.renderAcceptedJobsTable = this.renderAcceptedJobsTable.bind(this);
+
 
     this.state = {
       loginName: "",
@@ -66,6 +69,20 @@ acceptJobs() {
 this.setState({
     currentReservations: []
   });
+}
+
+getAcceptedJobsLabel() {
+
+    return <h4>Accepted Job Requests ... remember to mark them completed when youre done!</h4>;
+}
+
+renderAcceptedJobsTable() {
+
+    if(this.state.acceptedReservationRequests.length > 0 ) {
+        return true;
+    }
+
+    return false;
 }
 
 declineJobs() {
@@ -309,9 +326,10 @@ getActiveLabel(event, tutorial)
                           </button>
          </div>
 
-
+         {this.renderAcceptedJobsTable() ? (
          <div className="col-md-666">
-                      <h4>{"Accepted Job Requests ... remember to mark them completed when you're done!"}</h4>
+                      {this.getAcceptedJobsLabel()}
+
 
                       <table className="doers-table">
                       <thead>
@@ -335,6 +353,7 @@ getActiveLabel(event, tutorial)
                       </tbody>
                       </table>
 
+
                       <button
                         className="m-3 btn btn-sm btn-info"
                         onClick={this.completeJobs}
@@ -342,14 +361,15 @@ getActiveLabel(event, tutorial)
                         Complete Job Requests!
                       </button>
 
-                                  <button
-                                     className="btn btn-sm btn-danger"
-                                     onClick={this.abandonJobs}
-                                   >
-                                     Abandon Job Requests!
-                                   </button>
-                  </div>
+                      <button
+                         className="btn btn-sm btn-danger"
+                         onClick={this.abandonJobs}
+                       >
+                         Abandon Job Requests!
+                       </button>
 
+                  </div>
+                    ) : (<div><span><h4>No accepted jobs.</h4></span></div>) }
                      </div>
          ) : (
 <div></div>
