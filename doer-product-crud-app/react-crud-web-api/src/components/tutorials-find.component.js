@@ -199,7 +199,7 @@ filterResultsByTime(tutorials) {
 	 currentTutorials: [],
      });
      
-     TutorialDataService.findByAvailability(this.state.searchAvailability, this.state.searchServices)
+     TutorialDataService.findByAvailabilityandServices(this.state.searchAvailability, this.state.searchServices)
 	 .then(response => {
 	 	     console.log("in search availability ... DB response response");
      	     console.log(response.data);

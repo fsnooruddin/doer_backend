@@ -1,5 +1,5 @@
 const db = require("../models");
-const utils = require("../utils/Utils.js")
+const utils = require("../utils/Utils.js");
 const ReservationRequest = db.reservationRequests;
 const Op = db.Sequelize.Op;
 
@@ -127,7 +127,6 @@ exports.acceptReservationRequests = (req, res) => {
 
 };
 
-
 exports.declineReservationRequests = (req, res) => {
 
     console.log(req.body.reservations);
@@ -137,35 +136,109 @@ exports.declineReservationRequests = (req, res) => {
 
     let errFlag = false;
     for(let i=0;i<reservations.length;i++) {
-
-                   // Save Tutorial in the database
-                    ReservationRequest.update(
-                        {state: 5}, {
-                        where:
-                            {
-                                id : reservations[i].id
-                             }
-                       })
-                      .then(data => {
-                       console.log("updatedreservation request");
-                       console.log(data);
-                      })
-                      .catch(err => {
-                        console.log("failed to update reservation request");
-                        errFlag = true;
-                        if(err.message) {
-                            console.log(err.message);
-                        }
-                      });
-
-
+            ReservationRequest.update(
+                {state: utils.ReservationStates.Decline}, {
+                where:
+                    {
+                        id : reservations[i].id
+                     }
+               })
+              .then(data => {
+               console.log("updatedreservation request");
+               console.log(data);
+              })
+              .catch(err => {
+                console.log("failed to update reservation request");
+                errFlag = true;
+                if(err.message) {
+                    console.log(err.message);
+                }
+              });
     }
-    console.log("Update reservations. ");
-
 
     if(errFlag) {
         res.status(500).send({
             message: "500 from updateScheduleRequests"
+          });
+        } else {
+          res.status(200).send();
+    }
+
+};
+
+exports.abandonReservationRequests = (req, res) => {
+
+    console.log("in console.log(req.body.reservations);");
+    console.log(req.body.reservations);
+    const reservations = req.body.reservations;
+    const doerId = req.body.doerId;
+
+
+    let errFlag = false;
+    for(let i=0;i<reservations.length;i++) {
+            ReservationRequest.update(
+                {state: utils.ReservationStates.Abandoned}, {
+                where:
+                    {
+                        id : reservations[i].id
+                     }
+               })
+              .then(data => {
+               console.log("abandonReservationRequests request done");
+               console.log(data);
+              })
+              .catch(err => {
+                console.log("failed to abandonReservationRequests request");
+                errFlag = true;
+                if(err.message) {
+                    console.log(err.message);
+                }
+              });
+    }
+
+    if(errFlag) {
+        res.status(500).send({
+            message: "500 from updateScheduleRequests"
+          });
+        } else {
+          res.status(200).send();
+    }
+
+};
+
+exports.completeReservationRequests = (req, res) => {
+
+    console.log("completeReservationRequests request");
+    console.log(req.body.reservations);
+    const reservations = req.body.reservations;
+    const doerId = req.body.doerId;
+
+
+    let errFlag = false;
+    for(let i=0;i<reservations.length;i++) {
+            ReservationRequest.update(
+                {state: utils.ReservationStates.Completed}, {
+                where:
+                    {
+                        id : reservations[i].id
+                     }
+               })
+              .then(data => {
+               console.log("completeReservationRequests request");
+               console.log(data);
+              })
+              .catch(err => {
+                console.log("failed to completeReservationRequests request");
+                errFlag = true;
+                if(err.message) {
+                    console.log(err.message);
+                }
+              });
+    }
+
+    if(errFlag) {
+        res.status(500).send({
+            message: "500 from completeReservationRequests"
           });
         } else {
           res.status(200).send();
@@ -191,6 +264,44 @@ exports.findAll = (req, res) => {
                 ]
             ]
         }
+    })
+    .then(data => {
+//    console.log("return data from get all reservation requests");
+ //   console.log(data);
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};
+
+// Retrieve all Tutorials from the database
+// or only those whose title  matches
+exports.findByDoerIdandState = (req, res) => {
+//  console.log("in reservation request findAll");
+  var condition =  null;
+  var doerId = req.query.doerId;
+  var state = req.query.state;
+
+  ReservationRequest.findAll({
+    attributes: {
+            include: [
+                [
+                    // Note the wrapping parentheses in the call below!
+                    db.sequelize.literal(`(
+                       SELECT title FROM tutorials WHERE tutorials.id = ReservationRequest.tutorialId
+                    )`),
+                    'doer_name'
+                ]
+            ]
+        },
+    where: {
+        tutorialId: doerId,
+        state: state
+    }
     })
     .then(data => {
 //    console.log("return data from get all reservation requests");

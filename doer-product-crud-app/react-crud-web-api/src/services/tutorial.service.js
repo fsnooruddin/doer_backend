@@ -29,7 +29,7 @@ class TutorialDataService {
     return http.get(`/tutorials?title=${title}`);
   }
 
-  findByAvailability(availability, services) {
+  findByAvailabilityandServices(availability, services) {
      return http.get(`/tutorials/find?availability=${availability}&services=${services}`);
   }
 
@@ -40,6 +40,11 @@ class TutorialDataService {
   getAllReservationsRequests() {
    return http.get(`/tutorials/getAllReservationsRequests`);
   }
+
+  getReservationsRequestsbyDoerIdandState(doerId, state) {
+     return http.get(`/tutorials/getReservationsRequests?doerId=${doerId}&state=${state}`);
+    }
+
 
   scheduleDoers(doers, searchAvailability, searchServices) {
     var data = {
@@ -61,6 +66,26 @@ class TutorialDataService {
     console.log(data);
     return http.post("/tutorials/acceptReservationRequests", data);
   }
+
+   abandonJobs(reservations, doerId) {
+      var data = {
+          "doers_requested": doerId,
+          "reservations": reservations
+      } ;
+      console.log("data in abandonJobs is:");
+      console.log(data);
+      return http.post("/tutorials/abandonReservationRequests", data);
+    }
+
+   completeJobs(reservations, doerId) {
+      var data = {
+          "doers_requested": doerId,
+          "reservations": reservations
+      } ;
+      console.log("data in completeJobs is:");
+      console.log(data);
+      return http.post("/tutorials/completeReservationRequests", data);
+    }
 
    declineJobs(reservations, doerId) {
       var data = {

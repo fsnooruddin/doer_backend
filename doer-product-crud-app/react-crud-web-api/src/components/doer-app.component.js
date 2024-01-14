@@ -3,6 +3,7 @@ import {Modal, Button} from 'react-bootstrap';
 import { useState } from 'react';
 import TutorialDataService from "../services/tutorial.service";
 import { Link } from "react-router-dom";
+const utils = require("../utils/Utils.js");
 
 export default class DoerApp extends Component {
   constructor(props) {
@@ -11,13 +12,16 @@ export default class DoerApp extends Component {
     this.onChangeDoerLogin = this.onChangeDoerLogin.bind(this);
     this.acceptJobs = this.acceptJobs.bind(this);
     this.declineJobs = this.declineJobs.bind(this);
+    this.completeJobs = this.completeJobs.bind(this);
+    this.abandonJobs = this.abandonJobs.bind(this);
     this.processDoerLogin = this.processDoerLogin.bind(this);
 
     this.state = {
       loginName: "",
       doerId: "",
       currentReservations: [],
-      reservationRequests: [],
+      sentReservationRequests: [],
+      acceptedReservationRequests: [],
       loggedIn: false
     };
   }
@@ -43,47 +47,90 @@ onChangeDoerLogin(e) {
     });
   }
 
-  acceptJobs() {
+acceptJobs() {
 
-     console.log(this.state.currentReservations);
-     // alert("Sent Scheduling Requests!");
-      // Get the modal
-      var modal = document.getElementById("overlay-content");
-      modal.style.display = "block";
+ console.log(this.state.currentReservations);
+ // alert("Sent Scheduling Requests!");
+  // Get the modal
+  var modal = document.getElementById("overlay-content");
+  modal.style.display = "block";
 
-      TutorialDataService.acceptJobs(this.state.currentReservations, this.state.doerID);
+  TutorialDataService.acceptJobs(this.state.currentReservations, this.state.doerID);
 
-      var doers_list = document.getElementsByClassName("doersRow");
-      for(let i=0;i<doers_list.length;i++) {
-          doers_list[i].bgColor = "";
-          doers_list[i].childNodes[0].className = "cell-name-highlight";
-      }
+  var doers_list = document.getElementsByClassName("doersRow");
+  for(let i=0;i<doers_list.length;i++) {
+      doers_list[i].bgColor = "";
+      doers_list[i].childNodes[0].className = "cell-name-highlight";
+  }
 
-    this.setState({
-        currentReservations: []
-      });
-    }
+this.setState({
+    currentReservations: []
+  });
+}
 
-    declineJobs() {
+declineJobs() {
 
-     console.log(this.state.currentReservations);
-     // alert("Sent Scheduling Requests!");
-      // Get the modal
-      var modal = document.getElementById("overlay-content-2");
-      modal.style.display = "block";
+ console.log(this.state.currentReservations);
+ // alert("Sent Scheduling Requests!");
+  // Get the modal
+  var modal = document.getElementById("overlay-content-complete-jobs");
+  modal.style.display = "block";
 
-      TutorialDataService.declineJobs(this.state.currentReservations, this.state.doerID);
+  TutorialDataService.declineJobs(this.state.currentReservations, this.state.doerID);
 
-      var doers_list = document.getElementsByClassName("doersRow");
-      for(let i=0;i<doers_list.length;i++) {
-          doers_list[i].bgColor = "";
-          doers_list[i].childNodes[0].className = "cell-name-highlight";
-      }
+  var doers_list = document.getElementsByClassName("doersRow");
+  for(let i=0;i<doers_list.length;i++) {
+      doers_list[i].bgColor = "";
+      doers_list[i].childNodes[0].className = "cell-name-highlight";
+  }
 
-    this.setState({
-        currentReservations: []
-      });
-    }
+this.setState({
+    currentReservations: []
+  });
+}
+
+abandonJobs() {
+
+ console.log(this.state.currentReservations);
+ // alert("Sent Scheduling Requests!");
+  // Get the modal
+  var modal = document.getElementById("overlay-content-abandon-jobs");
+  modal.style.display = "block";
+
+  TutorialDataService.abandonJobs(this.state.currentReservations, this.state.doerID);
+
+  var doers_list = document.getElementsByClassName("doersRow");
+  for(let i=0;i<doers_list.length;i++) {
+      doers_list[i].bgColor = "";
+      doers_list[i].childNodes[0].className = "cell-name-highlight";
+  }
+
+this.setState({
+    currentReservations: []
+  });
+}
+
+
+completeJobs() {
+
+ console.log(this.state.currentReservations);
+ // alert("Sent Scheduling Requests!");
+  // Get the modal
+  var modal = document.getElementById("overlay-content-complete-jobs");
+  modal.style.display = "block";
+
+  TutorialDataService.completeJobs(this.state.currentReservations, this.state.doerID);
+
+  var doers_list = document.getElementsByClassName("doersRow");
+  for(let i=0;i<doers_list.length;i++) {
+      doers_list[i].bgColor = "";
+      doers_list[i].childNodes[0].className = "cell-name-highlight";
+  }
+
+this.setState({
+    currentReservations: []
+  });
+}
 
  closeDialog1() {
     // Get the modal
@@ -97,18 +144,16 @@ onChangeDoerLogin(e) {
     modal.style.display = "none";
   }
 
-  getDayFromAvailability(availability) {
-    const retArray = availability.split(":");
-        return retArray[0];
+closeDialog3() {
+    // Get the modal
+    var modal = document.getElementById("overlay-content-complete-jobs");
+    modal.style.display = "none";
   }
 
-  getTimeFromAvailability(availability) {
-    const retArray = availability.split(":");
-    if(retArray[1] === undefined) {
-        return null;
-    } else {
-        return retArray[1];
-    }
+closeDialog4() {
+    // Get the modal
+    var modal = document.getElementById("overlay-content-abandon-jobs");
+    modal.style.display = "none";
   }
 
 
@@ -132,32 +177,44 @@ filterResultsByDoerId(tutorials) {
 
 processDoerLogin() {
 
-
      this.setState({
 	 currentTutorials: [],
-	 reservationRequests: []
-
+	 sentReservationRequests: [],
+     acceptedReservationRequests: []
      });
 
     if(this.state.doerId.length == 0) {
         return;
     }
 
-     TutorialDataService.getAllReservationsRequests()
+     TutorialDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "requested")
 	 .then(response => {
 	 	     console.log("in processDoerLogin ... DB response response");
      	     console.log(response.data);
 
-             const filteredResponse = this.filterResultsByDoerId(response.data);
-             this.setState({
-		        reservationRequests: filteredResponse
-             });
                this.setState({
-
+                sentReservationRequests: response.data,
              	 loggedIn: true
                   });
 	     console.log("in search availability ... filtered response");
-	     console.log(filteredResponse);
+	     console.log(response.data);
+	 })
+	 .catch(e => {
+             console.log(e);
+	 });
+
+     TutorialDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "accepted")
+	 .then(response => {
+	 	     console.log("in processDoerLogin ... DB response response");
+     	     console.log(response.data);
+
+             this.setState({
+		        acceptedReservationRequests: response.data,
+		         loggedIn: true
+             });
+
+	     console.log("in search availability ... filtered response");
+	     console.log(response.data);
 	 })
 	 .catch(e => {
              console.log(e);
@@ -178,15 +235,10 @@ getActiveLabel(event, tutorial)
   this.state.currentReservations.push(tutorial);
 }
 
-getJSDateTime(mysqlDateTime)
-{
- var t = mysqlDateTime.split("T");
- var r = t[1].split(".");
- return (t[0]+ " " + r[0]);
-}
+
 
   render() {
-    const { processDoerLogin, searchServices, reservationRequests } = this.state;
+    const { processDoerLogin, searchServices, sentReservationRequests, acceptedReservationRequests } = this.state;
 
     return (
          <div className="list row">
@@ -216,6 +268,7 @@ getJSDateTime(mysqlDateTime)
            </div>
 
            { this.state.loggedIn ? (
+           <div>
            <div className="col-md-666">
              <h4>{"Job requests sent -- select the ones that you are interested in... "}</h4>
 
@@ -229,13 +282,13 @@ getJSDateTime(mysqlDateTime)
                </tr>
              </thead>
              <tbody>
-                    {reservationRequests &&
-                      reservationRequests.map((reservation, index) => (
+                    {sentReservationRequests &&
+                      sentReservationRequests.map((reservation, index) => (
                         <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
                           <td className="cell-name-highlight">{reservation.doer_name} </td>
                           <td className="cell-svcs-highlight">{reservation.requested_services} </td>
                           <td className="cell-time-highlight">{reservation.requested_time}</td>
-                          <td className="cell-createtime-highlight">{this.getJSDateTime(reservation.createdAt)}</td>
+                          <td className="cell-createtime-highlight">{utils.getJSDateTime(reservation.createdAt)}</td>
                         </tr>
                       ))}
              </tbody>
@@ -254,7 +307,51 @@ getJSDateTime(mysqlDateTime)
                           >
                             Decline Job Requests!
                           </button>
-         </div>) : (
+         </div>
+
+
+         <div className="col-md-666">
+                      <h4>{"Accepted Job Requests ... remember to mark them completed when you're done!"}</h4>
+
+                      <table className="doers-table">
+                      <thead>
+                       <tr>
+                          <td>Name</td>
+                          <td>Services Requested</td>
+                          <td>Time Request</td>
+                          <td>Request Sent At</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                             {acceptedReservationRequests &&
+                               acceptedReservationRequests.map((reservation, index) => (
+                                 <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
+                                   <td className="cell-name-highlight">{reservation.doer_name} </td>
+                                   <td className="cell-svcs-highlight">{reservation.requested_services} </td>
+                                   <td className="cell-time-highlight">{reservation.requested_time}</td>
+                                   <td className="cell-createtime-highlight">{utils.getJSDateTime(reservation.createdAt)}</td>
+                                 </tr>
+                               ))}
+                      </tbody>
+                      </table>
+
+                      <button
+                        className="m-3 btn btn-sm btn-info"
+                        onClick={this.completeJobs}
+                      >
+                        Complete Job Requests!
+                      </button>
+
+                                  <button
+                                     className="btn btn-sm btn-danger"
+                                     onClick={this.abandonJobs}
+                                   >
+                                     Abandon Job Requests!
+                                   </button>
+                  </div>
+
+                     </div>
+         ) : (
 <div></div>
          )}
 
@@ -271,7 +368,22 @@ getJSDateTime(mysqlDateTime)
           <button className="close-btn-doer-app" onClick={this.closeDialog2}>Close</button>
         </div>
      </div>
-   </div>
+
+
+     <div className="overlay-bg">
+          <div id="overlay-content-complete-jobs" className="overlay-content popup-doer-app">
+            <p>Completed Jobs! Great Job!</p><br/>
+            <button className="close-btn-doer-app" onClick={this.closeDialog3}>Close</button>
+          </div>
+       </div>
+
+        <div className="overlay-bg">
+          <div id="overlay-content-abandon-jobs" className="overlay-content-2 popup-doer-app">
+             <p>Abandoned Jobs Check back soon for more jobs!</p>
+             <button className="close-btn-doer-app" onClick={this.closeDialog4}>Close</button>
+           </div>
+        </div>
+      </div>
 
     ); // end return
   }

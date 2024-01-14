@@ -15,6 +15,8 @@ module.exports = app => {
 
   router.get("/getAllReservationsRequests", reservationRequests.findAll);
 
+  router.get("/getReservationsRequests", reservationRequests.findByDoerIdandState);
+
   // Retrieve a
   router.get("/find", tutorials.findByAvailability);
 
@@ -35,6 +37,10 @@ module.exports = app => {
   router.post("/acceptReservationRequests", reservationRequests.acceptReservationRequests);
 
   router.post("/declineReservationRequests", reservationRequests.declineReservationRequests);
+
+  router.post("/abandonReservationRequests", reservationRequests.abandonReservationRequests);
+
+  router.post("/completeReservationRequests", reservationRequests.completeReservationRequests);
 
   app.use('/api/tutorials', router);
 };
