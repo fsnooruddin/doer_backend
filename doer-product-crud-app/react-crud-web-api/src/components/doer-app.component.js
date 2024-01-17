@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import {Modal, Button} from 'react-bootstrap';
 import { useState } from 'react';
-import TutorialDataService from "../services/tutorial.service";
 import { Link } from "react-router-dom";
+import DoerDataService from "../services/doer.service";
+
 const utils = require("../utils/Utils.js");
 
 export default class DoerApp extends Component {
@@ -58,7 +59,7 @@ acceptJobs() {
   var modal = document.getElementById("overlay-content");
   modal.style.display = "block";
 
-  TutorialDataService.acceptJobs(this.state.currentReservations, this.state.doerID);
+  DoerDataService.acceptJobs(this.state.currentReservations, this.state.doerID);
 
   var doers_list = document.getElementsByClassName("doersRow");
   for(let i=0;i<doers_list.length;i++) {
@@ -93,7 +94,7 @@ declineJobs() {
   var modal = document.getElementById("overlay-content-complete-jobs");
   modal.style.display = "block";
 
-  TutorialDataService.declineJobs(this.state.currentReservations, this.state.doerID);
+  DoerDataService.declineJobs(this.state.currentReservations, this.state.doerID);
 
   var doers_list = document.getElementsByClassName("doersRow");
   for(let i=0;i<doers_list.length;i++) {
@@ -114,7 +115,7 @@ abandonJobs() {
   var modal = document.getElementById("overlay-content-abandon-jobs");
   modal.style.display = "block";
 
-  TutorialDataService.abandonJobs(this.state.currentReservations, this.state.doerID);
+  DoerDataService.abandonJobs(this.state.currentReservations, this.state.doerID);
 
   var doers_list = document.getElementsByClassName("doersRow");
   for(let i=0;i<doers_list.length;i++) {
@@ -136,7 +137,7 @@ completeJobs() {
   var modal = document.getElementById("overlay-content-complete-jobs");
   modal.style.display = "block";
 
-  TutorialDataService.completeJobs(this.state.currentReservations, this.state.doerID);
+  DoerDataService.completeJobs(this.state.currentReservations, this.state.doerID);
 
   var doers_list = document.getElementsByClassName("doersRow");
   for(let i=0;i<doers_list.length;i++) {
@@ -174,28 +175,28 @@ closeDialog4() {
   }
 
 
-filterResultsByDoerId(tutorials) {
+filterResultsByDoerId(doers) {
     if(this.state.doerId == null) {
-        return tutorials;
+        return doers;
     }
 
-    const filteredTutorials = tutorials.filter(filterIdFunction, this);
+    const filteredDoers = doers.filter(filterIdFunction, this);
 
     function filterIdFunction(value, index, array) {
         console.log("...filtering...");
         console.log(value);
         //console.log(time);
         console.log(this.state);
-        return (this.state.doerId == value.tutorialId);
+        return (this.state.doerId == value.DoerId);
     }
 
-    return filteredTutorials;
+    return filteredDoers;
 }
 
 processDoerLogin() {
 
      this.setState({
-	 currentTutorials: [],
+	 currentDoers: [],
 	 sentReservationRequests: [],
      acceptedReservationRequests: []
      });
@@ -204,7 +205,7 @@ processDoerLogin() {
         return;
     }
 
-     TutorialDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "requested")
+     DoerDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "requested")
 	 .then(response => {
 	 	     console.log("in processDoerLogin ... DB response response");
      	     console.log(response.data);
@@ -220,7 +221,7 @@ processDoerLogin() {
              console.log(e);
 	 });
 
-     TutorialDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "accepted")
+     DoerDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "accepted")
 	 .then(response => {
 	 	     console.log("in processDoerLogin ... DB response response");
      	     console.log(response.data);
@@ -238,7 +239,7 @@ processDoerLogin() {
 	 });
 }
 
-getActiveLabel(event, tutorial)
+getActiveLabel(event, doer)
 {
   if(event.currentTarget.className == "doersRow") {
     if(event.currentTarget.bgColor == "aef2b3") {
@@ -249,7 +250,7 @@ getActiveLabel(event, tutorial)
         event.currentTarget.childNodes[0].className = "";
     }
   }
-  this.state.currentReservations.push(tutorial);
+  this.state.currentReservations.push(doer);
 }
 
 

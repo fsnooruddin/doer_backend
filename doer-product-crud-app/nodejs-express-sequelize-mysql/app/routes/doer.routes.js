@@ -1,36 +1,36 @@
 module.exports = app => {
-  const tutorials = require("../controllers/tutorial.controller.js");
+  const doers = require("../controllers/doer.controller.js");
   const reservationRequests = require("../controllers/reservationRequest.controller.js");
 
   var router = require("express").Router();
 
   // Create a new Tutorial
-  router.post("/", tutorials.create);
+  router.post("/", doers.create);
 
-  // Retrieve all Tutorials
-  router.get("/", tutorials.findAllByDescription);
+  // Retrieve all doers
+  router.get("/", doers.findAll);
 
- // Retrieve all Tutorials
-  router.get("/management", tutorials.findAllByDescription);
+ // Retrieve all doers
+  router.get("/management", doers.findByAvailability);
 
   router.get("/getAllReservationsRequests", reservationRequests.findAll);
 
   router.get("/getReservationsRequests", reservationRequests.findByDoerIdandState);
 
   // Retrieve a
-  router.get("/find", tutorials.findByAvailability);
+  router.get("/find", doers.findByAvailability);
 
-  // Retrieve a single Tutorial with id
-  router.get("/:id", tutorials.findOne);
+  // Retrieve a single Doer with id
+  router.get("/:id", doers.findOne);
 
-  // Update a Tutorial with id
-  router.put("/:id", tutorials.update);
+  // Update a Doer with id
+  router.put("/:id", doers.update);
 
-  // Delete a Tutorial with id
-  router.delete("/:id", tutorials.delete);
+  // Delete a Doer with id
+  router.delete("/:id", doers.delete);
 
-  // Delete all Tutorials
-  router.delete("/", tutorials.deleteAll);
+  // Delete all doers
+  router.delete("/", doers.deleteAll);
 
   router.post("/createScheduleRequests", reservationRequests.createScheduleRequests);
 
@@ -42,5 +42,5 @@ module.exports = app => {
 
   router.post("/completeReservationRequests", reservationRequests.completeReservationRequests);
 
-  app.use('/api/tutorials', router);
+  app.use('/api/doers', router);
 };

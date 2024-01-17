@@ -1,22 +1,22 @@
 import React, { Component } from "react";
-import TutorialDataService from "../services/tutorial.service";
+import DoerDataService from "../services/doer.service";
 import { withRouter } from '../common/with-router';
 
-class Tutorial extends Component {
+class Doer extends Component {
   constructor(props) {
     super(props);
-    this.onChangeTitle = this.onChangeTitle.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
-    this.getTutorial = this.getTutorial.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangeServices = this.onChangeServices.bind(this);
+    this.getDoer = this.getDoer.bind(this);
     this.updatePublished = this.updatePublished.bind(this);
-    this.updateTutorial = this.updateTutorial.bind(this);
-    this.deleteTutorial = this.deleteTutorial.bind(this);
+    this.updateDoer = this.updateDoer.bind(this);
+    this.deleteDoer = this.deleteDoer.bind(this);
 
     this.state = {
-      currentTutorial: {
+      currentDoer: {
         id: null,
-        title: "",
-        description: "",
+        Name: "",
+        Services: "",
         published: ""
       },
       message: ""
@@ -24,38 +24,38 @@ class Tutorial extends Component {
   }
 
   componentDidMount() {
-    this.getTutorial(this.props.router.params.id);
+    this.getDoer(this.props.router.params.id);
   }
 
-  onChangeTitle(e) {
-    const title = e.target.value;
+  onChangeName(e) {
+    const name = e.target.value;
 
     this.setState(function(prevState) {
       return {
-        currentTutorial: {
-          ...prevState.currentTutorial,
-          title: title
+        currentDoer: {
+          ...prevState.currentDoer,
+          name: name
         }
       };
     });
   }
 
-  onChangeDescription(e) {
-    const description = e.target.value;
-    
+  onChangeServices(e) {
+    const services = e.target.value;
+
     this.setState(prevState => ({
-      currentTutorial: {
-        ...prevState.currentTutorial,
-        description: description
+      currentDoer: {
+        ...prevState.currentDoer,
+        services: services
       }
     }));
   }
 
-  getTutorial(id) {
-    TutorialDataService.get(id)
+  getDoer(id) {
+    DoerDataService.get(id)
       .then(response => {
         this.setState({
-          currentTutorial: response.data
+          currentDoer: response.data
         });
         console.log(response.data);
       })
@@ -66,17 +66,17 @@ class Tutorial extends Component {
 
   updatePublished(status) {
     var data = {
-      id: this.state.currentTutorial.id,
-      title: this.state.currentTutorial.title,
-      description: this.state.currentTutorial.description,
+      id: this.state.currentDoer.id,
+      Name: this.state.currentDoer.Name,
+      Services: this.state.currentDoer.Services,
       published: status
     };
 
-    TutorialDataService.update(this.state.currentTutorial.id, data)
+    DoerDataService.update(this.state.currentDoer.id, data)
       .then(response => {
         this.setState(prevState => ({
-          currentTutorial: {
-            ...prevState.currentTutorial,
+          currentDoer: {
+            ...prevState.currentDoer,
             published: status
           }
         }));
@@ -87,15 +87,15 @@ class Tutorial extends Component {
       });
   }
 
-  updateTutorial() {
-    TutorialDataService.update(
-      this.state.currentTutorial.id,
-      this.state.currentTutorial
+  updateDoer() {
+    DoerDataService.update(
+      this.state.currentDoer.id,
+      this.state.currentDoer
     )
       .then(response => {
         console.log(response.data);
         this.setState({
-          message: "The tutorial was updated successfully!"
+          message: "The Doer was updated successfully!"
         });
       })
       .catch(e => {
@@ -103,11 +103,11 @@ class Tutorial extends Component {
       });
   }
 
-  deleteTutorial() {    
-    TutorialDataService.delete(this.state.currentTutorial.id)
+  deleteDoer() {
+    DoerDataService.delete(this.state.currentDoer.id)
       .then(response => {
         console.log(response.data);
-        this.props.router.navigate('/tutorials');
+        this.props.router.navigate('/Doers');
       })
       .catch(e => {
         console.log(e);
@@ -115,32 +115,32 @@ class Tutorial extends Component {
   }
 
   render() {
-    const { currentTutorial } = this.state;
+    const { currentDoer } = this.state;
 
     return (
       <div>
-        {currentTutorial ? (
+        {currentDoer ? (
           <div className="edit-form">
-            <h4>Tutorial</h4>
+            <h4>Doer</h4>
             <form>
               <div className="form-group">
-                <label htmlFor="title">Title</label>
+                <label htmlFor="Name">Name</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="title"
-                  value={currentTutorial.title}
-                  onChange={this.onChangeTitle}
+                  id="Name"
+                  value={currentDoer.Name}
+                  onChange={this.onChangeName}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="Services">Services</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="description"
-                  value={currentTutorial.description}
-                  onChange={this.onChangeDescription}
+                  id="Services"
+                  value={currentDoer.Services}
+                  onChange={this.onChangeServices}
                 />
               </div>
 
@@ -150,7 +150,7 @@ class Tutorial extends Component {
                   type="text"
                   className="form-control"
                   id="availability"
-                  value={currentTutorial.availability}
+                  value={currentDoer.availability}
                   onChange={this.onChangeAvailability}
                 />
               </div>
@@ -160,11 +160,11 @@ class Tutorial extends Component {
                 <label>
                   <strong>Status:</strong>
                 </label>
-                {currentTutorial.published ? "Published" : "Pending"}
+                {currentDoer.published ? "Published" : "Pending"}
               </div>
             </form>
 
-            {currentTutorial.published ? (
+            {currentDoer.published ? (
               <button
                 className="badge badge-primary mr-2"
                 onClick={() => this.updatePublished(false)}
@@ -182,7 +182,7 @@ class Tutorial extends Component {
 
             <button
               className="badge badge-danger mr-2"
-              onClick={this.deleteTutorial}
+              onClick={this.deleteDoer}
             >
               Delete
             </button>
@@ -190,7 +190,7 @@ class Tutorial extends Component {
             <button
               type="submit"
               className="badge badge-success"
-              onClick={this.updateTutorial}
+              onClick={this.updateDoer}
             >
               Update
             </button>
@@ -207,4 +207,4 @@ class Tutorial extends Component {
   }
 }
 
-export default withRouter(Tutorial);
+export default withRouter(Doer);

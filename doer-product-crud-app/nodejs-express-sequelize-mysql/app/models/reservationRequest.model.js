@@ -14,9 +14,9 @@ module.exports = (sequelize, Sequelize) => {
     tableName: 'reservation_requests'
   }
   );
-  tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
-  console.log(tutorials);
-  ReservationRequest.belongsTo(tutorials);
+  doers = require("./doer.model.js")(sequelize, Sequelize);
+
+  ReservationRequest.belongsTo(doers);
   return ReservationRequest;
 };
 

@@ -9,6 +9,22 @@ module.exports = {
       Abandoned: 'abandoned'
     },
 
+    getDayFromAvailability: function(availability)
+     {
+      const retArray = availability.split(":");
+      return retArray[0];
+    },
+
+    getTimeFromAvailability: function(availability)
+    {
+        const retArray = availability.split(":");
+        if(retArray[1] === undefined) {
+            return "";
+        } else {
+            return retArray[1];
+        }
+      },
+
     getJSDateTime: function(mysqlDateTime)
      {
       var t = mysqlDateTime.split("T");

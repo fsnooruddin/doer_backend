@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import TutorialDataService from "../services/tutorial.service";
+import DoerDataService from "../services/doer.service";
 
-export default class AddTutorial extends Component {
+export default class AddDoer extends Component {
   constructor(props) {
     super(props);
     this.onChangeTitle = this.onChangeTitle.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
     this.onChangeAvailability = this.onChangeAvailability.bind(this);
-    this.saveTutorial = this.saveTutorial.bind(this);
-    this.newTutorial = this.newTutorial.bind(this);
+    this.saveDoer = this.saveDoer.bind(this);
+    this.newDoer = this.newDoer.bind(this);
 
     this.state = {
       id: null,
@@ -39,7 +39,7 @@ export default class AddTutorial extends Component {
     });
   }
 
-  saveTutorial() {
+  saveDoer() {
     var data = {
       title: this.state.title,
       description: this.state.description,
@@ -47,7 +47,7 @@ export default class AddTutorial extends Component {
       published: this.state.published
     };
 
-    TutorialDataService.create(data)
+    DoerDataService.create(data)
       .then(response => {
         this.setState({
           id: response.data.id,
@@ -64,7 +64,7 @@ export default class AddTutorial extends Component {
       });
   }
 
-  newTutorial() {
+  newDoer() {
     this.setState({
       id: null,
       title: "",
@@ -82,7 +82,7 @@ export default class AddTutorial extends Component {
         {this.state.submitted ? (
           <div>
             <h4>You submitted successfully!</h4>
-            <button className="btn btn-success" onClick={this.newTutorial}>
+            <button className="btn btn-success" onClick={this.newDoer}>
               Add
             </button>
           </div>
@@ -127,7 +127,7 @@ export default class AddTutorial extends Component {
               />
             </div>
 
-            <button onClick={this.saveTutorial} className="btn btn-success">
+            <button onClick={this.saveDoer} className="btn btn-success">
               Submit
             </button>
           </div>

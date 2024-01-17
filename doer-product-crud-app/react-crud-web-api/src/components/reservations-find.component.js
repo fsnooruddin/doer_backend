@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {Modal, Button} from 'react-bootstrap';
 import { useState } from 'react';
-import TutorialDataService from "../services/tutorial.service";
+import DoerDataService from "../services/doer.service";
 import { Link } from "react-router-dom";
 
 export default class ReservationsFind extends Component {
@@ -45,20 +45,20 @@ export default class ReservationsFind extends Component {
   refreshList() {
     this.retrieveReservations();
     this.setState({
-      currentTutorials: [],
+      currentDoers: [],
       currentReservations: []
     });
   }
 
 scheduleDoers() {
 
-   console.log(this.state.currentTutorials);
+   console.log(this.state.currentDoers);
    // alert("Sent Scheduling Requests!");
     // Get the modal
     var modal = document.getElementById("overlay-content");
     modal.style.display = "block";
 
-    TutorialDataService.scheduleDoers(this.state.currentTutorials, this.state.searchAvailability);
+    DoerDataService.scheduleDoers(this.state.currentDoers, this.state.searchAvailability);
 
     var doers_list = document.getElementsByClassName("doersRow");
     for(let i=0;i<doers_list.length;i++) {
@@ -71,9 +71,9 @@ scheduleDoers() {
     console.log("In reservation-find.componennt.js retreiveReservations");
     console.log("this.state");
     console.log(this.state);
-    TutorialDataService.getAllReservationsRequests()
+    DoerDataService.getAllReservationsRequests()
          .then(response => {
-            console.log("response from TutorialDataService.getAllReservationsRequests is");
+            console.log("response from DoerDataService.getAllReservationsRequests is");
             console.log(response);
             this.setState({
               reservationRequests: response.data
@@ -172,7 +172,7 @@ filterResultsByTime(tutorials) {
         return tutorials;
     }
 
-    const filteredTutorials = tutorials.filter(filterTimeFunction, this);
+    const filteredDoers = tutorials.filter(filterTimeFunction, this);
 
     function filterTimeFunction(value, index, array) {
         console.log("...filtering...");
@@ -182,15 +182,15 @@ filterResultsByTime(tutorials) {
         return this.processTimeMatch(this.state.searchAvailability, value.availability);
     }
 
-    return filteredTutorials;
+    return filteredDoers;
 }
 
  searchAvailability() {
      this.setState({
-	 currentTutorials: [],
+	 currentDoers: [],
      });
 
-     TutorialDataService.findByAvailability(this.state.searchAvailability)
+     DoerDataService.findByAvailability(this.state.searchAvailability)
 	 .then(response => {
 	 	     console.log("in search availability ... DB response response");
      	     console.log(response.data);
@@ -218,7 +218,7 @@ getActiveLabel(event, tutorial)
         event.currentTarget.childNodes[0].className = "";
     }
   }
-  this.state.currentTutorials.push(tutorial);
+  this.state.currentDoers.push(tutorial);
 }
 
 getJSDateTime(mysqlDateTime)

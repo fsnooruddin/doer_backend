@@ -3,10 +3,10 @@ import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import AddTutorial from "./components/add-tutorial.component";
-import Tutorial from "./components/tutorial.component";
-import TutorialsList from "./components/tutorials-list.component";
-import TutorialsFind from "./components/tutorials-find.component";
+import AddDoer from "./components/add-doer.component";
+import Doer from "./components/doer.component";
+import DoersList from "./components/doers-list.component";
+import DoersFind from "./components/doers-find.component";
 import ReservationsFind from "./components/reservations-find.component";
 import DoerApp from "./components/doer-app.component";
 
@@ -46,12 +46,12 @@ class App extends Component {
 
         <div className="container mt-3">
           <Routes>
-            <Route path="/" element={<TutorialsList/>} />
-            <Route path="/management" element={<TutorialsList/>} />
-            <Route path="/add" element={<AddTutorial/>} />
-            <Route path="/find" element={<TutorialsFind/>} />
+            <Route path="/" element={<DoersList/>} />
+            <Route path="/management" element={<DoersList/>} />
+            <Route path="/add" element={<AddDoer/>} />
+            <Route path="/find" element={<DoersFind/>} />
             <Route path="/reservations" element={<ReservationsFind/>} />
-            <Route path="/tutorials/:id" element={<Tutorial/>} />
+            <Route path="/doers/:id" element={<Doer/>} />
             <Route path="/doerapp" element={<DoerApp/>} />
           </Routes>
         </div>

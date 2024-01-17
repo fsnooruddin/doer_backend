@@ -14,3 +14,10 @@ management
 
 - should we have a seperate table for reservations in each state?
 
+- android app ... instacart driver
+- web site / mobile app design
+- long term
+    - payments
+    - disbursements
+    - identity, license verification
+

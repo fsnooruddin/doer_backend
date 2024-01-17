@@ -11,6 +11,12 @@ module.exports = (sequelize, Sequelize) => {
     },
     rating: {
       type: Sequelize.INTEGER
+    },
+    phone: {
+      type: Sequelize.INTEGER
+    },
+    location: {
+       type: Sequelize.INTEGER
     }
   });
 

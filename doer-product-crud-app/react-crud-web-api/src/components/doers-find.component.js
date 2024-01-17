@@ -1,29 +1,29 @@
 import React, { Component } from "react";
 import {Modal, Button} from 'react-bootstrap';
 import { useState } from 'react';
-import TutorialDataService from "../services/tutorial.service";
+import DoerDataService from "../services/doer.service";
 import { Link } from "react-router-dom";
 
-export default class TutorialsFind extends Component {
+export default class DoersFind extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchAvailability = this.onChangeSearchAvailability.bind(this);
     this.onChangeSearchServices = this.onChangeSearchServices.bind(this);
-    this.retrieveTutorials = this.retrieveTutorials.bind(this);
+    this.retrieveDoers = this.retrieveDoers.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.scheduleDoers = this.scheduleDoers.bind(this);
     this.searchAvailability = this.searchAvailability.bind(this);
 
     this.state = {
-      tutorials: [],
-      currentTutorials: [],
+      Doers: [],
+      currentDoers: [],
       searchAvailability: "",
       searchServices: ""
     };
   }
 
   componentDidMount() {
-    this.retrieveTutorials();
+    this.retrieveDoers();
   }
 
   onChangeSearchAvailability(e) {
@@ -40,12 +40,12 @@ export default class TutorialsFind extends Component {
       });
     }
 
-  retrieveTutorials() {
+  retrieveDoers() {
 
-    TutorialDataService.getAll()
+    DoerDataService.getAll()
       .then(response => {
         this.setState({
-          tutorials: response.data
+          Doers: response.data
         });
         console.log(response.data);
       })
@@ -55,9 +55,9 @@ export default class TutorialsFind extends Component {
   }
 
   refreshList() {
-    this.retrieveTutorials();
+    this.retrieveDoers();
     this.setState({
-      currentTutorials: []
+      currentDoers: []
     });
   }
 
@@ -68,19 +68,19 @@ scheduleDoers() {
     return;
   }
 
-  if(this.state.currentTutorials.length == 0 ) {
+  if(this.state.currentDoers.length == 0 ) {
     alert("please select doers!");
     return;
   }
 
 
-   console.log(this.state.currentTutorials);
+   console.log(this.state.currentDoers);
    // alert("Sent Scheduling Requests!");
     // Get the modal
     var modal = document.getElementById("overlay-content-find-doers");
     modal.style.display = "block";
 
-    TutorialDataService.scheduleDoers(this.state.currentTutorials, this.state.searchAvailability, this.state.searchServices);
+    DoerDataService.scheduleDoers(this.state.currentDoers, this.state.searchAvailability, this.state.searchServices);
 
     var doers_list = document.getElementsByClassName("doersRow");
     for(let i=0;i<doers_list.length;i++) {
@@ -176,13 +176,13 @@ scheduleDoers() {
         return false;
     }
 
-filterResultsByTime(tutorials) {
+filterResultsByTime(Doers) {
     if(this.state.searchAvailability.length == 0) {
-        return tutorials;
+        return Doers;
     }
-    
-    const filteredTutorials = tutorials.filter(filterTimeFunction, this);
-    
+
+    const filteredDoers = Doers.filter(filterTimeFunction, this);
+
     function filterTimeFunction(value, index, array) {
         console.log("...filtering...");
         console.log(value);
@@ -191,22 +191,22 @@ filterResultsByTime(tutorials) {
         return this.processTimeMatch(this.state.searchAvailability, value.availability);
     }
 
-    return filteredTutorials;
+    return filteredDoers;
 }
 
  searchAvailability() {
      this.setState({
-	 currentTutorials: [],
+	 currentDoers: [],
      });
-     
-     TutorialDataService.findByAvailabilityandServices(this.state.searchAvailability, this.state.searchServices)
+
+     DoerDataService.findByAvailabilityandServices(this.state.searchAvailability, this.state.searchServices)
 	 .then(response => {
 	 	     console.log("in search availability ... DB response response");
      	     console.log(response.data);
 
              const filteredResponse = this.filterResultsByTime(response.data);
              this.setState({
-		        tutorials: filteredResponse
+		        Doers: filteredResponse
              });
 	     console.log("in search availability ... filtered response");
 	     console.log(filteredResponse);
@@ -216,7 +216,7 @@ filterResultsByTime(tutorials) {
 	 });
 }
 
-getActiveLabel(event, tutorial)
+getActiveLabel(event, Doer)
 {
   if(event.currentTarget.className == "doersRow") {
     if(event.currentTarget.bgColor == "aef2b3") {
@@ -227,11 +227,11 @@ getActiveLabel(event, tutorial)
         event.currentTarget.childNodes[0].className = "";
     }
   }
-  this.state.currentTutorials.push(tutorial);
+  this.state.currentDoers.push(Doer);
 }
 
   render() {
-    const { searchAvailability, searchServices, tutorials } = this.state;
+    const { searchAvailability, searchServices, Doers } = this.state;
 
     return (
       <div className="list row">
@@ -279,13 +279,13 @@ getActiveLabel(event, tutorial)
             </tr>
             </thead>
             <tbody>
-            {tutorials &&
-              tutorials.map((tutorial, index) => (
-                <tr className="doersRow" id={tutorial.title} onClick={(event) => this.getActiveLabel(event, tutorial)} key={index}>
-                  <td className="cell-name-highlight">{tutorial.title}</td>
+            {Doers &&
+              Doers.map((Doer, index) => (
+                <tr className="doersRow" id={Doer.title} onClick={(event) => this.getActiveLabel(event, Doer)} key={index}>
+                  <td className="cell-name-highlight">{Doer.name}</td>
 
-                  <td className="cell-description-highlight">{tutorial.description} </td>
-                  <td className="cell-availability-highlight"> {tutorial.availability} </td>
+                  <td className="cell-description-highlight">{Doer.services} </td>
+                  <td className="cell-availability-highlight"> {Doer.availability} </td>
                 </tr>
 
               ))}
