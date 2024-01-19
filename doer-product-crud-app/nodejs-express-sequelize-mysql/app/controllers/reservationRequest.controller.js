@@ -6,12 +6,6 @@ const Op = db.Sequelize.Op;
 // Create and Save
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
-    res.status(400).send({
-      message: "Content can not be empty!"
-    });
-    return;
-  }
 
   console.log("req in create reservation request is");
   console.log(req.body);
