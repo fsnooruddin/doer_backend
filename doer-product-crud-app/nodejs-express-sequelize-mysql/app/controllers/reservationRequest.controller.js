@@ -34,6 +34,7 @@ exports.create = (req, res) => {
 
 exports.createScheduleRequests = (req, res) => {
 
+    console.log(JSON.stringify(req.body.doers_requested));
     const doers = req.body.doers_requested;
     const searchRequest = req.body.searchAvailability;
     const searchServices = req.body.searchServices;
