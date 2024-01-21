@@ -5,18 +5,18 @@ import { Link } from "react-router-dom";
 export default class DoersList extends Component {
   constructor(props) {
     super(props);
-    this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
+    this.onChangeSearchName = this.onChangeSearchName.bind(this);
     this.retrieveDoers = this.retrieveDoers.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.setActiveDoer = this.setActiveDoer.bind(this);
     this.removeAllDoers = this.removeAllDoers.bind(this);
-    this.searchTitle = this.searchTitle.bind(this);
+    this.searchName = this.searchName.bind(this);
 
     this.state = {
       doers: [],
       currentDoer: null,
       currentIndex: -1,
-      searchTitle: ""
+      searchName: ""
     };
   }
 
@@ -24,11 +24,11 @@ export default class DoersList extends Component {
     this.retrieveDoers();
   }
 
-  onChangeSearchTitle(e) {
-    const searchTitle = e.target.value;
+  onChangeSearchName(e) {
+    const searchName = e.target.value;
 
     this.setState({
-      searchTitle: searchTitle
+      searchName: searchName
     });
   }
 
@@ -71,13 +71,13 @@ export default class DoersList extends Component {
       });
   }
 
-  searchTitle() {
+  searchName() {
     this.setState({
       currentDoer: null,
       currentIndex: -1
     });
 
-    DoerDataService.findByTitle(this.state.searchTitle)
+    DoerDataService.findByName(this.state.searchName)
       .then(response => {
         this.setState({
           doers: response.data
@@ -90,7 +90,7 @@ export default class DoersList extends Component {
   }
 
   render() {
-    const { searchTitle, doers, currentDoer, currentIndex } = this.state;
+    const { searchName, doers, currentDoer, currentIndex } = this.state;
 
     return (
       <div className="list row">
@@ -99,15 +99,15 @@ export default class DoersList extends Component {
             <input
               type="text"
               className="form-control"
-              placeholder="Search by Service / Speciality"
-              value={searchTitle}
-              onChange={this.onChangeSearchTitle}
+              placeholder="Search by Name"
+              value={searchName}
+              onChange={this.onChangeSearchName}
             />
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
                 type="button"
-                onClick={this.searchTitle}
+                onClick={this.searchName}
               >
                 Search
               </button>
@@ -173,8 +173,20 @@ export default class DoersList extends Component {
                 <label>
                   <strong>Rating:</strong>
                 </label>{" "}
-                {Math.floor(Math.random() * 99)}
+                {currentDoer.rating}
               </div>
+              <div>
+              <label>
+                <strong>Review Count:</strong>
+              </label>{" "}
+              {currentDoer.review_count}
+            </div>
+            <div>
+            <label>
+              <strong>Location:</strong>
+            </label>{" "}
+            {currentDoer.location}
+          </div>
               <div>
                 <label>
                   <strong>Id:</strong>

@@ -25,8 +25,12 @@ class DoerDataService {
     return http.delete(`/doers`);
   }
 
-  findByTitle(title) {
-    return http.get(`/doers?title=${title}`);
+  findByServices(services) {
+    return http.get(`/doers?services=${services}`);
+  }
+
+  findByName(name) {
+      return http.get(`/doers?name=${name}`);
   }
 
   findByAvailabilityandServices(availability, services) {

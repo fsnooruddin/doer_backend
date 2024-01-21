@@ -1,4 +1,5 @@
 const db = require("../models");
+const utils = require("../utils/Utils.js");
 const Doer = db.doers;
 const Op = db.Sequelize.Op;
 
@@ -46,20 +47,6 @@ exports.create = (req, res) => {
       });
     });
 };
-
- exports.getTimeFromAvailability = (availability) => {
-    const retArray = availability.split(":");
-    if(retArray[1] === undefined) {
-        return "";
-    } else {
-        return retArray[1];
-    }
-  };
-
-  exports.getDayFromAvailability = (availability) => {
-      const retArray = availability.split(":");
-      return retArray[0];
-  };
 
 exports.findByAvailability = (req, res) => {
   const availability = req.query.availability;
@@ -110,6 +97,26 @@ exports.findAllByServices = (req, res) => {
 // Retrieve all Doers from the database
 // or only those whose title  matches
 exports.findAll = (req, res) => {
+  const name = req.query.name;
+  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
+
+  Doer.findAll({ where: condition })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Doers."
+      });
+    });
+};
+
+// Retrieve all Doers from the database
+// or only those whose title  matches
+exports.find = (req, res) => {
+  console.log("query in find all is: " + JSON.stringify(req.query));
+  console.log(req.query.services);
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
