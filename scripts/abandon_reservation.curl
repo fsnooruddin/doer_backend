@@ -1,0 +1,2 @@
+curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "15","reservations": [{"id":"12"}]}' \http://localhost:8080/api/doers/abandonReservationRequests
+
