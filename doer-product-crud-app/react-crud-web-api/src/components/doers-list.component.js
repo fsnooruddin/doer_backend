@@ -187,12 +187,23 @@ export default class DoersList extends Component {
             </label>{" "}
             {currentDoer.location}
           </div>
-              <div>
-                <label>
-                  <strong>Id:</strong>
-                </label>{" "}
-                {currentDoer.id}
-              </div>
+           <div>
+            <label>
+              <strong>Phone Number:</strong>
+            </label>{" "}
+            {currentDoer.phone_number}
+          </div>
+           <div>
+            <img
+              src={currentDoer.img_url} width="100" height="100"
+            />{" "}
+          </div>
+                   <div>
+                      <label>
+                        <strong>Id:</strong>
+                      </label>{" "}
+                      {currentDoer.id}
+                    </div>
 // TO DO -- Add stats around jobs completed, declined, requested
               <Link
                 to={"/Doers/" + currentDoer.id}
