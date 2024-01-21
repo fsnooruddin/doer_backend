@@ -5,6 +5,7 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
 
+  console.log("req body in create doer: ");
   console.log(req.body);
 
   // Validate request
@@ -23,9 +24,15 @@ exports.create = (req, res) => {
     services: req.body.services,
     availability: req.body.availability,
     rating: req.body.rating,
-    phone: req.body.phone,
+    review_count: req.body.review_count,
+    img_url: req.body.img_url,
+    phone_number: req.body.phone_number,
     location: req.body.location
   };
+
+  console.log("new doer in create doer: ");
+  console.log(doer);
+
 
   // Save Doer in the database
   Doer.create(doer)

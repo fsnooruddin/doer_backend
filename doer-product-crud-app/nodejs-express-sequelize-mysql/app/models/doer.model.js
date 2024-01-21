@@ -12,11 +12,17 @@ module.exports = (sequelize, Sequelize) => {
     rating: {
       type: Sequelize.INTEGER
     },
-    phone: {
+    review_count: {
       type: Sequelize.INTEGER
     },
+    phone_number: {
+      type: Sequelize.STRING
+    },
     location: {
-       type: Sequelize.INTEGER
+       type: Sequelize.STRING
+    },
+    img_url: {
+      type: Sequelize.STRING
     }
   });
 
