@@ -91,7 +91,7 @@ declineJobs() {
  console.log(this.state.currentReservations);
  // alert("Sent Scheduling Requests!");
   // Get the modal
-  var modal = document.getElementById("overlay-content-complete-jobs");
+  var modal = document.getElementById("overlay-content-declined-jobs");
   modal.style.display = "block";
 
   DoerDataService.declineJobs(this.state.currentReservations, this.state.doerID);
@@ -174,6 +174,11 @@ closeDialog4() {
     modal.style.display = "none";
   }
 
+closeDialog5() {
+    // Get the modal
+    var modal = document.getElementById("overlay-content-declined-jobs");
+    modal.style.display = "none";
+  }
 
 filterResultsByDoerId(doers) {
     if(this.state.doerId == null) {
@@ -397,6 +402,14 @@ getActiveLabel(event, doer)
             <button className="close-btn-doer-app" onClick={this.closeDialog3}>Close</button>
           </div>
        </div>
+
+     <div className="overlay-bg">
+          <div id="overlay-content-declined-jobs" className="overlay-content popup-doer-app">
+            <p>Declined Jobs! Keep your eye open for new jobs!</p><br/>
+            <button className="close-btn-doer-app" onClick={this.closeDialog5}>Close</button>
+          </div>
+       </div>
+
 
         <div className="overlay-bg">
           <div id="overlay-content-abandon-jobs" className="overlay-content-2 popup-doer-app">
