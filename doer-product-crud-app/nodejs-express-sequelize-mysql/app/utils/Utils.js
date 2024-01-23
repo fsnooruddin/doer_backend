@@ -6,7 +6,8 @@ module.exports = {
       Accepted: 'accepted',
       Declined: 'declined',
       Completed: 'completed',
-      Abandoned: 'abandoned'
+      Abandoned: 'abandoned',
+      Recalled: 'recalled'
     },
 
     getDayFromAvailability: function(availability)
