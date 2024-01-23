@@ -80,6 +80,60 @@ exports.createScheduleRequests = (req, res) => {
     }
 };
 
+exports.getReservationRequestCounts = (req, res) => {
+
+    console.log(req);
+    console.log(req.query.doerId);
+    var dId = null;
+    if (typeof req.query.doerId === "undefined") {
+        dId = null;
+    } else {
+        dId = req.query.doerId;
+    }
+    const status = req.query.status;
+
+    if(dId === null) {
+    ReservationRequest.count({
+      where: {
+        [Op.and]: [
+          { state: status }
+        ]
+      }
+    })
+    .then(data => {
+       console.log("got reservation count");
+       console.log(data);
+      })
+      .catch(err => {
+        console.log("failed to get reservation request");
+        errFlag = true;
+        if(err.message) {
+            console.log(err.message);
+        }
+      });
+      } else {
+          ReservationRequest.count({
+            where: {
+              [Op.and]: [
+                { doerId: dId },
+                { state: status }
+              ]
+            }
+          })
+          .then(data => {
+             console.log("got reservation count");
+             console.log(data);
+            })
+            .catch(err => {
+              console.log("failed to get reservation request");
+              errFlag = true;
+              if(err.message) {
+                  console.log(err.message);
+              }
+            });
+      }
+};
+
 exports.acceptReservationRequests = (req, res) => {
 
     console.log(req.body.reservations);
