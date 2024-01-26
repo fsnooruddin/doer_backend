@@ -241,6 +241,7 @@ getJSDateTime(mysqlDateTime)
               <td>Services Requested</td>
               <td>Time Requested</td>
               <td>Time Request Sent to Doer</td>
+              <td>Status</td>
             </tr>
             </thead>
             <tbody>
@@ -249,8 +250,9 @@ getJSDateTime(mysqlDateTime)
                 <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
                   <td className="cell-name-highlight">{reservation.doer_name} </td>
                   <td className="cell-svcs-highlight">{reservation.requested_services} </td>
-                  <td className="cell-time-highlight">{reservation.requested_time}</td>
+                  <td className="cell-timerequested-highlight">{reservation.requested_time}</td>
                   <td className="cell-createtime-highlight">{this.getJSDateTime(reservation.createdAt)}</td>
+                  <td className="cell-status-highlight">{reservation.state}</td>
                 </tr>
 
               ))}

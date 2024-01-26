@@ -21,7 +21,7 @@ thead td {
 }
 
 .cell-createtime-highlight {
-    background-color: CornSilk;
+  
 }
 
 .cell-description-highlight {
@@ -32,6 +32,13 @@ thead td {
 
 }
 
+.cell-status-highlight {
+    background-color: CornSilk;
+}
+
+.cell-timerequested-highlight {
+    background-color: CornSilk;
+}
 
 .cell-name-highlight {
   background-color: PeachPuff;
