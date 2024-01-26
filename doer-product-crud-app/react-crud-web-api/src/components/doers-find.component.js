@@ -11,6 +11,7 @@ export default class DoersFind extends Component {
     this.onChangeSearchServices = this.onChangeSearchServices.bind(this);
     this.retrieveDoers = this.retrieveDoers.bind(this);
     this.refreshList = this.refreshList.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
     this.scheduleDoers = this.scheduleDoers.bind(this);
     this.searchAvailability = this.searchAvailability.bind(this);
 
@@ -57,19 +58,31 @@ export default class DoersFind extends Component {
   refreshList() {
     this.retrieveDoers();
     this.setState({
-      currentDoers: []
+      currentDoers: [],
+      searchAvailability: "",
+      searchServices: ""
     });
   }
 
 scheduleDoers() {
 
   if(this.state.searchAvailability.length == 0 && this.state.searchServices.length == 0) {
-    alert("please select services and timeslot");
+      var modal = document.getElementById("overlay-content-find-doers-input-validation");
+        modal.style.display = "block";
+           window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
     return;
   }
 
   if(this.state.currentDoers.length == 0 ) {
-    alert("please select doers!");
+       var modal = document.getElementById("overlay-content-find-doers-select-doers");
+           modal.style.display = "block";
+              window.scrollTo({
+                   top: 0,
+                   behavior: 'smooth'
+                 });
     return;
   }
 
@@ -98,6 +111,22 @@ scheduleDoers() {
     // Get the modal
     var modal = document.getElementById("overlay-content-find-doers");
     modal.style.display = "none";
+
+    this.refreshList();
+  }
+
+closeDialogInputValidation() {
+    // Get the modal
+    var modal = document.getElementById("overlay-content-find-doers-input-validation");
+    modal.style.display = "none";
+
+  }
+
+closeDialogInputValidationSelectDoers() {
+    // Get the modal
+    var modal = document.getElementById("overlay-content-find-doers-select-doers");
+    modal.style.display = "none";
+
   }
 
   getDayFromAvailability(availability) {
@@ -313,6 +342,25 @@ getActiveLabel(event, Doer)
     <button className="close-btn-find-doers" onClick={this.closeDialog}>Close</button>
 </div>
  </div>
+
+ <div className="overlay-bg">
+
+ <div id="overlay-content-find-doers-input-validation" className="overlay-content-find-doers-input-validation">
+ <p>Please select what services you need AND when you need them...thanks!</p><br/>
+ <p></p>
+     <button className="close-btn-find-doers-input-validation" onClick={this.closeDialogInputValidation}>Close</button>
+ </div>
+  </div>
+
+<div className="overlay-bg">
+
+ <div id="overlay-content-find-doers-select-doers" className="overlay-content-find-doers-select-doers">
+ <p>Please select some doers...thanks!</p><br/>
+ <p></p>
+     <button className="close-btn-find-doers-select-doers" onClick={this.closeDialogInputValidationSelectDoers}>Close</button>
+ </div>
+  </div>
+
 </div>
     );
   }
