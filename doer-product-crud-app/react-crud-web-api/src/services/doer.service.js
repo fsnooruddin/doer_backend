@@ -100,6 +100,10 @@ class DoerDataService {
       console.log(data);
       return http.post("/doers/declineReservationRequests", data);
     }
+
+    getReservationRequestStats(doerId, jobStatus) {
+       return http.get(`/doers/getReservationRequestCounts?doerId=${doerId}&status=${jobStatus}`);
+    }
 }
 
 export default new DoerDataService();
