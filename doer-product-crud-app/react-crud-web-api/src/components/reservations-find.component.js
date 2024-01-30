@@ -116,6 +116,8 @@ filterResultsByTime(tutorials) {
 	 currentDoers: [],
      });
 
+    alert("In search availability reservations-find component");
+
      DoerDataService.findByAvailability(this.state.searchAvailability)
 	 .then(response => {
 	 	     console.log("in search availability ... DB response response");

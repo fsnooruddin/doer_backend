@@ -126,9 +126,6 @@ exports.acceptReservationRequests = (req, res) => {
 
    console.log(req.body.reservations);
    const reservations = req.body.reservations;
-   const doerId = req.body.doerId;
-
-   console.log(utils.ReservationStates.Accepted);
 
    let errFlag = false;
    for (let i = 0; i < reservations.length; i++) {
@@ -148,7 +145,7 @@ exports.acceptReservationRequests = (req, res) => {
             Doer.increment('accepted_reservations_count', {
                by: 1,
                where: {
-                  id: doerId
+                  id: reservations[i].doerId
                }
             });
          })
