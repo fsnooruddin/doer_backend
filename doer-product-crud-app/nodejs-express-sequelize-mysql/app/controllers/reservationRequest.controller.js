@@ -80,6 +80,40 @@ exports.createScheduleRequests = (req, res) => {
     }
 };
 
+exports.updateCounts = (doerId, state) => {
+
+    switch(state) {
+        case utils.ReservationRequests.Accepted:
+                      Doer.increment('accepted_reservations_count',
+                            {by: 1, where:
+                                {id : reservations[i].doerId}
+                          });
+                          break;
+          case utils.ReservationRequests.Declined:
+                                Doer.increment('declined_reservations_count',
+                                      {by: 1, where:
+                                          {id : reservations[i].doerId}
+                                    });
+                                    break;
+          case utils.ReservationRequests.Completed:
+                              Doer.increment('completed_reservations_count',
+                                    {by: 1, where:
+                                        {id : reservations[i].doerId}
+                                  });
+                                  break;
+          case utils.ReservationRequests.Abandoned:
+                                Doer.increment('abandoned_reservations_count',
+                                      {by: 1, where:
+                                          {id : reservations[i].doerId}
+                                    });
+                                    break;
+          default:
+            console.log("unknown state in update counts " + state);
+            break;
+    }
+
+};
+
 exports.acceptReservationRequests = (req, res) => {
 
     console.log(req.body.reservations);
@@ -105,7 +139,7 @@ exports.acceptReservationRequests = (req, res) => {
 
                  Doer.increment('accepted_reservations_count',
                     {by: 1, where:
-                        {id : reservations[i].doerId}
+                        {id : doerId}
                   });
             })
             .catch(err => {
@@ -133,7 +167,7 @@ exports.acceptReservationRequests = (req, res) => {
 
 exports.declineReservationRequests = (req, res) => {
 
-    console.log(req.body.reservations);
+    console.log("in decline reservation requests" + req.body.reservations);
     const reservations = req.body.reservations;
     const doerId = req.body.doerId;
 
@@ -141,7 +175,7 @@ exports.declineReservationRequests = (req, res) => {
     let errFlag = false;
     for (let i = 0; i < reservations.length; i++) {
         ReservationRequest.update({
-                state: utils.ReservationStates.Decline
+                state: utils.ReservationStates.Declined
             }, {
                 where: {
                     id: reservations[i].id
@@ -152,7 +186,7 @@ exports.declineReservationRequests = (req, res) => {
                 console.log(data);
                 Doer.increment('declined_reservations_count',
                                     {by: 1, where:
-                                        {id : reservations[i].doerId}
+                                        {id : doerId}
                                   });
             })
             .catch(err => {
@@ -196,7 +230,7 @@ exports.abandonReservationRequests = (req, res) => {
                 console.log(data);
                 Doer.increment('abandoned_reservations_count',
                                     {by: 1, where:
-                                        {id : reservations[i].doerId}
+                                        {id : doerId}
                                   });
             })
             .catch(err => {
@@ -240,7 +274,7 @@ exports.completeReservationRequests = (req, res) => {
                 console.log(data);
                     Doer.increment('completed_reservations_count',
                                                     {by: 1, where:
-                                                        {id : reservations[i].doerId}
+                                                        {id : doerId}
                                                   });
             })
             .catch(err => {
