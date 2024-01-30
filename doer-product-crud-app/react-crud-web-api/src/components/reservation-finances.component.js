@@ -214,23 +214,23 @@ getJSDateTime(mysqlDateTime)
 
            <tr>
                   <td className="cell-name-highlight">Total Amount Spent on Jobs:</td>
-                  <td className="cell-svcs-highlight">jj </td>
+                  <td className="cell-svcs-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
 
-                  <td className="cell-status-highlight">jj</td>
+                  <td className="cell-status-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
                 </tr>
 
            <tr>
                   <td className="cell-name-highlight">Amount Sent to Doers:</td>
-                  <td className="cell-svcs-highlight">jj </td>
+                  <td className="cell-svcs-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
 
-                  <td className="cell-status-highlight">jj</td>
+                  <td className="cell-status-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
                 </tr>
 
            <tr>
                   <td className="cell-name-highlight">Average Revenue per Job:</td>
-                  <td className="cell-svcs-highlight">jj </td>
+                  <td className="cell-svcs-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
 
-                  <td className="cell-status-highlight">jj</td>
+                  <td className="cell-status-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
                 </tr>
           </table>
         </div>
@@ -244,6 +244,7 @@ getJSDateTime(mysqlDateTime)
          <div className="finance-table">
           <table className="finance-summary-table">
 
+           <tbody>
             <tr>
                   <td className="cell-name-highlight"></td>
                   <th className="cell-svcs-highlight">This Month</th>
@@ -255,24 +256,25 @@ getJSDateTime(mysqlDateTime)
 
            <tr>
                   <td className="cell-name-highlight">Top Earning Doer:</td>
-                  <td className="cell-svcs-highlight">jj </td>
+                  <td className="cell-svcs-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
 
-                  <td className="cell-status-highlight">jj</td>
+                  <td className="cell-status-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
                 </tr>
 
            <tr>
                   <td className="cell-name-highlight">Highest per hour rate:</td>
-                  <td className="cell-svcs-highlight">jj </td>
+                  <td className="cell-svcs-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
 
-                  <td className="cell-status-highlight">jj</td>
+                  <td className="cell-status-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
                 </tr>
 
            <tr>
                   <td className="cell-name-highlight">Longest Job:</td>
-                  <td className="cell-svcs-highlight">jj </td>
+                  <td className="cell-svcs-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
 
-                  <td className="cell-status-highlight">jj</td>
+                  <td className="cell-status-highlight">{"$" + (Math.random()*100000).toFixed(2)}</td>
                 </tr>
+            </tbody>
           </table>
         </div>
         </div>
