@@ -246,9 +246,12 @@ export default class DoersList extends Component {
                   <td>Abandonded</td>
                   <td>{currentDoer.abandoned_reservations_count}</td>
                 </tr>
-                <tr>
+                           <tr>
                                   <td>Declined</td>
+                                  <td>{currentDoer.declined_reservations_count}</td>
                                 </tr>
+
+
               </tbody>
 
             </table>
