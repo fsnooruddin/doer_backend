@@ -26,15 +26,9 @@ class App extends Component {
               </Link>
             </li>
            <li className="nav-item">
-            <div className="dropdown">
                 <Link to={"/doerapp"} className="nav-link">
                   Doer App
                 </Link>
-                <div className="dropdown-content">
-                     <a href="/reservations">Job Requests</a>
-                     <a href="/finances">Jobs Summary</a>
-                </div>
-             </div>
             </li>
            <li className="nav-item">
                 <div className="dropdown">
