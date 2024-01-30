@@ -26,6 +26,7 @@ export default class DoerApp extends Component {
       currentReservations: [],
       sentReservationRequests: [],
       acceptedReservationRequests: [],
+      currentDoer: null,
       loggedIn: false
     };
   }
@@ -219,8 +220,6 @@ processDoerLogin() {
                 sentReservationRequests: response.data,
              	 loggedIn: true
                   });
-	     console.log("in search availability ... filtered response");
-	     console.log(response.data);
 	 })
 	 .catch(e => {
              console.log(e);
@@ -235,13 +234,24 @@ processDoerLogin() {
 		        acceptedReservationRequests: response.data,
 		         loggedIn: true
              });
-
-	     console.log("in search availability ... filtered response");
-	     console.log(response.data);
 	 })
 	 .catch(e => {
              console.log(e);
 	 });
+
+	 DoerDataService.get(this.state.doerId)
+	  .then(response => {
+     	 	     console.log("in processDoerLogin ... DB response response");
+          	     console.log(response.data);
+
+                  this.setState({
+     		        currentDoer: response.data
+                  });
+     	 })
+     	 .catch(e => {
+                  console.log(e);
+     	 });
+
 }
 
 getActiveLabel(event, doer)
@@ -261,7 +271,7 @@ getActiveLabel(event, doer)
 
 
   render() {
-    const { processDoerLogin, searchServices, sentReservationRequests, acceptedReservationRequests } = this.state;
+    const { processDoerLogin, searchServices, sentReservationRequests, acceptedReservationRequests, currentDoer } = this.state;
 
     return (
          <div className="list row">
@@ -291,11 +301,18 @@ getActiveLabel(event, doer)
            </div>
 
            { this.state.loggedIn ? (
+
            <div>
+           <ul>
+             <li><a href="#doers-request-table">Job Requests</a></li>
+             <li><a href="#doers-accepted-request-table">Accepted Jobs</a></li>
+             <li><a href="#doer-req-count-table">Jobs Summary</a></li>
+             <li><a href="#doer-finance-table">Financial Summary</a></li>
+           </ul>
            <div className="col-md-666">
              <h4>{"Job requests sent -- select the ones that you are interested in... "}</h4>
 
-             <table className="doers-table">
+             <table className="doers-table"  className="doers-request-table">
              <thead>
               <tr>
                  <td>Name</td>
@@ -337,7 +354,7 @@ getActiveLabel(event, doer)
                       {this.getAcceptedJobsLabel()}
 
 
-                      <table className="doers-table">
+                      <table className="doers-table" id="doers-accepted-request-table">
                       <thead>
                        <tr>
                           <td>Name</td>
@@ -373,12 +390,77 @@ getActiveLabel(event, doer)
                        >
                          Abandon Job Requests!
                        </button>
+ </div>
+        ) : (<div><span><h4>No accepted jobs.</h4></span></div>) }
 
-                  </div>
+           {currentDoer ? (
+           <div className="col-md-666">
+           <h4>{"Job Summary Table "}</h4>
+           <table className="doer-req-count-table" id="doer-req-count-table">
+
+             <thead>
+              <tr>
+                <th>Request Status</th>
+                <th>Count</th>
+              </tr>
+               </thead>
+
+              <tbody>
+              <tr>
+                <td>Accepted</td>
+                <td>{currentDoer.accepted_reservations_count}</td>
+              </tr>
+              <tr>
+                <td>Completed</td>
+                <td>{currentDoer.completed_reservations_count}</td>
+              </tr>
+              <tr>
+                  <td>Abandonded</td>
+                  <td>{currentDoer.abandoned_reservations_count}</td>
+                </tr>
+               <tr>
+                  <td>Declined</td>
+                  <td>{currentDoer.declined_reservations_count}</td>
+               </tr>
+              </tbody>
+            </table>
+
+
+           <h4>{"Finance Summary Table "}</h4>
+           <table className="doer-finance-table" id="doer-finance-table">
+
+             <thead>
+              <tr>
+                <th>Number of Jobs</th>
+                <th>Amount Earnt</th>
+              </tr>
+               </thead>
+
+              <tbody>
+              <tr>
+                <td>This Week</td>
+                <td>{currentDoer.accepted_reservations_count}</td>
+              </tr>
+              <tr>
+                <td>This Month</td>
+                <td>{currentDoer.completed_reservations_count}</td>
+              </tr>
+              <tr>
+                  <td>Year to Date</td>
+                  <td>{currentDoer.abandoned_reservations_count}</td>
+                </tr>
+               <tr>
+                  <td>All Time</td>
+                  <td>{currentDoer.declined_reservations_count}</td>
+               </tr>
+              </tbody>
+            </table>
+            </div>
                     ) : (<div><span><h4>No accepted jobs.</h4></span></div>) }
+
                      </div>
          ) : (
-<div></div>
+                <div></div>
          )}
 
    <div className="overlay-bg">
