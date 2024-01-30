@@ -51,17 +51,26 @@ thead td {
     background-color: CornSilk;
 }
 
-.cell-status-highlight-completed {
+.doersRow-completed {
     background-color: PaleGreen;
 }
 
-.cell-status-highlight-abandoned {
+.doersRow-abandoned {
     background-color: LightSalmon;
 }
 
-.cell-status-highlight-requested {
+.doersRow-requested {
     background-color: PaleTurquoise;
 }
+
+.doersRow-accepted {
+    background-color: DarkSeaGreen;
+}
+
+.doersRow-declined {
+    background-color: SandyBrown;
+}
+
 
 .cell-timerequested-highlight {
     background-color: CornSilk;
