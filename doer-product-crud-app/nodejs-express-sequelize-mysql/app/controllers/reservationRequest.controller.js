@@ -176,8 +176,6 @@ exports.declineReservationRequests = (req, res) => {
 
    console.log("in decline reservation requests" + req.body.reservations);
    const reservations = req.body.reservations;
-   const doerId = req.body.doerId;
-
 
    let errFlag = false;
    for (let i = 0; i < reservations.length; i++) {
@@ -194,7 +192,7 @@ exports.declineReservationRequests = (req, res) => {
             Doer.increment('declined_reservations_count', {
                by: 1,
                where: {
-                  id: doerId
+                  id: reservations[i].doerId
                }
             });
          })
@@ -222,8 +220,6 @@ exports.abandonReservationRequests = (req, res) => {
    console.log("in console.log(req.body.reservations);");
    console.log(req.body.reservations);
    const reservations = req.body.reservations;
-   const doerId = req.body.doerId;
-
 
    let errFlag = false;
    for (let i = 0; i < reservations.length; i++) {
@@ -240,7 +236,7 @@ exports.abandonReservationRequests = (req, res) => {
             Doer.increment('abandoned_reservations_count', {
                by: 1,
                where: {
-                  id: doerId
+                   id: reservations[i].doerId
                }
             });
          })
@@ -268,7 +264,6 @@ exports.completeReservationRequests = (req, res) => {
    console.log("completeReservationRequests request");
    console.log(req.body.reservations);
    const reservations = req.body.reservations;
-   const doerId = req.body.doerId;
 
 
    let errFlag = false;
@@ -286,7 +281,7 @@ exports.completeReservationRequests = (req, res) => {
             Doer.increment('completed_reservations_count', {
                by: 1,
                where: {
-                  id: doerId
+                    id: reservations[i].doerId
                }
             });
          })
