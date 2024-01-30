@@ -3,6 +3,7 @@ import {Modal, Button} from 'react-bootstrap';
 import { useState } from 'react';
 import DoerDataService from "../services/doer.service";
 import { Link } from "react-router-dom";
+const utils = require("../utils/Utils.js");
 
 export default class ReservationsFinances extends Component {
   constructor(props) {
@@ -129,44 +130,6 @@ scheduleDoers() {
     return false;
   }
 
-  processTimeMatch(reqSlot, avail) {
-
-        let reqSlotDay=this.getDayFromAvailability(reqSlot);
-        console.log("reqSlot " + reqSlotDay);
-
-        let reqSlotTime=this.getTimeFromAvailability(reqSlot);
-        console.log("reqSlot " + reqSlotTime);
-
-        const availArray = avail.split(",");
-        const len = availArray.length;
-
-        for(let i=0;i<len;i++) {
-            let dayMatch = false;
-            let timeMatch = false;
-
-            let slot=availArray[i];
-            console.log("slot = " + slot);
-
-            let slotDay=this.getDayFromAvailability(slot);
-            console.log(slotDay);
-
-            let slotTime=this.getTimeFromAvailability(slot);
-            console.log(slotTime);
-
-            if(slotDay.indexOf(reqSlotDay) !== -1) {
-                    dayMatch = true;
-            }
-
-            timeMatch = this.timesMatch(reqSlotTime, slotTime);
-
-            if(dayMatch === true && timeMatch === true) {
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
 filterResultsByTime(tutorials) {
     if(this.state.searchAvailability == null) {
         return tutorials;
@@ -179,7 +142,7 @@ filterResultsByTime(tutorials) {
         console.log(value);
         //console.log(time);
         console.log(this.state);
-        return this.processTimeMatch(this.state.searchAvailability, value.availability);
+        return utils.processTimeMatch(this.state.searchAvailability, value.availability);
     }
 
     return filteredDoers;

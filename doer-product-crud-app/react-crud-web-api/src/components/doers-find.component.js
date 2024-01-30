@@ -3,6 +3,7 @@ import {Modal, Button} from 'react-bootstrap';
 import { useState } from 'react';
 import DoerDataService from "../services/doer.service";
 import { Link } from "react-router-dom";
+const utils = require("../utils/Utils.js");
 
 export default class DoersFind extends Component {
   constructor(props) {
@@ -129,81 +130,7 @@ closeDialogInputValidationSelectDoers() {
 
   }
 
-  getDayFromAvailability(availability) {
-    const retArray = availability.split(":");
-        return retArray[0];
-  }
 
-  getTimeFromAvailability(availability) {
-    const retArray = availability.split(":");
-    if(retArray[1] === undefined) {
-        return null;
-    } else {
-        return retArray[1];
-    }
-  }
-
-  timesMatch(reqSlotTime, slotTime) {
-
-    let retArray=slotTime.split("-");
-    let doerStartTime = parseInt(retArray[0]);
-    let doerCloseTime = parseInt(retArray[1]);
-    console.log("doer start time = " + doerStartTime);
-    console.log("doer end time = " + doerCloseTime);
-
-    retArray=reqSlotTime.split("-");
-    let reqStartTime = parseInt(retArray[0]);
-    let reqCloseTime = parseInt(retArray[1]);
-    console.log("req start time = " + reqStartTime);
-    console.log("req end time = " + reqCloseTime);
-
-	if(reqStartTime >= doerStartTime) {
-      console.log("start times match...");
-      if(reqCloseTime <= doerCloseTime) {
-     	 console.log("close times match...");
-      	 return true;
-      }
-    }
-    return false;
-  }
-
-  processTimeMatch(reqSlot, avail) {
-
-        let reqSlotDay=this.getDayFromAvailability(reqSlot);
-        console.log("reqSlot " + reqSlotDay);
-
-        let reqSlotTime=this.getTimeFromAvailability(reqSlot);
-        console.log("reqSlot " + reqSlotTime);
-
-        const availArray = avail.split(",");
-        const len = availArray.length;
-
-        for(let i=0;i<len;i++) {
-            let dayMatch = false;
-            let timeMatch = false;
-
-            let slot=availArray[i];
-            console.log("slot = " + slot);
-
-            let slotDay=this.getDayFromAvailability(slot);
-            console.log(slotDay);
-
-            let slotTime=this.getTimeFromAvailability(slot);
-            console.log(slotTime);
-
-            if(slotDay.indexOf(reqSlotDay) !== -1) {
-                    dayMatch = true;
-            }
-
-            timeMatch = this.timesMatch(reqSlotTime, slotTime);
-
-            if(dayMatch === true && timeMatch === true) {
-                    return true;
-            }
-        }
-
-        return false;
-    }
 
 filterResultsByTime(Doers) {
     if(this.state.searchAvailability.length == 0) {
@@ -217,7 +144,7 @@ filterResultsByTime(Doers) {
         console.log(value);
         //console.log(time);
         console.log(this.state);
-        return this.processTimeMatch(this.state.searchAvailability, value.availability);
+        return utils.processTimeMatch(this.state.searchAvailability, value.availability);
     }
 
     return filteredDoers;

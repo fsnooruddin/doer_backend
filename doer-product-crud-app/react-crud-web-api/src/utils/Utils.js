@@ -52,5 +52,45 @@ module.exports = {
           }
         }
         return false;
-      }
+      },
+
+      processTimeMatch : function (reqSlot, avail) {
+
+              let reqSlotDay=this.getDayFromAvailability(reqSlot);
+              console.log("reqSlot " + reqSlotDay);
+
+              let reqSlotTime=this.getTimeFromAvailability(reqSlot);
+              console.log("reqSlot " + reqSlotTime);
+
+              const availArray = avail.split(",");
+              const len = availArray.length;
+
+              for(let i=0;i<len;i++) {
+                  let dayMatch = false;
+                  let timeMatch = false;
+
+                  let slot=availArray[i];
+                  console.log("slot = " + slot);
+
+                  let slotDay=this.getDayFromAvailability(slot);
+                  console.log(slotDay);
+
+                  let slotTime=this.getTimeFromAvailability(slot);
+                  console.log(slotTime);
+
+                  if(slotDay.indexOf(reqSlotDay) !== -1) {
+                          dayMatch = true;
+                  }
+
+                  timeMatch = this.timesMatch(reqSlotTime, slotTime);
+
+                  if(dayMatch === true && timeMatch === true) {
+                          return true;
+                  }
+              }
+
+              return false;
+          },
+
+
 };
