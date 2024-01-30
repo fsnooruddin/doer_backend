@@ -395,6 +395,7 @@ getActiveLabel(event, doer)
 
            {currentDoer ? (
            <div className="col-md-666">
+           <div className="doer-req-count-table-div" id="doer-req-count-table-div">
            <h4>{"Job Summary Table "}</h4>
            <table className="doer-req-count-table" id="doer-req-count-table">
 
@@ -424,8 +425,9 @@ getActiveLabel(event, doer)
                </tr>
               </tbody>
             </table>
+            </div>
 
-
+            <div className="doer-finance-table-div" id="doer-finance-table-div">
            <h4>{"Finance Summary Table "}</h4>
            <table className="doer-finance-table" id="doer-finance-table">
 
@@ -455,6 +457,7 @@ getActiveLabel(event, doer)
                </tr>
               </tbody>
             </table>
+            </div>
             </div>
                     ) : (<div><span><h4>No accepted jobs.</h4></span></div>) }
 

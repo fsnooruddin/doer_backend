@@ -8,7 +8,7 @@
 
 .doer-req-count-table, td, th {
     border: 2px solid black;
-    width: 85%;
+    width: 45%;
     padding-top: 10px;
     padding-bottom: 20px;
     padding-left: 50px;
@@ -25,6 +25,26 @@
     padding-right: 40px;
     text-align: center;
     margin-bottom: 40px;
+}
+
+.doer-finance-table, td, th {
+    border: 2px solid black;
+    width: 45%;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 50px;
+    padding-right: 40px;
+     text-align: center;
+}
+
+.doer-finance-table-div {
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+
+.doer-req-count-table-div {
+    margin-bottom: 40px;
+    margin-top: 40px;
 }
 
 thead td {
