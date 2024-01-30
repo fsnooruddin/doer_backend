@@ -233,7 +233,7 @@ getJSDateTime(mysqlDateTime)
 
     return (
       <div className="list row">
-          <h4>{"Pending Reservation Requests: "}</h4>
+          <h4>{"Reservation Requests: "}</h4>
           <table className="doers-table">
           <thead>
            <tr>
@@ -252,7 +252,7 @@ getJSDateTime(mysqlDateTime)
                   <td className="cell-svcs-highlight">{reservation.requested_services} </td>
                   <td className="cell-timerequested-highlight">{reservation.requested_time}</td>
                   <td className="cell-createtime-highlight">{this.getJSDateTime(reservation.createdAt)}</td>
-                  <td className="cell-status-highlight">{reservation.state}</td>
+                  <td className={"cell-status-highlight-"+reservation.state}>{reservation.state}</td>
                 </tr>
 
               ))}

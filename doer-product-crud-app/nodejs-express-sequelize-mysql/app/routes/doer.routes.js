@@ -17,8 +17,6 @@ module.exports = app => {
 
   router.get("/getReservationsRequests", reservationRequests.findByDoerIdandState);
 
-  router.get("/getReservationRequestCounts", reservationRequests.getReservationRequestCounts);
-
    router.get("/finances", reservationRequests.getReservationFinances);
 
   // Retrieve a

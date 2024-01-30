@@ -51,6 +51,18 @@ thead td {
     background-color: CornSilk;
 }
 
+.cell-status-highlight-completed {
+    background-color: PaleGreen;
+}
+
+.cell-status-highlight-abandoned {
+    background-color: LightSalmon;
+}
+
+.cell-status-highlight-requested {
+    background-color: PaleTurquoise;
+}
+
 .cell-timerequested-highlight {
     background-color: CornSilk;
 }

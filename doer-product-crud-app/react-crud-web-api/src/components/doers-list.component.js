@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import DoerDataService from "../services/doer.service";
 import { Link } from "react-router-dom";
+const utils = require("../utils/Utils.js");
 
 export default class DoersList extends Component {
   constructor(props) {
@@ -11,12 +12,15 @@ export default class DoersList extends Component {
     this.setActiveDoer = this.setActiveDoer.bind(this);
     this.removeAllDoers = this.removeAllDoers.bind(this);
     this.searchName = this.searchName.bind(this);
+    this.getReservationRequestCounts = this.getReservationRequestCounts.bind(this);
+
 
     this.state = {
       doers: [],
       currentDoer: null,
       currentIndex: -1,
-      searchName: ""
+      searchName: "",
+      jobCounts:[]
     };
   }
 
@@ -43,6 +47,20 @@ export default class DoersList extends Component {
       .catch(e => {
         console.log(e);
       });
+  }
+
+  getReservationRequestCounts(doerId, jobStatus) {
+
+  var retVal = "";
+  DoerDataService.getReservationRequestStats(doerId, jobStatus)
+                   .then(response => {
+                                       console.log("data from get counts = " + response.data.toString());
+                                        retVal = response.data.toString();
+                                        this.jobCounts[jobStatus] = retVal;
+                                     })
+                                     .catch(e => {
+                                     console.log("error from get counts = " + e);
+                                     });
   }
 
   refreshList() {
@@ -163,6 +181,11 @@ export default class DoersList extends Component {
                 </label>{" "}
                 {currentDoer.services}
               </div>
+                       <div>
+                          <img
+                            src={currentDoer.img_url} width="100" height="100"
+                          />{" "}
+                        </div>
             <div>
               <label>
                 <strong>Availability:</strong>
@@ -194,17 +217,44 @@ export default class DoersList extends Component {
             {currentDoer.phone_number}
           </div>
            <div>
-            <img
-              src={currentDoer.img_url} width="100" height="100"
-            />{" "}
-          </div>
-                   <div>
-                      <label>
-                        <strong>Id:</strong>
-                      </label>{" "}
-                      {currentDoer.id}
-                    </div>
-// TO DO -- Add stats around jobs completed, declined, requested
+              <label>
+                <strong>Id:</strong>
+              </label>{" "}
+              {currentDoer.id}
+            </div>
+            <div>
+
+            <table className="doer-req-count-table">
+
+             <thead>
+              <tr>
+                <th>Request Status</th>
+                <th>Count</th>
+              </tr>
+               </thead>
+
+              <tbody>
+              <tr>
+                <td>Accepted</td>
+                <td>{currentDoer.accepted_reservations_count}</td>
+              </tr>
+              <tr>
+                <td>Completed</td>
+                <td>{currentDoer.completed_reservations_count}</td>
+              </tr>
+              <tr>
+                  <td>Abandonded</td>
+                  <td>{currentDoer.abandoned_reservations_count}</td>
+                </tr>
+                <tr>
+                                  <td>Declined</td>
+                                  <td>{currentDoer.declined_reservations_count}</td>
+                                </tr>
+              </tbody>
+
+            </table>
+
+            </div>
               <Link
                 to={"/Doers/" + currentDoer.id}
                 className="badge badge-warning"
