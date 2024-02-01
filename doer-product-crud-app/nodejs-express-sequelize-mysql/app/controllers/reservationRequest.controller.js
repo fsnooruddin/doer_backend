@@ -2,6 +2,7 @@ const db = require("../models");
 const utils = require("../utils/Utils.js");
 const ReservationRequest = db.reservationRequests;
 const Doer = db.doers;
+const JobNotes = db.jobNotes;
 const Op = db.Sequelize.Op;
 
 // Create and Save
@@ -122,9 +123,39 @@ exports.updateCounts = (doerId, state) => {
 
 };
 
+exports.addNotes = (req, res) => {
+
+  console.log("body in addNotes is: " + JSON.stringify(req.body));
+
+  const jobNote = {
+      doer_id : req.body.doerId,
+      reservation_id : req.body.reservationId,
+      note_text: req.body.note
+  };
+
+  console.log("note data is: " + JSON.stringify(jobNote));
+
+  JobNotes.create(jobNote)
+         .then(data => {
+              console.log("created new reservation request");
+              console.log(data);
+              res.status(200).send();
+           })
+           .catch(err => {
+              console.log("failed to create new reservation request");
+              errFlag = true;
+              if (err.message) {
+                 console.log(err.message);
+              }
+              res.status(500).send();
+           });
+}
+
+
 exports.acceptReservationRequests = (req, res) => {
 
-   console.log(req.body.reservations);
+   console.log("body in accept Reservation Requests is: " + req.body.reservations[0]);
+    console.log("body in accept Reservation Requests is: " + req.body.doerId);
    const reservations = req.body.reservations;
 
    let errFlag = false;
@@ -141,7 +172,8 @@ exports.acceptReservationRequests = (req, res) => {
          .then(data => {
             console.log("accepted reservation request");
             console.log(data);
-
+        console.log(reservations[i]);
+            console.log("Doer id = " + reservations[i].doerId);
             Doer.increment('accepted_reservations_count', {
                by: 1,
                where: {
@@ -159,8 +191,6 @@ exports.acceptReservationRequests = (req, res) => {
 
 
    }
-   console.log("Update reservations. ");
-
 
    if (errFlag) {
       res.status(500).send({

@@ -15,10 +15,12 @@ export default class DoerApp extends Component {
     this.declineJobs = this.declineJobs.bind(this);
     this.completeJobs = this.completeJobs.bind(this);
     this.abandonJobs = this.abandonJobs.bind(this);
+    this.addNoteToJob = this.addNoteToJob.bind(this);
+    this.showAddNotesForm = this.showAddNotesForm.bind(this);
     this.processDoerLogin = this.processDoerLogin.bind(this);
     this.getAcceptedJobsLabel = this.getAcceptedJobsLabel.bind(this);
     this.renderAcceptedJobsTable = this.renderAcceptedJobsTable.bind(this);
-
+    this.handlePopupFormSubmit = this.handlePopupFormSubmit.bind(this);
 
     this.state = {
       loginName: "",
@@ -33,6 +35,8 @@ export default class DoerApp extends Component {
 
   componentDidMount() {
     this.processDoerLogin();
+    let loginForm = document.getElementById("popupForm");
+    loginForm.addEventListener("submit", this.addNoteToJob);
   }
 
 onChangeDoerLogin(e) {
@@ -51,6 +55,10 @@ onChangeDoerLogin(e) {
       currentReservations: []
     });
   }
+
+handlePopupFormSubmit() {
+    alert("this.handlePopupFormSubmit");
+}
 
 acceptJobs() {
 
@@ -129,6 +137,43 @@ this.setState({
   });
 }
 
+showAddNotesForm() {
+if(this.state.currentReservations.length == 0) {
+    alert("please select some jobs to add notes");
+    return;
+  }
+
+  var modal = document.getElementById("popupForm");
+  modal.style.display = "block";
+
+}
+
+addNoteToJob() {
+
+ console.log(this.state.currentReservations);
+ // alert("Sent Scheduling Requests!");
+  // Get the modal
+  var modal = document.getElementById("popupForm");
+  modal.style.display = "none";
+
+  var notes = document.getElementById("notes-text");
+
+  if(this.state.currentReservations.length == 0) {
+    alert("please select one job to add notes");
+    return;
+  }
+
+  if(this.state.currentReservations.length > 1) {
+    alert("please select one to add notes");
+    return;
+  }
+
+  DoerDataService.addNotesToJob(this.state.currentReservations[0], this.state.doerId, notes.value);
+
+this.setState({
+    currentReservations: []
+  });
+}
 
 completeJobs() {
 
@@ -180,6 +225,13 @@ closeDialog5() {
     var modal = document.getElementById("overlay-content-declined-jobs");
     modal.style.display = "none";
   }
+
+closeDialog6() {
+    // Get the modal
+    var modal = document.getElementById("loginPopup");
+    modal.style.display = "none";
+  }
+
 
 filterResultsByDoerId(doers) {
     if(this.state.doerId == null) {
@@ -390,6 +442,13 @@ getActiveLabel(event, doer)
                        >
                          Abandon Job Requests!
                        </button>
+
+                       <button
+                            className="btn btn-sm btn-info"
+                            onClick={this.showAddNotesForm}
+                          >
+                            Send a note!
+                          </button>
  </div>
         ) : (<div><span><h4>No accepted jobs.</h4></span></div>) }
 
@@ -502,7 +561,21 @@ getActiveLabel(event, doer)
              <button className="close-btn-doer-app" onClick={this.closeDialog4}>Close</button>
            </div>
         </div>
+
+ <div class="loginPopup">
+      <div class="formPopup" id="popupForm">
+        <form action="#" className="formContainer" >
+          <h2>Enter your notes here</h2>
+
+          <input type="text" id="notes-text" placeholder="Notes..." name="notes" required/>
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" class="btn cancel" onClick={this.closeDialog6}>Close</button>
+        </form>
       </div>
+    </div>
+
+      </div>
+
 
     ); // end return
   }

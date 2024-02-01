@@ -2,6 +2,7 @@ module.exports = app => {
   const doers = require("../controllers/doer.controller.js");
   const reservationRequests = require("../controllers/reservationRequest.controller.js");
 
+
   var router = require("express").Router();
 
   // Create a new Doer
@@ -43,6 +44,8 @@ module.exports = app => {
   router.post("/abandonReservationRequests", reservationRequests.abandonReservationRequests);
 
   router.post("/completeReservationRequests", reservationRequests.completeReservationRequests);
+
+  router.post("/addNotesToJob", reservationRequests.addNotes);
 
   app.use('/api/doers', router);
 };

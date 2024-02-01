@@ -101,6 +101,15 @@ class DoerDataService {
       return http.post("/doers/declineReservationRequests", data);
     }
 
+    addNotesToJob(currentReservation, doerId, note) {
+        var data = {
+          "doerId": doerId,
+          "reservationId": currentReservation.id,
+          "note": note
+      } ;
+
+      return http.post("/doers/addNotesToJob", data);
+    }
 }
 
 export default new DoerDataService();
