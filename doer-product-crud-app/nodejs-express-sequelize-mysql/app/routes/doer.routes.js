@@ -2,9 +2,8 @@ module.exports = app => {
   const doers = require("../controllers/doer.controller.js");
   const reservationRequests = require("../controllers/reservationRequest.controller.js");
 
-
   var router = require("express").Router();
-
+ router.get("/getNotes", reservationRequests.getJobNotes);
   // Create a new Doer
   router.post("/", doers.create);
 
@@ -25,6 +24,8 @@ module.exports = app => {
 
   // Retrieve a single Doer with id
   router.get("/:id", doers.findOne);
+
+
 
   // Update a Doer with id
   router.put("/:id", doers.update);

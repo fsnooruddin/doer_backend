@@ -152,6 +152,32 @@ exports.addNotes = (req, res) => {
 }
 
 
+exports.getJobNotes = (req, res) => {
+
+  console.log("body in getJobNotes is: " + JSON.stringify(req.query));
+
+
+  JobNotes.findAll({
+
+              where: {
+                 reservation_id: req.query.reservationId
+              }
+  })
+         .then(data => {
+              console.log("created new reservation request");
+              console.log(data);
+              res.status(200).send(data);
+           })
+           .catch(err => {
+              console.log("failed to create new reservation request");
+              errFlag = true;
+              if (err.message) {
+                 console.log(err.message);
+              }
+              res.status(500).send();
+           });
+}
+
 exports.acceptReservationRequests = (req, res) => {
 
    console.log("body in accept Reservation Requests is: " + req.body.reservations[0]);
