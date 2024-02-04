@@ -232,6 +232,13 @@ closeDialog6() {
     modal.style.display = "none";
   }
 
+closeDialog7() {
+    // Get the modal
+    var modal = document.getElementById("jobNotesPopup");
+    modal.style.display = "none";
+  }
+
+
 
 filterResultsByDoerId(doers) {
     if(this.state.doerId == null) {
@@ -306,6 +313,12 @@ processDoerLogin() {
 
 }
 
+myFunction()
+{
+    var table = document.getElementById("jobNotes-table");
+
+}
+
 getActiveLabel(event, doer)
 {
   if(event.currentTarget.className == "doersRow") {
@@ -377,10 +390,10 @@ getActiveLabel(event, doer)
                     {sentReservationRequests &&
                       sentReservationRequests.map((reservation, index) => (
                         <tr className="doersRow" id={"reservation"+index} onClick={(event) => this.getActiveLabel(event, reservation)} key={index}>
-                          <td className="cell-name-highlight">{reservation.doer_name} </td>
-                          <td className="cell-svcs-highlight">{reservation.requested_services} </td>
-                          <td className="cell-time-highlight">{reservation.requested_time}</td>
-                          <td className="cell-createtime-highlight">{utils.getJSDateTime(reservation.createdAt)}</td>
+                          <td className="cell-name-highlight">{reservation.doer_name}</td>
+                          <td className="cell-svcs-highlight" >{reservation.requested_services} </td>
+                          <td className="cell-time-highlight" >{reservation.requested_time}</td>
+                          <td className="cell-createtime-highlight" >{utils.getJSDateTime(reservation.createdAt)}</td>
                         </tr>
                       ))}
              </tbody>
@@ -573,6 +586,30 @@ getActiveLabel(event, doer)
         </form>
       </div>
     </div>
+
+ <div class="jobNotesPopup">
+      <div class="jobNotesPopup" id="jobNotesPopup">
+
+            <table id="jobNotes-table">
+                <thead>
+                   <th> Job Id </th>
+                   <th> Notes </th>
+                   <th> Date Added </th>
+                </thead>
+                <tbody>
+                   <tr>
+                      <td> Alex </td>
+                      <td> 20 </td>
+                      <td> New York </td>
+                   </tr>
+      </tbody>
+   </table>
+
+          <button type="button" class="jobNotesPopup-btn" onClick={this.closeDialog7}>Close</button>
+
+      </div>
+    </div>
+
 
       </div>
 
