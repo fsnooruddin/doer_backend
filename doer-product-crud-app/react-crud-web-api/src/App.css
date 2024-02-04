@@ -520,3 +520,27 @@ tbody td {
       .openButton:hover {
         opacity: 1;
       }
+    .jobNotesPopup {
+        display: none;
+        position: fixed;
+        left: 45%;
+        top: 5%;
+        transform: translate(-50%, 5%);
+        border: 3px solid #999999;
+        z-index: 9;
+
+      }
+          .jobNotesPopup-btn {
+      border: 1px solid #333;
+       padding: 2% 5%;
+       background: #a9e7f9; /* fallback */
+              color: #fff;
+              cursor: pointer;
+              width: 30%;
+              margin-bottom: 13%;
+              margin-left: 65%;
+              opacity: 0.6;
+                border-radius: 4px;
+                  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+ transform: translate(-0%, 80%);
+            }
