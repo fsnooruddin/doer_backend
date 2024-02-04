@@ -206,9 +206,10 @@ export default class DoersList extends Component {
             </div>
             <div>
             <label>
-              <strong>Location:</strong>
+              <strong>Location:   </strong>
             </label>{" "}
-            {currentDoer.location}
+
+             <nbsp/>   <i>City: </i>{utils.getCityFromLocation(currentDoer.location)}, <i>State: </i>{utils.getStateFromLocation(currentDoer.location)}
           </div>
            <div>
             <label>

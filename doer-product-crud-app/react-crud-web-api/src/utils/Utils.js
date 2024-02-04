@@ -92,5 +92,21 @@ module.exports = {
               return false;
           },
 
+          getCityFromLocation : function (locationStr) {
 
+                let parts = locationStr.split(":");
+               return (parts[1].split(",")[0]);
+          },
+
+          getStateFromLocation : function (locationStr) {
+
+               let parts = locationStr.split(":");
+               return (parts[2].split(",")[0]);
+          },
+
+          getZipcodeFromLocation : function (locationStr) {
+
+              let parts = locationStr.split(":");
+             return (parts[3].split("}")[0]);
+          },
 };
