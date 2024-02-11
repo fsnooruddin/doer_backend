@@ -1,11 +1,11 @@
 module.exports = app => {
   const doers = require("../controllers/doer.controller.js");
   const reservationRequests = require("../controllers/reservationRequest.controller.js");
+  const categories = require("../controllers/category.controller.js");
 
   var router = require("express").Router();
- router.get("/getNotes", reservationRequests.getJobNotes);
-  // Create a new Doer
-  router.post("/", doers.create);
+
+  router.get("/getNotes", reservationRequests.getJobNotes);
 
   // Retrieve all doers
   router.get("/", doers.findAll);
@@ -17,15 +17,15 @@ module.exports = app => {
 
   router.get("/getReservationsRequests", reservationRequests.findByDoerIdandState);
 
-   router.get("/finances", reservationRequests.getReservationFinances);
+  router.get("/finances", reservationRequests.getReservationFinances);
+
+  router.get("/categories", categories.findOne);
 
   // Retrieve a
   router.get("/find", doers.findByAvailability);
 
   // Retrieve a single Doer with id
   router.get("/:id", doers.findOne);
-
-
 
   // Update a Doer with id
   router.put("/:id", doers.update);
@@ -47,6 +47,12 @@ module.exports = app => {
   router.post("/completeReservationRequests", reservationRequests.completeReservationRequests);
 
   router.post("/addNotesToJob", reservationRequests.addNotes);
+
+  router.post("/addCategory", categories.create);
+
+  // Create a new Doer
+  router.post("/", doers.create);
+
 
   app.use('/api/doers', router);
 };
