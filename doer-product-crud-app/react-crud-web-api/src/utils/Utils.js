@@ -27,7 +27,7 @@ module.exports = {
      {
       var t = mysqlDateTime.split("T");
       var r = t[1].split(".");
-      return (t[0]+ " " + r[0]);
+      return (r[0]+ " " + t[0]);
      },
 
     timesMatch : function(reqSlotTime, slotTime) {
