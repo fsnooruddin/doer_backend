@@ -21,6 +21,8 @@ module.exports = app => {
 
   router.get("/categories", categories.findOne);
 
+  router.get("/getAllCategories", categories.findAll);
+
   // Retrieve a
   router.get("/find", doers.findByAvailability);
 

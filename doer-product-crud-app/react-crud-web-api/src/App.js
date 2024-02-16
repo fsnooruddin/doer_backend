@@ -8,6 +8,7 @@ import Doer from "./components/doer.component";
 import DoersList from "./components/doers-list.component";
 import DoersFind from "./components/doers-find.component";
 import ReservationsFind from "./components/reservations-find.component";
+import Categories from "./components/categories-list.component";
 import ReservationsFinances from "./components/reservation-finances.component";
 import DoerApp from "./components/doer-app.component";
 
@@ -39,6 +40,7 @@ class App extends Component {
                        <a href="/reservations">Reservation Stats</a>
                        <a href="/">Doer Stats</a>
                        <a href="/finances">Finances</a>
+                        <a href="/categories">Categories</a>
                        <a href="/add">Add Doers</a>
                   </div>
                 </div>
@@ -54,6 +56,7 @@ class App extends Component {
             <Route path="/find" element={<DoersFind/>} />
             <Route path="/reservations" element={<ReservationsFind/>} />
             <Route path="/finances" element={<ReservationsFinances/>} />
+              <Route path="/categories" element={<Categories/>} />
             <Route path="/doers/:id" element={<Doer/>} />
             <Route path="/doerapp" element={<DoerApp/>} />
           </Routes>

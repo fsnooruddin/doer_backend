@@ -110,6 +110,15 @@ class DoerDataService {
 
       return http.post("/doers/addNotesToJob", data);
     }
+
+    getCategories(id) {
+        return http.get(`/doers/categories?id=${id}`);
+    }
+
+   getAllCategories() {
+        return http.get("/doers/getAllCategories");
+    }
+
 }
 
 export default new DoerDataService();
