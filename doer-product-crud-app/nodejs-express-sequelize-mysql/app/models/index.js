@@ -23,5 +23,6 @@ db.reservationRequests = require("./reservationRequest.model.js")(sequelize, Seq
 db.doers = require("./doer.model.js")(sequelize, Sequelize);
 db.jobNotes = require("./jobNotes.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
+db.addresses = require("./address.model.js")(sequelize, Sequelize);
 
 module.exports = db;
