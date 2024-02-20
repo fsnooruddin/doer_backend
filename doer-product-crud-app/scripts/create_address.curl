@@ -1,0 +1,9 @@
+
+curl --header "Content-Type: application/json" \--request POST \--data '{"address": "10 Dolby Lane","address2": "Apt 4", "city": "hyderabad", "state": "CA", "zipcode": "94566"}' \http://localhost:8080/api/doers/addAddress
+
+curl --header "Content-Type: application/json" \--request POST \--data '{"address": "4397 Elkview Drive","address2": "none", "city": "Lake Worth", "state": "Florida", "zipcode": "33463"}' \http://localhost:8080/api/doers/addAddress
+
+curl --header "Content-Type: application/json" \--request POST \--data '{"address": "2239 Heavner Avenue","address2": "none", "city": "Lula", "state": "Georgia", "zipcode": "30554"}' \http://localhost:8080/api/doers/addAddress
+
+curl --header "Content-Type: application/json" \--request POST \--data '{"address": "4943 Sugar Camp Road","address2": "none", "city": "Tracy", "state": "Minnesota", "zipcode": "56175"}' \http://localhost:8080/api/doers/addAddress
+
