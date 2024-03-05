@@ -160,7 +160,7 @@ exports.getJobNotes = (req, res) => {
   JobNotes.findAll({
 
               where: {
-                 reservation_id: req.query.reservationId
+                 id: req.query.jobId
               }
   })
          .then(data => {
