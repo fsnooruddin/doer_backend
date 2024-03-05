@@ -272,7 +272,7 @@ processDoerLogin() {
 
      DoerDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "requested")
 	 .then(response => {
-	 	     console.log("in processDoerLogin ... DB response response");
+	 	     console.log("in processDoerLogin ... DB response getting requested jobs");
      	     console.log(response.data);
 
                this.setState({
@@ -286,7 +286,7 @@ processDoerLogin() {
 
      DoerDataService.getReservationsRequestsbyDoerIdandState(this.state.doerId, "accepted")
 	 .then(response => {
-	 	     console.log("in processDoerLogin ... DB response response");
+	 	     console.log("in processDoerLogin ... DB response getting accepted jobs");
      	     console.log(response.data);
 
              this.setState({
@@ -300,11 +300,12 @@ processDoerLogin() {
 
 	 DoerDataService.get(this.state.doerId)
 	  .then(response => {
-     	 	     console.log("in processDoerLogin ... DB response response");
+     	 	     console.log("in processDoerLogin ... DB response getting doer from db");
           	     console.log(response.data);
 
                   this.setState({
-     		        currentDoer: response.data
+     		        currentDoer: response.data,
+     		        loggedIn: true
                   });
      	 })
      	 .catch(e => {
