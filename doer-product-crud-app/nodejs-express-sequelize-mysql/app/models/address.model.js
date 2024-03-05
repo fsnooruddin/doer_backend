@@ -6,19 +6,23 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true
     },
     address: {
-          type: Sequelize.STRING
+          type: Sequelize.STRING,
+          allowNull: false
     },
     address2: {
           type: Sequelize.STRING
     },
     city: {
-          type: Sequelize.STRING
+          type: Sequelize.STRING,
+          allowNull: false
     },
     state: {
-          type: Sequelize.STRING
+          type: Sequelize.STRING,
+          allowNull: false
     },
     zipcode: {
-           type: Sequelize.STRING
+           type: Sequelize.STRING,
+           allowNull: false
     }
   } , {
     tableName: 'addresses'

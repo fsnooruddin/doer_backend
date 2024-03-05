@@ -4,8 +4,11 @@ module.exports = (sequelize, Sequelize) => {
     doer_id: {
       type: Sequelize.INTEGER
     },
+    user_id: {
+      type: Sequelize.INTEGER
+    },
     reservation_id: {
-          type: Sequelize.STRING
+      type: Sequelize.INTEGER
     },
     note_text: {
       type: Sequelize.STRING

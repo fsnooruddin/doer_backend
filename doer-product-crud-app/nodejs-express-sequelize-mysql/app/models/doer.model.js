@@ -1,13 +1,29 @@
 module.exports = (sequelize, Sequelize) => {
    const Doer = sequelize.define("doer", {
+    doer_id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
       name: {
-         type: Sequelize.STRING
+         type: Sequelize.STRING,
+         allowNull: false
       },
       services: {
-         type: Sequelize.STRING
+         type: Sequelize.STRING,
+         allowNull: false
       },
       availability: {
-         type: Sequelize.STRING
+         type: Sequelize.STRING,
+         allowNull: false
+      },
+      phone_number: {
+         type: Sequelize.STRING,
+         allowNull: false
+      },
+      location: {
+         type: Sequelize.STRING,
+         allowNull: false
       },
       rating: {
          type: Sequelize.INTEGER
@@ -15,12 +31,7 @@ module.exports = (sequelize, Sequelize) => {
       review_count: {
          type: Sequelize.INTEGER
       },
-      phone_number: {
-         type: Sequelize.STRING
-      },
-      location: {
-         type: Sequelize.STRING
-      },
+
       img_url: {
          type: Sequelize.STRING
       },

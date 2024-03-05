@@ -5,10 +5,25 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     requested_time: {
-          type: Sequelize.STRING
+      type: Sequelize.STRING
     },
     state: {
-      type: Sequelize.STRING
+      type: Sequelize.ENUM,
+      values: [
+              'Requested',
+              'SentToDoer',
+              'Accepted',
+              'Declined',
+              'Completed',
+              'Abandoned',
+              'Recalled'
+      ],
+      defaultValue: 'Requested',
+    },
+    user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     }
   } , {
     tableName: 'reservation_requests'
@@ -16,7 +31,7 @@ module.exports = (sequelize, Sequelize) => {
   );
   doers = require("./doer.model.js")(sequelize, Sequelize);
 
-  ReservationRequest.belongsTo(doers);
+  ReservationRequest.belongsTo(doers, { foreignKey: 'doer_id' });
   return ReservationRequest;
 };
 

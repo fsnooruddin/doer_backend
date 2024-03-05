@@ -45,7 +45,7 @@ exports.createScheduleRequests = (req, res) => {
 
       // Create a reservation
       const reservationRequest = {
-         doerId: doers[i].id,
+         doer_id: doers[i].doer_id,
          requested_time: searchRequest,
          requested_services: searchServices,
          state: utils.ReservationStates.Requested
@@ -88,7 +88,7 @@ exports.updateCounts = (doerId, state) => {
          Doer.increment('accepted_reservations_count', {
             by: 1,
             where: {
-               id: reservations[i].doerId
+               doer_id: reservations[i].doer_id
             }
          });
          break;
@@ -96,7 +96,7 @@ exports.updateCounts = (doerId, state) => {
          Doer.increment('declined_reservations_count', {
             by: 1,
             where: {
-               id: reservations[i].doerId
+               doer_id: reservations[i].doer_id
             }
          });
          break;
@@ -104,7 +104,7 @@ exports.updateCounts = (doerId, state) => {
          Doer.increment('completed_reservations_count', {
             by: 1,
             where: {
-               id: reservations[i].doerId
+               doer_id: reservations[i].doer_id
             }
          });
          break;
@@ -112,7 +112,7 @@ exports.updateCounts = (doerId, state) => {
          Doer.increment('abandoned_reservations_count', {
             by: 1,
             where: {
-               id: reservations[i].doerId
+               doer_id: reservations[i].doer_id
             }
          });
          break;
@@ -203,7 +203,7 @@ exports.acceptReservationRequests = (req, res) => {
             Doer.increment('accepted_reservations_count', {
                by: 1,
                where: {
-                  id: reservations[i].doerId
+                  doer_id: reservations[i].doer_id
                }
             });
          })
@@ -248,7 +248,7 @@ exports.declineReservationRequests = (req, res) => {
             Doer.increment('declined_reservations_count', {
                by: 1,
                where: {
-                  id: reservations[i].doerId
+                  doer_id: reservations[i].doer_id
                }
             });
          })
@@ -292,7 +292,7 @@ exports.abandonReservationRequests = (req, res) => {
             Doer.increment('abandoned_reservations_count', {
                by: 1,
                where: {
-                   id: reservations[i].doerId
+                   doer_id: reservations[i].doer_id
                }
             });
          })
@@ -325,19 +325,20 @@ exports.completeReservationRequests = (req, res) => {
    let errFlag = false;
    for (let i = 0; i < reservations.length; i++) {
       ReservationRequest.update({
-            state: utils.ReservationStates.Completed
+            state: reservations[i].state
          }, {
             where: {
                id: reservations[i].id
             }
          })
          .then(data => {
-            console.log("completeReservationRequests request");
+            console.log("updated completeReservationRequests request");
             console.log(data);
+            console.log("updating completed job counts");
             Doer.increment('completed_reservations_count', {
                by: 1,
                where: {
-                    id: reservations[i].doerId
+                    doer_id: reservations[i].doer_id
                }
             });
          })
@@ -376,7 +377,7 @@ exports.findAll = (req, res) => {
                [
                   // Note the wrapping parentheses in the call below!
                   db.sequelize.literal(`(
-                       SELECT name FROM doers WHERE doers.id = ReservationRequest.doerId
+                       SELECT name FROM doers WHERE doers.doer_id = ReservationRequest.doer_id
                     )`),
                   'doer_name'
                ]
@@ -398,7 +399,10 @@ exports.findAll = (req, res) => {
 // Retrieve all Doers from the database
 // or only those whose title  matches
 exports.findByDoerIdandState = (req, res) => {
-   //  console.log("in reservation request findAll");
+
+   console.log("in reservation request findByDoerIdandState");
+   console.log(req.query);
+
    var condition = null;
    var doerId = req.query.doerId;
    var state = req.query.state;
@@ -409,14 +413,14 @@ exports.findByDoerIdandState = (req, res) => {
                [
                   // Note the wrapping parentheses in the call below!
                   db.sequelize.literal(`(
-                       SELECT name FROM doers WHERE doers.id = ReservationRequest.doerId
+                       SELECT name FROM doers WHERE doers.doer_id = ReservationRequest.doer_id
                     )`),
                   'doer_name'
                ]
             ]
          },
          where: {
-            doerId: doerId,
+            doer_id: doerId,
             state: state
          }
       })
