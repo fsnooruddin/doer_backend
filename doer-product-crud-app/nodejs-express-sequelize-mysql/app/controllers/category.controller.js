@@ -19,7 +19,7 @@ exports.create = (req, res) => {
     img_url: req.body.image_url
   };
 
-  console.log("new category in create doer: ");
+  console.log("new category in create categories: ");
   console.log(category);
   console.log(Category);
 
