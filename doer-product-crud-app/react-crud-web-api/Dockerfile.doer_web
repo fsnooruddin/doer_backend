@@ -1,0 +1,14 @@
+#baseline
+FROM node:14-alpine AS base
+RUN mkdir -p /home/node/webapp
+
+# client build
+FROM base AS builder-client
+
+WORKDIR /home/node/webapp
+COPY . .
+RUN npm install --loglevel warn
+
+EXPOSE 8081 
+CMD ["npm", "start"]
+
