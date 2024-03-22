@@ -1,7 +1,10 @@
 version: "3.8"
 services:
+
   db:
-    build: ./react-crud-web-api
+    build:
+      context: doer-mysql-container
+      dockerfile: Dockerfile.doer_db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: testdb
@@ -10,18 +13,28 @@ services:
     restart: always
     container_name: doer_db
     networks:
-      - doer_db_network 
-
+      - doer_db_network
+      
   web:
-    build: ./nodejs-express-sequelize-mysql
+    build: 
+      context: ./react-crud-web-api
+      dockerfile: Dockerfile.doer_web
     container_name: doer_web
+    ports:
+      - "8081:8081"
+    networks:
+      - doer_db_network
+    restart: on-failure
+
+  api:
+    build: 
+      context: ./nodejs-express-sequelize-mysql
+      dockerfile: Dockerfile.doer_api
+    container_name: doer_api
     ports:
       - "8080:8080"
     networks:
       - doer_db_network
-    depends_on:
-      - db
-    command: ["./wait-for-it.sh", "doer_db:3306", "--", "node", "./server.js"]
     restart: on-failure
 
 networks:
