@@ -21,10 +21,12 @@ services:
       dockerfile: Dockerfile.doer_web
     container_name: doer_web
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     networks:
       - doer_db_network
     restart: on-failure
+    links:
+      - api 
 
   api:
     build: 
@@ -32,7 +34,7 @@ services:
       dockerfile: Dockerfile.doer_api
     container_name: doer_api
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     networks:
       - doer_db_network
     restart: on-failure
