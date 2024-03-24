@@ -80,7 +80,7 @@ exports.createScheduleRequests = (req, res) => {
 exports.updateCounts = (doerId, state) => {
 
    switch (state) {
-      case utils.ReservationRequests.Accepted:
+      case utils.ReservationStates.Accepted:
          Doer.increment('accepted_reservations_count', {
             by: 1,
             where: {
@@ -88,7 +88,7 @@ exports.updateCounts = (doerId, state) => {
             }
          });
          break;
-      case utils.ReservationRequests.Declined:
+      case utils.ReservationStates.Declined:
          Doer.increment('declined_reservations_count', {
             by: 1,
             where: {
@@ -96,7 +96,7 @@ exports.updateCounts = (doerId, state) => {
             }
          });
          break;
-      case utils.ReservationRequests.Completed:
+      case utils.ReservationStates.Completed:
          Doer.increment('completed_reservations_count', {
             by: 1,
             where: {
@@ -104,7 +104,7 @@ exports.updateCounts = (doerId, state) => {
             }
          });
          break;
-      case utils.ReservationRequests.Abandoned:
+      case utils.ReservationStates.Abandoned:
          Doer.increment('abandoned_reservations_count', {
             by: 1,
             where: {
@@ -321,7 +321,7 @@ exports.completeReservationRequests = (req, res) => {
    let errFlag = false;
    for (let i = 0; i < reservations.length; i++) {
       ReservationRequest.update({
-            state: reservations[i].state
+            state: utils.ReservationStates.Completed
          }, {
             where: {
                id: reservations[i].id
