@@ -373,7 +373,7 @@ exports.findAll = (req, res) => {
                [
                   // Note the wrapping parentheses in the call below!
                   db.sequelize.literal(`(
-                       SELECT name FROM doers WHERE doers.doer_id = ReservationRequest.doer_id
+                       SELECT name FROM doers WHERE doers.doer_id = reservationRequest.doer_id
                     )`),
                   'doer_name'
                ]
@@ -409,7 +409,7 @@ exports.findByDoerIdandState = (req, res) => {
                [
                   // Note the wrapping parentheses in the call below!
                   db.sequelize.literal(`(
-                       SELECT name FROM doers WHERE doers.doer_id = ReservationRequest.doer_id
+                       SELECT name FROM doers WHERE doers.doer_id = reservationRequest.doer_id
                     )`),
                   'doer_name'
                ]
