@@ -18,7 +18,7 @@ export default class DoersFind extends Component {
 
     this.state = {
       Doers: [],
-      currentDoers: [],
+      selectedDoer: null,
       searchAvailability: "",
       searchServices: ""
     };
@@ -59,7 +59,7 @@ export default class DoersFind extends Component {
   refreshList() {
     this.retrieveDoers();
     this.setState({
-      currentDoers: [],
+      selectedDoer: null,
       searchAvailability: "",
       searchServices: ""
     });
@@ -77,7 +77,7 @@ scheduleDoers() {
     return;
   }
 
-  if(this.state.currentDoers.length == 0 ) {
+  if(this.state.selectedDoer == null ) {
        var modal = document.getElementById("overlay-content-find-doers-select-doers");
            modal.style.display = "block";
               window.scrollTo({
@@ -88,13 +88,13 @@ scheduleDoers() {
   }
 
 
-   console.log(this.state.currentDoers);
+   console.log(this.state.selectedDoer);
    // alert("Sent Scheduling Requests!");
     // Get the modal
     var modal = document.getElementById("overlay-content-find-doers");
     modal.style.display = "block";
 
-    DoerDataService.scheduleDoers(this.state.currentDoers, this.state.searchAvailability, this.state.searchServices);
+    DoerDataService.scheduleDoers(this.state.selectedDoer, this.state.searchAvailability, this.state.searchServices);
 
     var doers_list = document.getElementsByClassName("doersRow");
     for(let i=0;i<doers_list.length;i++) {
@@ -152,7 +152,7 @@ filterResultsByTime(Doers) {
 
  searchAvailability() {
      this.setState({
-	 currentDoers: [],
+	 selectedDoer: null,
      });
 
      DoerDataService.findByAvailabilityandServices(this.state.searchAvailability, this.state.searchServices)
@@ -174,6 +174,20 @@ filterResultsByTime(Doers) {
 
 getActiveLabel(event, Doer)
 {
+    // Get a reference to the table element
+    const tables = document.getElementsByClassName("doers-table");
+    const table = tables[0]; // should assert that there is only of these in the document
+
+    // Iterate over the rows
+    for (let i = 0; i < table.rows.length; i++) {
+      const row = table.rows[i];
+
+        // Perform operations on each cell
+        console.log(row.className);
+        row.bgColor = "";
+        row.childNodes[0].className = "";
+    }
+
   if(event.currentTarget.className == "doersRow") {
     if(event.currentTarget.bgColor == "aef2b3") {
         event.currentTarget.bgColor = "";
@@ -183,7 +197,7 @@ getActiveLabel(event, Doer)
         event.currentTarget.childNodes[0].className = "";
     }
   }
-  this.state.currentDoers.push(Doer);
+  this.state.selectedDoer = Doer;
 }
 
   render() {

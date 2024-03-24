@@ -36,21 +36,19 @@ exports.create = (req, res) => {
 exports.createScheduleRequests = (req, res) => {
 
    console.log(JSON.stringify(req.body.doers_requested));
-   const doers = req.body.doers_requested;
+   const doer = req.body.doerRequested;
    const searchRequest = req.body.searchAvailability;
    const searchServices = req.body.searchServices;
 
-   let errFlag = false;
-   for (let i = 0; i < doers.length; i++) {
-
       // Create a reservation
       const reservationRequest = {
-         doer_id: doers[i].doer_id,
+         doer_id: doer.doer_id,
          requested_time: searchRequest,
          requested_services: searchServices,
          state: utils.ReservationStates.Requested
       };
 
+      const errFlag = false;
       console.log("about to create new reservation request");
       console.log(reservationRequest);
 
@@ -68,8 +66,6 @@ exports.createScheduleRequests = (req, res) => {
             }
          });
 
-
-   }
    console.log("Reservation Request object: ");
    console.log(ReservationRequest);
    if (errFlag) {

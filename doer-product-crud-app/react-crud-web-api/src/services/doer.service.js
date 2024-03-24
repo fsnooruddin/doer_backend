@@ -50,9 +50,9 @@ class DoerDataService {
     }
 
 
-  scheduleDoers(doers, searchAvailability, searchServices) {
+  scheduleDoers(doer, searchAvailability, searchServices) {
     var data = {
-        "doers_requested": doers,
+        "doerRequested": doer,
         "searchAvailability": searchAvailability,
         "searchServices": searchServices
     } ;
