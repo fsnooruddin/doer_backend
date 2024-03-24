@@ -12,6 +12,7 @@ services:
       MYSQL_PASSWORD: ThePassword
     restart: always
     container_name: doer_db
+    image: doer_db:0.0.2
     networks:
       - doer_db_network
       
@@ -20,6 +21,7 @@ services:
       context: ./react-crud-web-api
       dockerfile: Dockerfile.doer_web
     container_name: doer_web
+    image: doer_web:0.0.2
     ports:
       - "127.0.0.1:8081:8081"
     networks:
@@ -33,6 +35,7 @@ services:
       context: ./nodejs-express-sequelize-mysql
       dockerfile: Dockerfile.doer_api
     container_name: doer_api
+    image: doer_api:0.0.2
     ports:
       - "127.0.0.1:8080:8080"
     networks:
