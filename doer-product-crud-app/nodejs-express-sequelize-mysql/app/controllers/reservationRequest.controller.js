@@ -177,7 +177,7 @@ exports.getJobNotes = (req, res) => {
 exports.acceptReservationRequests = (req, res) => {
 
    console.log("body in accept Reservation Requests is: " + req.body.reservations[0]);
-    console.log("body in accept Reservation Requests is: " + req.body.doerId);
+    console.log("doer id in accept Reservation Requests is: " + req.body.doerId);
    const reservations = req.body.reservations;
 
    let errFlag = false;
