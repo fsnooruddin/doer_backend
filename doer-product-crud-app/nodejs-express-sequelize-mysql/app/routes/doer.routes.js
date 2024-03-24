@@ -27,7 +27,7 @@ module.exports = app => {
   // Retrieve a
   router.get("/find", doers.findByAvailability);
 
-
+  router.post("/setDoerCurrentLocation", doers.setCurrentLocation);
 
   // Delete all doers
   router.delete("/", doers.deleteAll);

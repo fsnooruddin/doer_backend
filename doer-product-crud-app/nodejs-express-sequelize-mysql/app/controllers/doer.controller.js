@@ -48,6 +48,35 @@ exports.create = (req, res) => {
     });
 };
 
+exports.setCurrentLocation = (req, res) => {
+
+   console.log("in settCurrentLoction");
+   console.log("body in accept Reservation Requests is: " + req.body.location);
+    console.log("doer id in accept Reservation Requests is: " + req.body.doer_id);
+   const location = req.body.location;
+   const doerId = req.body.doer_id;
+
+      // Save Doer in the database
+      Doer.update({
+            current_location: location
+         }, {
+            where: {
+               doer_id: doerId
+            }
+         })
+         .then(data => {
+            console.log("accepted reservation request");
+            console.log(data);
+       })
+          .catch(err => {
+             res.status(500).send({
+               message:
+                 err.message || "Some error occurred while updating current location."
+             });
+           });
+
+};
+
 exports.findByAvailability = (req, res) => {
   const availability = req.query.availability;
   var retArray = null;

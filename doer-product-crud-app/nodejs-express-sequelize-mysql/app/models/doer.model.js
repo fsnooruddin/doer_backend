@@ -31,7 +31,10 @@ module.exports = (sequelize, Sequelize) => {
       review_count: {
          type: Sequelize.INTEGER
       },
-
+     current_location: {
+         type: Sequelize.STRING,
+         allowNull: true
+      },
       img_url: {
          type: Sequelize.STRING
       },
