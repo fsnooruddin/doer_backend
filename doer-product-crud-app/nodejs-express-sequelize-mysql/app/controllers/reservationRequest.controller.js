@@ -10,7 +10,7 @@ exports.create = (req, res) => {
    // Validate request
 
    console.log("req in create reservation request is");
-   console.log(req.body);
+   console.log(JSON.stringify(req.body));
 
    // Create a reservation Request
    const reservationRequest = {
@@ -35,14 +35,15 @@ exports.create = (req, res) => {
 
 exports.createScheduleRequests = (req, res) => {
 
+ console.log("creat new reservation request");
    console.log(JSON.stringify(req.body.doers_requested));
-   const doer = req.body.doerRequested;
+   const doerId = req.body.doerRequested;
    const searchRequest = req.body.searchAvailability;
    const searchServices = req.body.searchServices;
 
       // Create a reservation
       const reservationRequest = {
-         doer_id: doer.doer_id,
+         doer_id: doerId,
          requested_time: searchRequest,
          requested_services: searchServices,
          state: utils.ReservationStates.Requested
@@ -195,11 +196,11 @@ exports.acceptReservationRequests = (req, res) => {
             console.log("accepted reservation request");
             console.log(data);
         console.log(reservations[i]);
-            console.log("Doer id = " + reservations[i].doerId);
+            console.log("Doer id = " + req.body.doerId);
             Doer.increment('accepted_reservations_count', {
                by: 1,
                where: {
-                  doer_id: reservations[i].doer_id
+                  doer_id: req.body.doerId
                }
             });
          })
@@ -226,7 +227,7 @@ exports.acceptReservationRequests = (req, res) => {
 
 exports.declineReservationRequests = (req, res) => {
 
-   console.log("in decline reservation requests" + req.body.reservations);
+   console.log("in decline reservation requests" + JSON.stringify(req.body.reservations));
    const reservations = req.body.reservations;
 
    let errFlag = false;
@@ -244,7 +245,7 @@ exports.declineReservationRequests = (req, res) => {
             Doer.increment('declined_reservations_count', {
                by: 1,
                where: {
-                  doer_id: reservations[i].doer_id
+                  doer_id: reservations[i].doerId
                }
             });
          })
@@ -288,7 +289,7 @@ exports.abandonReservationRequests = (req, res) => {
             Doer.increment('abandoned_reservations_count', {
                by: 1,
                where: {
-                   doer_id: reservations[i].doer_id
+                   doer_id: reservations[i].doerId
                }
             });
          })
@@ -314,7 +315,8 @@ exports.abandonReservationRequests = (req, res) => {
 exports.completeReservationRequests = (req, res) => {
 
    console.log("completeReservationRequests request");
-   console.log(req.body.reservations);
+   console.log(JSON.stringify(req.body.reservations));
+
    const reservations = req.body.reservations;
 
 
@@ -334,7 +336,7 @@ exports.completeReservationRequests = (req, res) => {
             Doer.increment('completed_reservations_count', {
                by: 1,
                where: {
-                    doer_id: reservations[i].doer_id
+                    doer_id: reservations[i].doerId
                }
             });
          })
