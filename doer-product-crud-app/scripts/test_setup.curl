@@ -32,6 +32,12 @@ curl --header "Content-Type: application/json" \--request POST \--data '{"name":
 curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Stay Cleaned Up","services": "Carpet Cleaning , Pressure Washers","review_count": "727","phone_number": "(510) 888-3333","rating": "5.0","availability": "Thu: 7-19, Thu: 8-23","location": "{city: Hayward,state: CA,zip_code: 94541}","img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/_hH4S786rBT_9Ebcry5Pjw/o.jpg"}' \http://localhost:8080/api/doers
 curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Tender Loving Care House Cleaning Service","services": "Home Cleaning","review_count": "31","phone_number": "(510) 481-9193","rating": "4.0","availability": "Fri: 10-21, Sun: 10-17","location": "{city: Castro Valley,state: CA,zip_code: 94546}","img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/Hjn-cp1NgJSs_YFxPkcKuw/o.jpg"}' \http://localhost:8080/api/doers
 
+curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Jonny User","phone_number": "(925) 462-6456","rating": "5.0","address": "{city: Pleasanton,state: CA,zip_code: 94566}"}' \http://localhost:8080/api/doers/createUser
+
+curl --header "Content-Type: application/json" \--request GET \http://localhost:8080/api/doers/getUser?id=1
+
+curl --header "Content-Type: application/json" \--request GET \http://localhost:8080/api/doers/getAllUsers
+
 curl --header "Content-Type: application/json" \--request POST \--data '{"searchAvailability": "Fri: 14-17","searchServices": "Irrigation", "state": "requested", "doers_requested": [{"id": '"10"'}]}' \http://localhost:8080/api/doers/createScheduleRequests
 
 curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "10","reservations": [{"id":"11", "doerId": "10"}]}' \http://localhost:8080/api/doers/acceptReservationRequests
@@ -41,38 +47,4 @@ curl --header "Content-Type: application/json" \--request POST \--data '{"doerId
 curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "10","reservations": [{"id":"13", "doerId": "10"}]}' \http://localhost:8080/api/doers/abandonReservationRequests
 
 curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "10","reservations": [{"id":"14", "doerId": "10"}]}' \http://localhost:8080/api/doers/declineReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "18", "reservationId": "10", "note": "this is a note"}' \http://localhost:8080/api/doers/addNotesToJob
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"searchAvailability": "Thu: 9-10","searchServices": "Landscaping", "state": "requested", "doers_requested": [{"id": '"10"'}]}' \http://localhost:8080/api/doers/createScheduleRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"searchAvailability": "Sun: 9-14","searchServices": "Masonary", "state": "requested", "doers_requested": [{"id": '"5"'}]}' \http://localhost:8080/api/doers/createScheduleRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"searchAvailability": "Mon: 9-10","searchServices": "Concrete", "state": "requested", "doers_requested": [{"id": '"8"'}]}' \http://localhost:8080/api/doers/createScheduleRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"searchAvailability": "Thu: 9-10","searchServices": "Electrician", "state": "requested", "doers_requested": [{"id": '"15"'}]}' \http://localhost:8080/api/doers/createScheduleRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"searchAvailability": "Sun: 12-17","searchServices": "Electrician", "state": "requested", "doers_requested": [{"id": '"17"'}]}' \http://localhost:8080/api/doers/createScheduleRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"searchAvailability": "Fri: 9-10","searchServices": "Lighting", "state": "requested", "doers_requested": [{"id": '"18"'}]}' \http://localhost:8080/api/doers/createScheduleRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "10","reservations": [{"id":"11", "doerId": "10"}]}' \http://localhost:8080/api/doers/acceptReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "10","reservations": [{"id":"12", "doerId": "10"}]}' \http://localhost:8080/api/doers/completeReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "10","reservations": [{"id":"13", "doerId": "10"}]}' \http://localhost:8080/api/doers/abandonReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "10","reservations": [{"id":"14", "doerId": "10"}]}' \http://localhost:8080/api/doers/declineReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "9","reservations": [{"id":"4", "doerId": "9"}]}' \http://localhost:8080/api/doers/acceptReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "9","reservations": [{"id":"5", "doerId": "9"}]}' \http://localhost:8080/api/doers/completeReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "9","reservations": [{"id":"6", "doerId": "9"}]}' \http://localhost:8080/api/doers/abandonReservationRequests
-
-curl --header "Content-Type: application/json" \--request POST \--data '{"doerId": "9","reservations": [{"id":"7", "doerId": "9"}]}' \http://localhost:8080/api/doers/declineReservationRequests
-
-
-curl --header "Content-Type: application/json" \--request GET \http://localhost:8080/api/doers/getNotes?jobId=2
-
 

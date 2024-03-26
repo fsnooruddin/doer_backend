@@ -3,6 +3,7 @@ module.exports = app => {
   const reservationRequests = require("../controllers/reservationRequest.controller.js");
   const categories = require("../controllers/category.controller.js");
   const addresses = require("../controllers/address.controller.js");
+  const users = require("../controllers/user.controller.js");
 
   var router = require("express").Router();
 
@@ -52,6 +53,12 @@ module.exports = app => {
 
   router.get("/getAllAddresses", addresses.findAll);
 
+  router.post("/createUser", users.create);
+
+  router.get("/getUser", users.findOne);
+
+  router.get("/getAllUsers", users.findAll);
+
   // Create a new Doer
   router.post("/", doers.create);
 
@@ -63,6 +70,7 @@ module.exports = app => {
 
     // Delete a Doer with id
     router.delete("/:id", doers.delete);
+
 
   app.use('/api/doers', router);
 };

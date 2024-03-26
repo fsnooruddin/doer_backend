@@ -77,26 +77,9 @@ exports.setCurrentLocation = (req, res) => {
 // Retrieve all Users from the database
 // or only those whose title  matches
 exports.findAll = (req, res) => {
-  const name = req.query.name;
-  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  User.findAll({ where: condition })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Users."
-      });
-    });
-};
+ console.log("User-controller findAll");
 
-// Retrieve all Users from the database
-// or only those whose title  matches
-exports.find = (req, res) => {
-  console.log("query in find all is: " + JSON.stringify(req.query));
-  console.log(req.query.services);
   const name = req.query.name;
   var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
@@ -114,7 +97,7 @@ exports.find = (req, res) => {
 
 // Find a single User with an id
 exports.findOne = (req, res) => {
-  const id = req.params.id;
+  const id = req.query.id;
   console.log("User-controller findOne");
   User.findByPk(id)
     .then(data => {
