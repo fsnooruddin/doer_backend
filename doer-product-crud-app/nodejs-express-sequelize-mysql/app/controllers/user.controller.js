@@ -10,21 +10,21 @@ exports.create = (req, res) => {
   console.log(req.body);
 
   // Validate request
-  if (!req.body.name) {
+  if (!req.body.full_name) {
     res.status(400).send({
       message: "name can not be empty in create user!"
     });
     return;
   }
 
-
-
   // Create a User
   const user = {
-    name: req.body.name,
-    rating: req.body.rating,
+    full_name: req.body.full_name,
     phone_number: req.body.phone_number,
-    address: req.body.address
+    address_id: req.body.address_id,
+    ccard_id: req.body.ccard_id,
+    date_of_birth: req.body.date_of_birth,
+    gender: req.body.gender
   };
 
   console.log("new user in create user: ");
@@ -42,35 +42,6 @@ exports.create = (req, res) => {
           err.message || "Some error occurred while creating the user."
       });
     });
-};
-
-exports.setCurrentLocation = (req, res) => {
-
-   console.log("in settCurrentLoction");
-   console.log("body in accept Reservation Requests is: " + req.body.location);
-    console.log("user id in accept Reservation Requests is: " + req.body.user_id);
-   const location = req.body.location;
-   const userId = req.body.user_id;
-
-      // Save User in the database
-      User.update({
-            current_location: location
-         }, {
-            where: {
-               user_id: userId
-            }
-         })
-         .then(data => {
-            console.log("updated  user current location");
-            console.log(data);
-       })
-          .catch(err => {
-             res.status(500).send({
-               message:
-                 err.message || "Some error occurred while updating current location."
-             });
-           });
-
 };
 
 

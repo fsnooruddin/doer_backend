@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      name: {
+      full_name: {
          type: Sequelize.STRING,
          allowNull: false
       },
@@ -13,14 +13,18 @@ module.exports = (sequelize, Sequelize) => {
          type: Sequelize.STRING,
          allowNull: false
       },
-      address: {
-         type: Sequelize.STRING,
+      address_id: {
+         type: Sequelize.INTEGER.UNSIGNED,
          allowNull: false
       },
-      rating: {
-         type: Sequelize.INTEGER
+    ccard_id: {
+       type: Sequelize.INTEGER.UNSIGNED,
+       allowNull: false
+    },
+      date_of_birth: {
+         type: Sequelize.DATE
       },
-     current_location: {
+     gender: {
          type: Sequelize.STRING,
          allowNull: true
       }
