@@ -5,11 +5,14 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    address: {
+    address_type: {
           type: Sequelize.STRING,
           allowNull: false
     },
-    address2: {
+    address_1: {
+          type: Sequelize.STRING
+    },
+    address_2: {
           type: Sequelize.STRING
     },
     city: {
@@ -23,7 +26,15 @@ module.exports = (sequelize, Sequelize) => {
     zipcode: {
            type: Sequelize.STRING,
            allowNull: false
-    }
+    },
+        latitude: {
+               type: Sequelize.DOUBLE,
+               allowNull: false
+        },
+            longitude: {
+                   type: Sequelize.DOUBLE,
+                   allowNull: false
+            }
   } , {
     tableName: 'addresses'
   }

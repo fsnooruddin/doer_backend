@@ -11,11 +11,14 @@ exports.create = (req, res) => {
 
   // Create a category
   const address = {
-    address: req.body.address,
-    address2: req.body.address2,
+    address_1: req.body.address_1,
+    address_2: req.body.address_2,
     city: req.body.city,
     state: req.body.state,
-    zipcode: req.body.zipcode
+    zipcode: req.body.zipcode,
+    address_type: req.body.address_type,
+    latitude: req.body.latitude,
+    longitude: req.body.longitude
   };
 
   console.log("new address in create address: ");
