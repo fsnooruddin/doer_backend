@@ -6,6 +6,7 @@ module.exports = app => {
   const users = require("../controllers/user.controller.js");
   const ccards = require("../controllers/ccard.controller.js");
   const bookings = require("../controllers/booking.controller.js");
+  const certificates = require("../controllers/certificate.controller.js");
 
   var router = require("express").Router();
 
@@ -63,7 +64,9 @@ module.exports = app => {
 
   router.post("/createCCard", ccards.create);
 
-    router.post("/createBooking", bookings.create);
+  router.post("/createBooking", bookings.create);
+
+  router.post("/createCertificate", certificates.create);
 
   // Create a new Doer
   router.post("/", doers.create);
