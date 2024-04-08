@@ -21,14 +21,11 @@ exports.create = (req, res) => {
 
   // Create a Doer
   const doer = {
-    name: req.body.name,
-    services: req.body.services,
-    availability: req.body.availability,
-    rating: req.body.rating,
-    review_count: req.body.review_count,
-    img_url: req.body.img_url,
-    phone_number: req.body.phone_number,
-    location: req.body.location
+    user_id: req.body.user_id,
+    service_ids: req.body.service_ids,
+    certification_ids: req.body.certification_ids,
+    introduction: req.body.introduction,
+    availability_ids: req.body.availability_ids
   };
 
   console.log("new doer in create doer: ");

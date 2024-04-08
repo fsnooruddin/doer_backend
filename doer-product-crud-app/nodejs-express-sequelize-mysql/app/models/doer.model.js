@@ -5,58 +5,25 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
         autoIncrement: true
       },
-      name: {
+      user_id: {
          type: Sequelize.STRING,
          allowNull: false
       },
-      services: {
+      service_ids: {
          type: Sequelize.STRING,
          allowNull: false
       },
-      availability: {
+      certification_ids: {
          type: Sequelize.STRING,
          allowNull: false
       },
-      phone_number: {
+      introduction: {
          type: Sequelize.STRING,
          allowNull: false
       },
-      location: {
+      availability_ids: {
          type: Sequelize.STRING,
          allowNull: false
-      },
-      rating: {
-         type: Sequelize.INTEGER
-      },
-      review_count: {
-         type: Sequelize.INTEGER
-      },
-     current_location: {
-         type: Sequelize.STRING,
-         allowNull: true
-      },
-      img_url: {
-         type: Sequelize.STRING
-      },
-      accepted_reservations_count: {
-         type: Sequelize.INTEGER,
-         allowNull: false,
-         defaultValue: 0
-      },
-      declined_reservations_count: {
-         type: Sequelize.INTEGER,
-         allowNull: false,
-         defaultValue: 0
-      },
-      abandoned_reservations_count: {
-         type: Sequelize.INTEGER,
-         allowNull: false,
-         defaultValue: 0
-      },
-      completed_reservations_count: {
-         type: Sequelize.INTEGER,
-         allowNull: false,
-         defaultValue: 0
       }
    });
 
