@@ -18,5 +18,6 @@ db.categories = require("./category.model.js")(sequelize, Sequelize);
 db.addresses = require("./address.model.js")(sequelize, Sequelize);
 db.users = require("./user.model.js")(sequelize, Sequelize);
 db.ccards = require("./ccard.model.js")(sequelize, Sequelize);
+db.bookings = require("./booking.model.js")(sequelize, Sequelize);
 
 module.exports = db;

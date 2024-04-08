@@ -5,6 +5,7 @@ module.exports = app => {
   const addresses = require("../controllers/address.controller.js");
   const users = require("../controllers/user.controller.js");
   const ccards = require("../controllers/ccard.controller.js");
+  const bookings = require("../controllers/booking.controller.js");
 
   var router = require("express").Router();
 
@@ -61,6 +62,8 @@ module.exports = app => {
   router.get("/getAllUsers", users.findAll);
 
   router.post("/createCCard", ccards.create);
+
+    router.post("/createBooking", bookings.create);
 
   // Create a new Doer
   router.post("/", doers.create);
