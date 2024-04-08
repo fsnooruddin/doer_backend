@@ -32,7 +32,9 @@ curl --header "Content-Type: application/json" \--request POST \--data '{"name":
 curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Stay Cleaned Up","services": "Carpet Cleaning , Pressure Washers","review_count": "727","phone_number": "(510) 888-3333","rating": "5.0","availability": "Thu: 7-19, Thu: 8-23","location": "{city: Hayward,state: CA,zip_code: 94541}","img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/_hH4S786rBT_9Ebcry5Pjw/o.jpg"}' \http://localhost:8080/api/doers
 curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Tender Loving Care House Cleaning Service","services": "Home Cleaning","review_count": "31","phone_number": "(510) 481-9193","rating": "4.0","availability": "Fri: 10-21, Sun: 10-17","location": "{city: Castro Valley,state: CA,zip_code: 94546}","img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/Hjn-cp1NgJSs_YFxPkcKuw/o.jpg"}' \http://localhost:8080/api/doers
 
-curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Jonny User","phone_number": "(925) 462-6456","rating": "5.0","address": "{city: Pleasanton,state: CA,zip_code: 94566}"}' \http://localhost:8080/api/doers/createUser
+curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Jhonny User","phone_number": "(925) 462-6456","rating": "5.0","address": "{city: Pleasanton,state: CA,zip_code: 94566}"}' \http://localhost:8080/api/doers/createUser
+
+curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Susie User","phone_number": "(415) 462-6400","rating": "5.0","address": "{city: Atlanta,state: GA,zip_code: 34266}"}' \http://localhost:8080/api/doers/createUser
 
 curl --header "Content-Type: application/json" \--request GET \http://localhost:8080/api/doers/getUser?id=1
 
