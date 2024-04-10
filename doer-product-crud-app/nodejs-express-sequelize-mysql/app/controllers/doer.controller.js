@@ -10,15 +10,7 @@ exports.create = (req, res) => {
   console.log(req.body);
 
   // Validate request
-  if (!req.body.name) {
-    res.status(400).send({
-      message: "name can not be empty in create doer!"
-    });
-    return;
-  }
-
-
-
+ 
   // Create a Doer
   const doer = {
     user_id: req.body.user_id,

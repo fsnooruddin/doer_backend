@@ -27,5 +27,8 @@ module.exports = (sequelize, Sequelize) => {
       }
    });
 
+  certificates = require("./certificate.model.js")(sequelize, Sequelize);
+  Doer.hasMany(certificates, { foreignKey: 'certificate_id' });
+
    return Doer;
 };
