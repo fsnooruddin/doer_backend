@@ -9,6 +9,7 @@ module.exports = app => {
         const certificates = require("../controllers/certificate.controller.js");
         const payments = require("../controllers/payment.controller.js");
         const invoices = require("../controllers/invoice.controller.js");
+        const tasks = require("../controllers/task.controller.js");
 
         var router = require("express").Router();
 
@@ -72,6 +73,9 @@ module.exports = app => {
 
         router.post("/createInvoice", invoices.create);
         router.get("/getInvoice", invoices.findOne);
+
+        router.post("/createTask", tasks.create);
+        router.get("/getTask", tasks.findOne);
 
         app.use('/api/doers', router);
         };
