@@ -23,5 +23,6 @@ db.doers = require("./doer.model.js")(sequelize, Sequelize);
 db.addresses = require("./address.model.js")(sequelize, Sequelize);
 db.ccards = require("./ccard.model.js")(sequelize, Sequelize);
 db.payments = require("./payment.model.js")(sequelize, Sequelize);
+db.invoices = require("./invoice.model.js")(sequelize, Sequelize);
 
 module.exports = db;

@@ -7,13 +7,13 @@ module.exports = app => {
         const ccards = require("../controllers/ccard.controller.js");
         const bookings = require("../controllers/booking.controller.js");
         const certificates = require("../controllers/certificate.controller.js");
+        const payments = require("../controllers/payment.controller.js");
+        const invoices = require("../controllers/invoice.controller.js");
 
         var router = require("express").Router();
 
         router.get("/getNotes", reservationRequests.getJobNotes);
 
-        // Retrieve all doers
-        router.get("/", doers.findAll);
 
         // Retrieve all doers
         router.get("/management", doers.findByAvailability);
@@ -24,9 +24,6 @@ module.exports = app => {
 
         router.get("/finances", reservationRequests.getReservationFinances);
 
-        router.get("/categories", categories.findOne);
-
-        router.get("/getAllCategories", categories.findAll);
 
         // Retrieve a
         router.get("/find", doers.findByAvailability);
@@ -37,28 +34,23 @@ module.exports = app => {
         router.delete("/", doers.deleteAll);
 
         router.post("/createScheduleRequests", reservationRequests.createScheduleRequests);
-
         router.post("/acceptReservationRequests", reservationRequests.acceptReservationRequests);
-
         router.post("/declineReservationRequests", reservationRequests.declineReservationRequests);
-
         router.post("/abandonReservationRequests", reservationRequests.abandonReservationRequests);
-
         router.post("/completeReservationRequests", reservationRequests.completeReservationRequests);
 
         router.post("/addNotesToJob", reservationRequests.addNotes);
 
         router.post("/addCategory", categories.create);
+        router.post("/getCategory", categories.findOne);
+        router.get("/getAllCategories", categories.findAll);
 
-        router.post("/addAddress", addresses.create);
+        router.post("/createAddress", addresses.create);
         router.get("/getAddress", addresses.findOne);
-
         router.get("/getAllAddresses", addresses.findAll);
 
         router.post("/createUser", users.create);
-
         router.get("/getUser", users.findOne);
-
         router.get("/getAllUsers", users.findAll);
 
         router.post("/createCCard", ccards.create);
@@ -72,9 +64,14 @@ module.exports = app => {
 
         // Create a new Doer
         router.post("/createDoer", doers.create);
-
-        // Retrieve a single Doer with id
         router.get("/getDoer", doers.findOne);
+        router.get("/getAllDoers", doers.findAll);
+
+        router.post("/createPayment", payments.create);
+        router.get("/getPayment", payments.findOne);
+
+        router.post("/createInvoice", invoices.create);
+        router.get("/getInvoice", invoices.findOne);
 
         app.use('/api/doers', router);
         };
