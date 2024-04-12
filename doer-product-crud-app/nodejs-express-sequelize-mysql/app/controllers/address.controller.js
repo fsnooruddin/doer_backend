@@ -44,7 +44,7 @@ exports.findOne = (req, res) => {
 
     Address.findAll({
             where: {
-                id: id
+                address_id: id
             }
         })
         .then(data => {

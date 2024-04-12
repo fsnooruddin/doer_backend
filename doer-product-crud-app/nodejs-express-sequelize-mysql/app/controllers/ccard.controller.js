@@ -12,6 +12,7 @@ exports.create = (req, res) => {
 
     // Create a Doer
     const ccard = {
+        ccard_id: req.body.ccard_id,
         cardholder_name: req.body.cardholder_name,
         number: req.body.number,
         type: req.body.type,

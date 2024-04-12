@@ -11,7 +11,6 @@ exports.create = (req, res) => {
 
     // Create a invoice
     const invoice = {
-        invoice_id: req.body.invoice_id,
         task_id: req.body.task_id,
         rate: req.body.rate,
         job_id: req.body.job_id,

@@ -15,7 +15,7 @@ exports.create = (req, res) => {
     const doer = {
         user_id: req.body.user_id,
         service_ids: req.body.service_ids,
-        certification_ids: req.body.certification_ids,
+        certificate_id: req.body.certificate_id,
         introduction: req.body.introduction,
         availability_ids: req.body.availability_ids
     };

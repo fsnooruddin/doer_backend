@@ -12,6 +12,7 @@ exports.create = (req, res) => {
 
     // Create a Doer
     const certificate = {
+        certificate_id: req.body.certificate_id,
         title: req.body.title,
         provider: req.body.provider,
         task_ids: req.body.task_ids,
