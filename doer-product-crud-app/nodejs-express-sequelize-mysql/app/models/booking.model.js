@@ -6,11 +6,11 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true
         },
         user_id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         doer_id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         booking_type: {
@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         job_id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         type_of_booking: {
@@ -34,7 +34,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         invoice_id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         status: {
@@ -42,7 +42,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         address_id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         req_period: {

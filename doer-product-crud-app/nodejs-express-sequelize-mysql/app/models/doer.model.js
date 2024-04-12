@@ -9,12 +9,12 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-        service_ids: {
+        certificate_id: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        certification_ids: {
-            type: Sequelize.STRING,
+        service_ids: {
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         introduction: {
@@ -25,11 +25,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         }
-    });
-
-    certificates = require("./certificate.model.js")(sequelize, Sequelize);
-    Doer.hasMany(certificates, {
-        foreignKey: 'certificate_id'
     });
 
     return Doer;

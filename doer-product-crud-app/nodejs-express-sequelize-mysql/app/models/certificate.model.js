@@ -2,8 +2,7 @@ module.exports = (sequelize, Sequelize) => {
     const Certificate = sequelize.define("certificate", {
         certificate_id: {
             type: Sequelize.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         title: {
             type: Sequelize.STRING,
@@ -14,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         task_ids: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         level: {
@@ -29,6 +28,11 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         }
+    });
+
+    doers = require("./doer.model.js")(sequelize, Sequelize);
+    Certificate.hasOne(doers, {
+        foreignKey: 'certificate_id'
     });
 
     return Certificate;

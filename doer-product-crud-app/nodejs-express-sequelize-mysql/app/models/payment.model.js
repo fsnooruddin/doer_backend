@@ -6,11 +6,11 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true
         },
         invoice_ids: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         total_amount: {
-            type: Sequelize.STRING,
+            type: Sequelize.DECIMAL,
             allowNull: false
         },
         ccard_id: {

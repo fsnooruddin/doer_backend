@@ -6,11 +6,11 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true
         },
         task_id: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
         rate: {
-            type: Sequelize.STRING,
+            type: Sequelize.DECIMAL,
             allowNull: false
         },
         job_id: {
@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         amount: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.DECIMAL,
             allowNull: false
         }
     });
