@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        invoice_ids: {
+        invoice_id: {
             type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         },
@@ -17,6 +17,11 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false
         }
+    });
+
+   invoices = require("./invoice.model.js")(sequelize, Sequelize);
+   Payment.hasOne(invoices, {
+        foreignKey: 'invoice_id'
     });
 
     return Payment;

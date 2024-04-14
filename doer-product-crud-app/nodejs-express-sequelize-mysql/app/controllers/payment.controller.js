@@ -11,7 +11,7 @@ exports.create = (req, res) => {
 
     // Create a payment
     const payment = {
-        invoice_ids: req.body.invoice_ids,
+        invoice_id: req.body.invoice_id,
         total_amount: req.body.total_amount,
         ccard_id: req.body.ccard_id
     };

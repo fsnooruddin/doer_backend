@@ -23,5 +23,10 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
+   invoices = require("./invoice.model.js")(sequelize, Sequelize);
+   Task.hasOne(invoices, {
+        foreignKey: 'task_id'
+    });
+
     return Task;
 };
