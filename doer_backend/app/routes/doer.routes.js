@@ -7,6 +7,7 @@ module.exports = app => {
 
 
         router.post("/createDoer", doers.create);
+        router.post("/acceptJob", doers.acceptJob);
         router.get("/getDoerById", doers.findById);
         router.get("/getDoerByServices", doers.findByServices);
         router.get("/getAllDoers", doers.findAll);

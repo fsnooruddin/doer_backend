@@ -1,6 +1,7 @@
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Doer = db.doers;
+const AcceptedJobs = db.accepted_jobs;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require('../schemas/doer.js');
 const Joi = require('joi');
@@ -104,6 +105,34 @@ exports.findAll = (req, res) => {
 
 
 };
+
+// Retrieve all Users from the database
+// or only those whose title  matches
+exports.acceptJob = (req, res) => {
+
+    console.log("Doer-controller acceptJob");
+    const doerId = req.query.doerId;
+    const jobReqId = req.query.jobId;
+
+ // Create a doer
+    const accepted_job = {
+        doer_id: doerId,
+        job_request_id: jobReqId
+    };
+
+      // Save doer in the database
+        AcceptedJobs.create(accepted_job)
+            .then(data => {
+                res.send(data);
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some error occurred while accepting the job."
+                });
+            });
+
+};
+
 
 /*
 exports.validateUserData = (data) => {
