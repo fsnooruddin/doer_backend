@@ -1,0 +1,8 @@
+module.exports = {
+  HOST: "doer_db",
+  USER: "doera_db_user",
+  PASSWORD: "ThePassword",
+  DB: "testdb",
+  dialect: "postgres"
+};
+
