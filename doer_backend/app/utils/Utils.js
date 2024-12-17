@@ -5,10 +5,10 @@ const Activity = db.activities;
 module.exports = {
     add_to_nofications_queue,
     save_to_schedule_entry_db,
-    escapeReturnString
+    escapeJSONString
 };
 
-function escapeReturnString(server_return_string) {
+function escapeJSONString(server_return_string) {
 
     var data_str = JSON.stringify(server_return_string);
     

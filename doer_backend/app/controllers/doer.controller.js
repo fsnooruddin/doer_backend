@@ -2,7 +2,7 @@ const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Doer = db.doers;
 const Op = db.Sequelize.Op;
-const { schema } = require('../schemas/doer.js');
+const { doerCreateSchema, doerGetSchema } = require('../schemas/doer.js');
 const Joi = require('joi');
 
 // Create and Save a new Doer
@@ -11,11 +11,17 @@ exports.create = (req, res) => {
     console.log("req body in create doer: ");
     console.log(req.body);
 
-    // Validate request
-    if (!req.body.full_name) {
+    const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
+    const validation = doerCreateSchema.validate(data_obj);
+
+    if(validation.error === undefined) {
+        console.log("doer schema validation succeeded");
+    } else {
+        console.log("\t doer schema validation failed");
+        console.log(validation.error.details[0].message);
         res.status(400).send({
-            message: "name can not be empty in create doer!"
-        });
+                    message: "input data failed doer scheme validation: " + validation.error.details[0].message
+                });
         return;
     }
 
@@ -27,11 +33,10 @@ exports.create = (req, res) => {
         services: req.body.services
     };
 
-    console.log("new user in create doer: ");
+    console.log("new doer in create doer: ");
     console.log(doer);
 
-
-    // Save User in the database
+    // Save doer in the database
     Doer.create(doer)
         .then(data => {
             res.send(data);
@@ -70,7 +75,7 @@ exports.findById = (req, res) => {
 exports.findByServices = (req, res) => {
     const services = req.query.services;
     console.log("Doer-controller findOne services = " + services);
-    Doer.findOne(
+    Doer.findAll(
         {
             where: {
                 services: {
