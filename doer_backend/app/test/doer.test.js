@@ -17,10 +17,30 @@ describe('POST /api/createDoer', () => {
       .send(reqCreateDoer)
       .set('Accept', 'application/json');
 
-     //expect(res.body).to.have.property("doer_id");
-     console.log(res);
+     expect(res.body).to.have.property("doer_id");
+     console.log(res.body);
 
 
   });
 });
 
+describe('get doers', function() {
+
+      it('returns doers list', async() => {
+
+        const res = await request.get('/getDoerByServices?services=%Concrete%');
+
+        console.log(res.body);
+
+      });
+
+      it('returns one activity', async() => {
+
+        const res = await request.get('/getDoerById?id=2');
+        console.log(res.body);
+
+
+
+      });
+
+});
