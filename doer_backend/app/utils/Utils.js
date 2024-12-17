@@ -5,7 +5,9 @@ const Activity = db.activities;
 module.exports = {
     add_to_nofications_queue,
     save_to_schedule_entry_db,
-    escapeJSONString
+    escapeJSONString,
+    getTimeFromAvailability,
+    getDayFromAvailability
 };
 
 function escapeJSONString(server_return_string) {
@@ -27,6 +29,20 @@ function escapeJSONString(server_return_string) {
     return JSON.parse(data_str);
 
 }
+
+function getDayFromAvailability(availability) {
+    const retArray = availability.split(":");
+        return retArray[0];
+  }
+
+  function getTimeFromAvailability(availability) {
+    const retArray = availability.split(":");
+    if(retArray[1] === undefined) {
+        return null;
+    } else {
+        return retArray[1];
+    }
+  }
 
 function add_to_nofications_queue(entry) {
 

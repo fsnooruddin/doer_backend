@@ -16,6 +16,12 @@ module.exports = (sequelize, Sequelize) => {
         services: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        status: {
+             type: Sequelize.DataTypes.ENUM,
+             values: ['requested', 'accepted','completed'],
+             allowNull: false,
+             defaultValue: 'requested'
         }
     });
 
