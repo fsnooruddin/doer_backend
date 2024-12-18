@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        full_name: {
+        name: {
             type: Sequelize.STRING,
             allowNull: false
         },
@@ -20,6 +20,18 @@ module.exports = (sequelize, Sequelize) => {
         services: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        availability: {
+             type: Sequelize.STRING,
+             allowNull: false
+        },
+        rating: {
+             type: Sequelize.FLOAT,
+             allowNull: false
+        },
+        rate: {
+             type: Sequelize.FLOAT,
+             allowNull: false
         }
     });
 

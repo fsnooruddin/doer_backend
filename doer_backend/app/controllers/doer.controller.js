@@ -31,10 +31,13 @@ exports.create = (req, res) => {
 
     // Create a doer
     const doer = {
-        full_name: req.body.full_name,
+        name: req.body.name,
         phone_number: req.body.phone_number,
         address: req.body.address,
-        services: req.body.services
+        services: req.body.services,
+        availability: req.body.availability,
+        rating: req.body.rating,
+        rate: req.body.rate
     };
 
     console.log("new doer in create doer: ");
@@ -144,11 +147,14 @@ exports.completeJob = (req, res) => {
     console.log("Doer-controller completeJob");
     const doerId = req.query.doerId;
     const jobReqId = req.query.jobId;
+    const duration = req.query.duration;
 
- // Create a doer
+ // Create a completed_job
     const completed_job = {
         doer_id: doerId,
-        job_request_id: jobReqId
+        job_request_id: jobReqId,
+        duration: duration,
+        cost: 44.5
     };
 
       // Save doer in the database

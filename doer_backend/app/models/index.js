@@ -11,6 +11,10 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.doers = require("./doer.model.js")(sequelize, Sequelize);
 db.job_requests = require("./job_request.model.js")(sequelize, Sequelize);
+//db.accepted_jobs = require("./accepted_job.model.js")(sequelize, Sequelize);
+//db.job_requests = require("./job_request.model.js")(sequelize, Sequelize);
+
+
 
 const AcceptedJob = sequelize.define('accepted_job', {
   doer_id: {
@@ -44,6 +48,14 @@ const CompletedJob = sequelize.define('completed_job', {
       key: 'job_request_id',
     },
   },
+  duration: {
+     type: Sequelize.DataTypes.FLOAT,
+      allowNull: false
+    },
+  cost: {
+     type: Sequelize.DataTypes.FLOAT,
+      allowNull: false
+    }
 });
 
 db.accepted_jobs = AcceptedJob;
