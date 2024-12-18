@@ -30,6 +30,7 @@ exports.create = (req, res) => {
 
     // Create a doer
     const job_request = {
+        user_id: req.body.user_id,
         time: req.body.time,
         location: req.body.location,
         services: req.body.services

@@ -1,7 +1,8 @@
 const db = require("../models");
-const utils = require("../utils/Utils.js");
+const Utils = require("../utils/Utils.js");
 const Doer = db.doers;
 const AcceptedJobs = db.accepted_jobs;
+const CompletedJobs = db.completed_jobs;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require('../schemas/doer.js');
 const Joi = require('joi');
@@ -12,9 +13,10 @@ exports.create = (req, res) => {
     console.log("req body in create doer: ");
     console.log(req.body);
 
-    const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
+    const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
     const validation = doerCreateSchema.validate(data_obj);
 
+/*
     if(validation.error === undefined) {
         console.log("doer schema validation succeeded");
     } else {
@@ -25,6 +27,7 @@ exports.create = (req, res) => {
                 });
         return;
     }
+*/
 
     // Create a doer
     const doer = {
@@ -123,6 +126,7 @@ exports.acceptJob = (req, res) => {
       // Save doer in the database
         AcceptedJobs.create(accepted_job)
             .then(data => {
+                Utils.add_to_nofications_queue("accepted_jobs", accepted_job);
                 res.send(data);
             })
             .catch(err => {
@@ -133,13 +137,40 @@ exports.acceptJob = (req, res) => {
 
 };
 
+// Retrieve all Users from the database
+// or only those whose title  matches
+exports.completeJob = (req, res) => {
+
+    console.log("Doer-controller completeJob");
+    const doerId = req.query.doerId;
+    const jobReqId = req.query.jobId;
+
+ // Create a doer
+    const completed_job = {
+        doer_id: doerId,
+        job_request_id: jobReqId
+    };
+
+      // Save doer in the database
+        CompletedJobs.create(completed_job)
+            .then(data => {
+                Utils.add_to_nofications_queue("completed_jobs", completed_job);
+                res.send(data);
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some error occurred while completing the job."
+                });
+            });
+
+};
 
 /*
 exports.validateUserData = (data) => {
 
     console.log("Validating data: " + JSON.stringify(data));
 
-    const data_obj = JSON.parse(utils.escapeReturnString(JSON.stringify(data)));
+    const data_obj = JSON.parse(Utils.escapeReturnString(JSON.stringify(data)));
     console.log("Validating data: " + data_obj);
     console.log("Validating data: " + typeof data_obj);
     const validation = schema.validate(data_obj);

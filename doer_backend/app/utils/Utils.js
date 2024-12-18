@@ -1,10 +1,7 @@
 const db = require("../models");
-const ScheduleEntry = db.schedule_enteries;
-const Activity = db.activities;
 
 module.exports = {
     add_to_nofications_queue,
-    save_to_schedule_entry_db,
     escapeJSONString,
     getTimeFromAvailability,
     getDayFromAvailability
@@ -44,12 +41,12 @@ function getDayFromAvailability(availability) {
     }
   }
 
-function add_to_nofications_queue(entry) {
+function add_to_nofications_queue(topic, entry) {
 
-    console.log("in add to notifications queue + " + entry.title.toString());
+    console.log("in add to notifications queue ");
 
     const kafka = require('kafka-node');
-    const kafka_topic = 'sample';
+    const kafka_topic = topic;
     try {
         const Producer = kafka.Producer;
         const client = new kafka.KafkaClient({
@@ -59,18 +56,11 @@ function add_to_nofications_queue(entry) {
 
         console.log("Producer Initialised..");
 
-
-        const msg = {
-            "title": entry.title,
-            "schedule": entry.schedule,
-            "patient_id": "22",
-            "caregiver_id": "33"
-        };
-        console.log("message in queue is " + JSON.stringify(msg));
+        console.log("message in queue is " + JSON.stringify(entry));
 
         payload = [{
-            topic: 'sample',
-            messages: JSON.stringify(msg),
+            topic:  kafka_topic,
+            messages: JSON.stringify(entry),
             partition: 0
         }, ];
 
@@ -95,15 +85,4 @@ function add_to_nofications_queue(entry) {
     }
 }
 
-async function save_to_schedule_entry_db(entry) {
 
-  console.log("in save_to_schedule_entry_db");
-  console.log(entry);
-
-    try {
-        data = await ScheduleEntry.create(entry);
-    } catch (err) {
-        console.log("Could not create Successfully created scheduled entry");
-        console.log(err);
-    };
-}
