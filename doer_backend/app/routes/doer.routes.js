@@ -5,18 +5,15 @@ module.exports = app => {
      
         var router = require("express").Router();
 
-
         router.post("/createDoer", doers.create);
         router.post("/acceptJob", doers.acceptJob);
         router.post("/completeJob", doers.completeJob);
 
         router.get("/getDoerById", doers.findById);
         router.get("/getDoerByServices", doers.findByServices);
-        router.get("/getAllDoers", doers.findAll);
 
         router.post("/createJobRequest", job_requests.create);
         router.get("/findEligibleDoers", job_requests.findEligibleDoers);
-
 
         app.use('/api/doer', router);
 
