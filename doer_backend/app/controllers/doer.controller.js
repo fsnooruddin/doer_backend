@@ -243,6 +243,20 @@ async function getHistory(req, res) {
     const id = req.query.id;
     console.log("User-controller getHistory id = " + id);
 
+const doer = await Doer.findOne({ where: { doer_id: id } })
+		.then((data) => {
+			return data;
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					"Error retrieving doer for rate with doer id=" +
+					doerId +
+					" error: " +
+					err.message,
+			});
+		});
+
 const completed_jobs_history = await CompletedJobs.findAll({
 		where: { doer_id: id },
 		attributes: {exclude: ["updatedAt"]}
@@ -278,6 +292,7 @@ const accepted_jobs_history = await AcceptedJobs.findAll({
 		});
 
     const history = {
+        doer_profile: doer,
         completed_jobs: completed_jobs_history,
         accepted_jobs: accepted_jobs_history
     };
