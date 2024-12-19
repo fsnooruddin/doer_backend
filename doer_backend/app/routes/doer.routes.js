@@ -11,6 +11,7 @@ module.exports = app => {
 
         router.get("/getDoerById", doers.findById);
         router.get("/getDoerByServices", doers.findByServices);
+        router.get("/getDoerHistory", doers.getHistory);
 
         router.post("/createJobRequest", job_requests.create);
         router.get("/findEligibleDoers", job_requests.findEligibleDoers);

@@ -237,13 +237,53 @@ exports.validateUserData = (data) => {
 };
 
 
-// Find a single User with an id
-exports.findOne = (req, res) => {
-    const id = req.query.id;
-    console.log("User-controller findOne id = " + id);
-
-};
 */
+
+async function getHistory(req, res) {
+    const id = req.query.id;
+    console.log("User-controller getHistory id = " + id);
+
+const completed_jobs_history = await CompletedJobs.findAll({
+		where: { doer_id: id },
+		attributes: {exclude: ["updatedAt"]}
+	})
+		.then((data) => {
+			return data;
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					"Error retrieving completed_jobs for doer id=" +
+					id +
+					" error: " +
+					err.message,
+			});
+		});
+
+const accepted_jobs_history = await AcceptedJobs.findAll({
+		where: { doer_id: id },
+		attributes: {exclude: ["updatedAt"]}
+	})
+		.then((data) => {
+			return data;
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					"Error retrieving accepted_jobs for doer id=" +
+					id +
+					" error: " +
+					err.message,
+			});
+		});
+
+    const history = {
+        completed_jobs: completed_jobs_history,
+        accepted_jobs: accepted_jobs_history
+    };
+
+		res.send(history);
+};
 
 module.exports = {
 	create,
@@ -251,4 +291,5 @@ module.exports = {
 	findByServices,
 	acceptJob,
 	completeJob,
+	getHistory
 };
