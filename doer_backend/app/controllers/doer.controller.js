@@ -129,7 +129,7 @@ function acceptJob(req, res) {
 	// Save doer in the database
 	AcceptedJobs.create(accepted_job)
 		.then((data) => {
-			Utils.add_to_nofications_queue("accepted_jobs", accepted_job);
+			//Utils.add_to_nofications_queue("accepted_jobs", accepted_job);
 			res.send(data);
 		})
 		.catch((err) => {
@@ -199,7 +199,7 @@ async function completeJob(req, res) {
 	// Save doer in the database
 	CompletedJobs.create(completed_job)
 		.then((data) => {
-			Utils.add_to_nofications_queue("completed_jobs", completed_job);
+			//Utils.add_to_nofications_queue("completed_jobs", completed_job);
 			res.send(data);
 		})
 		.catch((err) => {
@@ -240,10 +240,13 @@ exports.validateUserData = (data) => {
 */
 
 async function getHistory(req, res) {
-    const id = req.query.id;
-    console.log("User-controller getHistory id = " + id);
+	const id = req.query.id;
+	console.log("User-controller getHistory id = " + id);
 
-const doer = await Doer.findOne({ where: { doer_id: id } })
+	const doer = await Doer.findOne({
+		where: { doer_id: id },
+		attributes: { exclude: ["updatedAt"] },
+	})
 		.then((data) => {
 			return data;
 		})
@@ -257,9 +260,9 @@ const doer = await Doer.findOne({ where: { doer_id: id } })
 			});
 		});
 
-const completed_jobs_history = await CompletedJobs.findAll({
+	const completed_jobs_history = await CompletedJobs.findAll({
 		where: { doer_id: id },
-		attributes: {exclude: ["updatedAt"]}
+		attributes: { exclude: ["updatedAt"] },
 	})
 		.then((data) => {
 			return data;
@@ -274,9 +277,9 @@ const completed_jobs_history = await CompletedJobs.findAll({
 			});
 		});
 
-const accepted_jobs_history = await AcceptedJobs.findAll({
+	const accepted_jobs_history = await AcceptedJobs.findAll({
 		where: { doer_id: id },
-		attributes: {exclude: ["updatedAt"]}
+		attributes: { exclude: ["updatedAt"] },
 	})
 		.then((data) => {
 			return data;
@@ -291,14 +294,14 @@ const accepted_jobs_history = await AcceptedJobs.findAll({
 			});
 		});
 
-    const history = {
-        doer_profile: doer,
-        completed_jobs: completed_jobs_history,
-        accepted_jobs: accepted_jobs_history
-    };
+	const history = {
+		doer_profile: doer,
+		completed_jobs: completed_jobs_history,
+		accepted_jobs: accepted_jobs_history,
+	};
 
-		res.send(history);
-};
+	res.send(history);
+}
 
 module.exports = {
 	create,
@@ -306,5 +309,5 @@ module.exports = {
 	findByServices,
 	acceptJob,
 	completeJob,
-	getHistory
+	getHistory,
 };

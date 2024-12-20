@@ -2,6 +2,7 @@ const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Doer = db.doers;
 const DoerTrip = db.doer_trips;
+const DoerTripLocationUpdate = db.doer_trip_location_updates;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
 const Joi = require("joi");
@@ -14,7 +15,6 @@ function create(req, res) {
 	const data_obj = JSON.parse(
 		Utils.escapeJSONString(JSON.stringify(req.body)),
 	);
-
 
 	/*
     if(validation.error === undefined) {
@@ -69,31 +69,33 @@ function findByDoerId(req, res) {
 		});
 }
 
-
 async function updateDoerTripLocation(req, res) {
-    const id = req.body.id;
-    const location_update = req.body.location_update;
-    console.log("Doer Trip-controller updateDoerTripLocation id = " + id);
+	const id = req.body.id;
 
-const doer = await DoerTripLocationUpdate.create({ where: { doer_id: id },
+	console.log("Doer Trip-controller updateDoerTripLocation id = " + id);
 
-})
+	const update = {
+		doer_trip_id: id,
+		location_update: req.body.location_update,
+	};
+
+	const doer = await DoerTripLocationUpdate.create(update)
 		.then((data) => {
-			return data;
+			res.send(data);
 		})
 		.catch((err) => {
 			res.status(500).send({
 				message:
-					"Error retrieving doer for rate with doer id=" +
-					doerId +
+					"Error updating location for trip with id =" +
+					id +
 					" error: " +
 					err.message,
 			});
 		});
-};
+}
 
 module.exports = {
 	create,
 
-	updateDoerTripLocation
+	updateDoerTripLocation,
 };

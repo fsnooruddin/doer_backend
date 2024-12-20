@@ -19,7 +19,7 @@ module.exports = app => {
         router.post("/completeJob", doers.completeJob);
 
         router.post("/createDoerTrip", doer_trips.create);
-       // router.post("/updateDoerTripLocation", job_requests.create);
+        router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);
 
         app.use('/api/doer', router);
 

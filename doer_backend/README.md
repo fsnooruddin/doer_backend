@@ -1,5 +1,84 @@
 # Node.js Rest APIs with Express, Sequelize & MySQL example
 
+{
+"code": 201,
+"message": "trip_created",
+"description": "The trip is created successfully.",
+"trip": {
+"id": "620f26ad9ba7360496bc1be7",
+"name": "Test Delivery",
+"description": "item pickup for test users",
+"trip_state": "created",
+"total_distance": 0,
+"total_duration": 0,
+"total_elevation_gain": 0,
+"metadata": {
+"_id": 21,
+"order_id": "1123"
+},
+"start_location": {},
+"end_location": {},
+"user": {
+"id": "61ffb486d2c69840ee518073",
+"name": "",
+"description": "1200",
+"metadata": {
+"Mobile": "1234567890",
+"Name": "Nikhil"
+}
+},
+"started_at": null,
+"ended_at": null,
+"created_at": "2022-02-18T04:55:09.660",
+"updated_at": "2022-02-18T04:55:09.660",
+"events": [],
+"stops": [
+{
+"id": "620f26ad9ba7360496bc1be5",
+"name": "Delivery",
+"description": "test Pickup for Johan",
+"metadata": {
+"order_id": "1120"
+},
+"address": "Flat NO 121 MG road ",
+"geometry_radius": 20,
+"geometry": {
+"type": "Point",
+"coordinates": [
+77.6879689,
+27.4072289
+]
+},
+"created_at": "2022-02-18T04:55:09.658",
+"updated_at": "2022-02-18T04:55:09.658",
+"arrived_at": null,
+"departed_at": null
+},
+{
+"id": "620f26ad9ba7360496bc1be6",
+"name": "Delivery",
+"description": "another tester Pickup for Johan",
+"metadata": {
+"order_id": "1129"
+},
+"address": "teacher colony ",
+"geometry_radius": 200,
+"geometry": {
+"type": "Point",
+"coordinates": [
+77.6925657818137,
+27.422398561298454
+]
+},
+"created_at": "2022-02-18T04:55:09.659",
+"updated_at": "2022-02-18T04:55:09.659",
+"arrived_at": null,
+"departed_at": null
+}
+]
+}
+}
+
 For more detail, please visit:
 > [Build Node.js Rest APIs with Express, Sequelize & MySQL](https://www.bezkoder.com/node-js-express-sequelize-mysql/)
 
