@@ -28,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "mocha './app/**/doer_trip.test.js' --reporter mochawesome --require mochawesome/register",
+    "test": "mocha './app/**/*.test.js' --reporter mochawesome --require mochawesome/register",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

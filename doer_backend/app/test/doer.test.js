@@ -8,7 +8,7 @@ const request = require('supertest')('http://localhost:3721/api/doer');
 
 const { reqCreateDoer_1, reqCreateDoer_2 } = require("./data/doer.test.data.js");
 
-describe('POST /api/createDoer', () => {
+describe('create doer tests', () => {
 
   it('should create a new doer', async () => {
     const res = await request

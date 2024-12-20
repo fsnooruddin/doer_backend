@@ -12,6 +12,7 @@ db.sequelize = sequelize;
 
 db.doers = require("./doer.model.js")(sequelize, Sequelize);
 db.job_requests = require("./job_request.model.js")(sequelize, Sequelize);
+db.categories = require("./category.model.js")(sequelize, Sequelize);
 
 const AcceptedJob = sequelize.define("accepted_job", {
 	doer_id: {

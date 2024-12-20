@@ -3,6 +3,7 @@ module.exports = app => {
         const doers = require("../controllers/doer.controller.js");
         const job_requests = require("../controllers/job_request.controller.js");
         const doer_trips = require("../controllers/doer_trip.controller.js");
+        const categories = require("../controllers/category.controller.js");
      
         var router = require("express").Router();
 
@@ -20,6 +21,8 @@ module.exports = app => {
 
         router.post("/createDoerTrip", doer_trips.create);
         router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);
+
+        router.post("/createCategory", categories.create);
 
         app.use('/api/doer', router);
 

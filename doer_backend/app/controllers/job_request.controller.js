@@ -1,3 +1,5 @@
+"use strict";
+
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const JobRequest = db.job_requests;

@@ -1,3 +1,5 @@
+"use strict";
+
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Category = db.categories;
