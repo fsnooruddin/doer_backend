@@ -8,7 +8,23 @@ module.exports = (sequelize, Sequelize) => {
         name: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+                alias: {
+                    type: Sequelize.STRING,
+                    allowNull: false
+                },
+                parent_aliases: {
+                                    type: Sequelize.STRING,
+                                    allowNull: false
+                                },
+
+    parent_id: {
+            type: Sequelize.INTEGER,
+            allowNull: true
         }
+    },
+    {
+        timestamps: false
     });
 
     return Category;

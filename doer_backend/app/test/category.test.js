@@ -7,6 +7,7 @@ const request = require('supertest')('http://localhost:3721/api/doer');
 
 
 const { reqCreateCategory_1, reqCreateCategory_2 } = require("./data/category.test.data.js");
+ const { yelp_categories_test_data } = require("./data/categories_top_level.test.data.js");
 
 describe('create categories', () => {
 
@@ -27,7 +28,22 @@ it('should create a new category', async () => {
       .set('Accept', 'application/json');
 
     // expect(res.body).to.have.property("category_id");
-     console.log(res.body);
+    // console.log(res.body);
   });
+
+  it('should create a new category', async () => {
+
+      console.log(yelp_categories_test_data.categories[6]);
+      const entry = yelp_categories_test_data.categories[6];
+      entry.name = entry.title;
+      console.log(entry);
+       const res = await request
+            .post('/createCategory')
+            .send(entry)
+            .set('Accept', 'application/json');
+
+      // expect(res.body).to.have.property("category_id");
+     //  console.log(res.body);
+    });
 
 });

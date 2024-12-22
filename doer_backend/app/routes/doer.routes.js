@@ -23,6 +23,8 @@ module.exports = app => {
         router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);
 
         router.post("/createCategory", categories.create);
+        router.get("/getCategoryById", categories.findOneById);
+        router.get("/getCategoryByName", categories.findOneByName);
 
         app.use('/api/doer', router);
 

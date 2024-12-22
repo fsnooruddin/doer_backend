@@ -5,7 +5,7 @@ console.log(cat_data.categories.length);
 
 
 var out_data = [];
-var logger = fs.createWriteStream('categories.test.data.js', {
+var logger = fs.createWriteStream('categories.top-level.test.data.js', {
   flags: 'a' // 'a' means appending (old data will be preserved)
 })
 
@@ -15,7 +15,7 @@ for (let i = 0; i < cat_data.categories.length; i++) {
 
   var entry = cat_data.categories[i];
 
-  //if(entry.parent_aliases.length == 0) {
+  if(entry.parent_aliases.length == 0) {
    // console.log("top level category = " + entry.title);
   //  entry.parent_id = null;
   delete entry.country_whitelist;
@@ -28,7 +28,7 @@ for (let i = 0; i < cat_data.categories.length; i++) {
    // logger.write(JSON.stringify(entry));
    // logger.write(",\n");
 
- // }
+  }
 }
 logger.write(JSON.stringify(out_data));
 logger.write("};");
