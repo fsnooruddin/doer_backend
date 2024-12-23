@@ -7,7 +7,6 @@ module.exports = (app) => {
 	var router = require("express").Router();
 
 	router.post("/createDoer", doers.create);
-
 	router.get("/getDoerById", doers.findById);
 	router.get("/getDoerByServices", doers.findByServices);
 	router.get("/getDoerHistory", doers.getHistory);
