@@ -15,9 +15,7 @@ function create(req, res) {
 	console.log("req body in create doer: ");
 	console.log(req.body);
 
-	const data_obj = JSON.parse(
-		Utils.escapeJSONString(JSON.stringify(req.body)),
-	);
+	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 	const validation = doerCreateSchema.validate(data_obj);
 
 	/*
@@ -42,6 +40,7 @@ function create(req, res) {
 		availability: req.body.availability,
 		rating: req.body.rating,
 		rate: req.body.rate,
+		img_url: req.body.img_url,
 	};
 
 	console.log("new doer in create doer: ");
@@ -54,9 +53,7 @@ function create(req, res) {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					err.message ||
-					"Some error occurred while creating the doer.",
+				message: err.message || "Some error occurred while creating the doer.",
 			});
 		});
 }
@@ -79,10 +76,7 @@ function findById(req, res) {
 		.catch((err) => {
 			res.status(500).send({
 				message:
-					"Error retrieving Doer with id=" +
-					id +
-					" error: " +
-					err.message,
+					"Error retrieving Doer with id=" + id + " error: " + err.message,
 			});
 		});
 }
@@ -107,10 +101,7 @@ function findByServices(req, res) {
 		.catch((err) => {
 			res.status(500).send({
 				message:
-					"Error retrieving Doer with id=" +
-					id +
-					" error: " +
-					err.message,
+					"Error retrieving Doer with id=" + id + " error: " + err.message,
 			});
 		});
 }
@@ -136,9 +127,7 @@ function acceptJob(req, res) {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					err.message ||
-					"Some error occurred while accepting the job.",
+				message: err.message || "Some error occurred while accepting the job.",
 			});
 		});
 }
@@ -206,9 +195,7 @@ async function completeJob(req, res) {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					err.message ||
-					"Some error occurred while completing the job.",
+				message: err.message || "Some error occurred while completing the job.",
 			});
 		});
 }

@@ -14,9 +14,7 @@ function create(req, res) {
 	console.log("req body in create Doer Trip: ");
 	console.log(req.body);
 
-	const data_obj = JSON.parse(
-		Utils.escapeJSONString(JSON.stringify(req.body)),
-	);
+	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 
 	/*
     if(validation.error === undefined) {
@@ -39,8 +37,7 @@ function create(req, res) {
 		.catch((err) => {
 			res.status(500).send({
 				message:
-					err.message ||
-					"Some error occurred while creating the doer trip.",
+					err.message || "Some error occurred while creating the doer trip.",
 			});
 		});
 }
@@ -63,10 +60,7 @@ function findByDoerId(req, res) {
 		.catch((err) => {
 			res.status(500).send({
 				message:
-					"Error retrieving Doer with id=" +
-					id +
-					" error: " +
-					err.message,
+					"Error retrieving Doer with id=" + id + " error: " + err.message,
 			});
 		});
 }

@@ -6,7 +6,8 @@ const reqCreateDoer_1 = {
   "services": "Masonry/Concrete",
   "availability": "Mon: 10-18, Mon: 8-14",
   "rating": "4.5",
-  "rate": "65"
+  "rate": "65",
+  "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/uBghgJyotD86qHrICm9SuA/o.jpg"
 }
 
 const reqCreateDoer_2 = {
@@ -17,7 +18,8 @@ const reqCreateDoer_2 = {
   "address": "1117 Brookside Ave, Richmond, CA 94805",
   "availability": "Sat: 10-16, Sun: 11-18",
   "rating": "4.5",
-  "rate": "75"
+  "rate": "75",
+  "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/uBghgJyotD86qHrICm9SuA/o.jpg"
 }
 
 const reqCreateDoer_3 = {

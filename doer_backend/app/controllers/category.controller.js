@@ -10,12 +10,10 @@ const Joi = require("joi");
 
 // Create and Save a new Category
 async function create(req, res) {
-	console.log("req body in create Category: ");
-	console.log(req.body);
+	//console.log("req body in create Category: ");
+	//console.log(req.body);
 
-	const data_obj = JSON.parse(
-		Utils.escapeJSONString(JSON.stringify(req.body)),
-	);
+	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 
 	/*
     if(validation.error === undefined) {
@@ -30,17 +28,16 @@ async function create(req, res) {
     }
 */
 
-    try {
-	// Save doer in the database
-	const response_data = await Category.create(data_obj);
-           res.status(200).send(response_data);
-		} catch(err) {
-			res.status(500).send({
-				message:
-					err.message ||
-					"Some error occurred while creating the Category.",
-			});
-		}
+	try {
+		// Save doer in the database
+		const response_data = await Category.create(data_obj);
+		res.status(200).send(response_data);
+	} catch (err) {
+		res.status(500).send({
+			message:
+				err.message || "Some error occurred while creating the Category.",
+		});
+	}
 }
 
 // Find a single category
@@ -48,62 +45,83 @@ async function findOneById(req, res) {
 	const id = req.query.id;
 	console.log("category-controller findOne id = " + id);
 	try {
-	const response_data = await Category.findAll({
-		where: {
-			category_id: id
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	});
+		const response_data = await Category.findAll({
+			where: {
+				category_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
 
-
-			res.send(response_data);
-
-	} catch(err)  {
-			res.status(500).send({
-				message:
-					"Error retrieving category with id=" +
-					id +
-					" error: " +
-					err.message,
-			});
-		}
+		res.send(response_data);
+	} catch (err) {
+		res.status(500).send({
+			message:
+				"Error retrieving category with id=" + id + " error: " + err.message,
+		});
+	}
 }
-
 
 // Find a single category
 async function findOneByName(req, res) {
 	const name = req.query.name;
-	const search_str = '%' + name + '%';
+	const search_str = "%" + name + "%";
 	console.log("category-controller findOne name = " + name);
 	try {
-	const response_data = await Category.findAll({
-		where: {
-			name: {
-            				[Op.iLike]: search_str
-            }
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
+		const response_data = await Category.findAll({
+			where: {
+				name: {
+					[Op.iLike]: search_str,
+				},
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
 
-			res.send(response_data);
+		res.send(response_data);
+	} catch (err) {
+		res.status(500).send({
+			message:
+				"Error retrieving category with name=" +
+				name +
+				" error: " +
+				err.message,
+		});
+	}
+}
 
-		} catch(err) {
-			res.status(500).send({
-				message:
-					"Error retrieving category with name=" +
-					name +
-					" error: " +
-					err.message,
-			});
-		}
+// Find a single category
+async function getCategoryTree(req, res) {
+	const id = req.query.id;
+
+
+	try {
+		const response_data = await Category.findAll({
+			where: {
+				parent_id: id
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+
+		res.send(response_data);
+	} catch (err) {
+		res.status(500).send({
+			message:
+				"Error retrieving category tree with id =" +
+				id +
+				" error: " +
+				err.message,
+		});
+	}
 }
 
 module.exports = {
 	create,
 	findOneByName,
-	findOneById
+	findOneById,
+	getCategoryTree
 };

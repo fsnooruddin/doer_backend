@@ -9,6 +9,7 @@ var uri = 'http://localhost:3721/api/doer/getCategoryByName?name=';
     for(let i=0;i<parents.length;i++) {
     uri = uri + parents[i];
     try {
+     console.log("calling for parent id = " + uri);
     const response_data = await request.get(uri);
        if(response_data.body.length > 0) {
        console.log("return parent id = " + response_data.body[0].category_id);
@@ -68,11 +69,11 @@ for(let i=0;i<categories_data.yelp_categories_test_data.categories.length;i++) {
 
     var entry = categories_data.yelp_categories_test_data.categories[i];
     entry.name = entry.title;
-    var new_aliases = flatten_parent_aliases(entry.parent_aliases);
-    entry.parent_aliases = new_aliases;
     entry.parent_id = null;
     var parent_id = await getParentId(entry.parent_aliases);
     //parent_id.resolve();
+     var new_aliases = flatten_parent_aliases(entry.parent_aliases);
+        entry.parent_aliases = new_aliases;
     if(parent_id == -1) {
        console.log("Couldn't get parent id ..." + JSON.stringify(entry));
        createCategory(entry);
