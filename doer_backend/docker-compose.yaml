@@ -19,7 +19,7 @@ services:
       context: ./
       dockerfile: Dockerfile.doer_api
     container_name: doer_api
-    image: doer_api:0.0.2
+    image: doer_api:0.0.3
     entrypoint: ./wait-for-it.sh doer_db:5432 --strict -- node server.js
     ports:
       - "127.0.0.1:8080:8080"
