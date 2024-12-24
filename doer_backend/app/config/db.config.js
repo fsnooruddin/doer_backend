@@ -1,6 +1,6 @@
 module.exports = {
-  HOST: "doer_db",
-  USER: "pg-user",
+  HOST: "localhost",
+  USER: "pguser",
   PASSWORD: "password",
   DB: "testdb",
   dialect: "postgres"

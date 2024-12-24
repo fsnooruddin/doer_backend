@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-    origin: ['http://127.0.0.1:8081', 'http://localhost:8081']
+    origin: ['http://127.0.0.1:8080', 'http://localhost:8080']
 };
 
 app.use(cors(corsOptions));
@@ -42,7 +42,7 @@ app.get("/doer", (req, res) => {
 require("./app/routes/doer.routes")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 3721;
+const PORT = 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });

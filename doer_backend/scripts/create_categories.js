@@ -5,7 +5,7 @@ const categories_data = require('./categories.test.data.js');
 
 // Find a single Doer by services
 async function getParentId(parents) {
-var uri = 'http://localhost:3721/api/doer/getCategoryByName?name=';
+var uri = 'http://localhost:8080/api/doer/getCategoryByName?name=';
     for(let i=0;i<parents.length;i++) {
     uri = uri + parents[i];
     try {
@@ -28,7 +28,7 @@ var uri = 'http://localhost:3721/api/doer/getCategoryByName?name=';
 
 // Find a single Doer by services
 async function createCategory(entry) {
-var uri = 'http://localhost:3721/api/doer/createCategory';
+var uri = 'http://localhost:8080/api/doer/createCategory';
 
     try {
     console.log("create category entry = " + JSON.stringify(entry));

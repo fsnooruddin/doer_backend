@@ -29,7 +29,7 @@ async function create(req, res) {
 */
 
 	try {
-		// Save doer in the database
+		// Save category in the database
 		const response_data = await Category.create(data_obj);
 		res.status(200).send(response_data);
 	} catch (err) {

@@ -11,7 +11,7 @@ const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
 const Joi = require("joi");
 
 // Create and Save a new Doer
-function create(req, res) {
+async function create(req, res) {
 	console.log("req body in create doer: ");
 	console.log(req.body);
 
@@ -31,31 +31,17 @@ function create(req, res) {
     }
 */
 
-	// Create a doer
-	const doer = {
-		name: req.body.name,
-		phone_number: req.body.phone_number,
-		address: req.body.address,
-		services: req.body.services,
-		availability: req.body.availability,
-		rating: req.body.rating,
-		rate: req.body.rate,
-		img_url: req.body.img_url,
-	};
-
-	console.log("new doer in create doer: ");
-	console.log(doer);
-
-	// Save doer in the database
-	Doer.create(doer)
-		.then((data) => {
-			res.send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: err.message || "Some error occurred while creating the doer.",
-			});
+try {
+		// Save category in the database
+		const response_data = await Doer.create(data_obj);
+		res.status(200).send(response_data);
+	} catch (err) {
+		res.status(500).send({
+			message:
+				err.message || "Some error occurred while creating the Doer.",
 		});
+	}
+
 }
 
 // Find a single Doer with an id

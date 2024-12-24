@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING,
 			allowNull: false,
 		},
-		address: {
+		location: {
 			type: Sequelize.STRING,
 			allowNull: false,
 		},
@@ -29,10 +29,18 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.FLOAT,
 			allowNull: false,
 		},
-		rate: {
+		hourly_rate: {
 			type: Sequelize.FLOAT,
 			allowNull: false,
 		},
+		minimum_charges: {
+            type: Sequelize.FLOAT,
+            allowNull: false,
+        },
+        coordinates: {
+            type: Sequelize.STRING,
+            allowNull: true,
+        },
 		img_url: {
 			type: Sequelize.STRING,
 			allowNull: true,
@@ -41,3 +49,4 @@ module.exports = (sequelize, Sequelize) => {
 
 	return Doer;
 };
+
