@@ -74,7 +74,7 @@ function findByServices(req, res) {
 	Doer.findAll({
 		where: {
 			services: {
-				[Op.like]: services,
+				[Op.iLike]: services,
 			},
 		},
 		attributes: {
@@ -87,7 +87,35 @@ function findByServices(req, res) {
 		.catch((err) => {
 			res.status(500).send({
 				message:
-					"Error retrieving Doer with id=" + id + " error: " + err.message,
+					"Error retrieving Doer with services =" + services + " error: " + err.message,
+			});
+		});
+}
+
+function findByServicesAndDay(req, res) {
+	const services = req.query.services;
+	const day = req.query.day;
+	console.log("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
+	Doer.findAll({
+		where: {
+			services: {
+				[Op.iLike]: services,
+			},
+			availability: {
+                [Op.iLike]: day,
+            },
+		},
+		attributes: {
+			exclude: ["updatedAt", "createdAt"],
+		},
+	})
+		.then((data) => {
+			res.send(data);
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					"Error retrieving Doer with services =" + services + " error: " + err.message,
 			});
 		});
 }
@@ -282,6 +310,7 @@ module.exports = {
 	create,
 	findById,
 	findByServices,
+	findByServicesAndDay,
 	acceptJob,
 	completeJob,
 	getHistory,

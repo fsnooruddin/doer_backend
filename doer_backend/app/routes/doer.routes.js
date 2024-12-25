@@ -9,6 +9,7 @@ module.exports = (app) => {
 	router.post("/createDoer", doers.create);
 	router.get("/getDoerById", doers.findById);
 	router.get("/getDoerByServices", doers.findByServices);
+	router.get("/getDoerByServicesAndDay", doers.findByServicesAndDay);
 	router.get("/getDoerHistory", doers.getHistory);
 
 	router.post("/createJobRequest", job_requests.create);
