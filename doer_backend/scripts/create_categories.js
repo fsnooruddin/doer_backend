@@ -10,7 +10,7 @@ var uri = 'http://localhost:8080/api/doer/getCategoryByName?name=';
     uri = uri + parents[i];
     try {
      console.log("calling for parent id = " + uri);
-    const response_data = await request.get(uri);
+     const response_data = await request.get(uri);
        if(response_data.body.length > 0) {
        console.log("return parent id = " + response_data.body[0].category_id);
         return response_data.body[0].category_id;

@@ -3,13 +3,13 @@
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const JobRequest = db.job_requests;
-const Doer = db.doers;
+const request = require("superagent");
 const Op = db.Sequelize.Op;
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
 
 // Create and Save a new Job Request
-exports.create = (req, res) => {
+function create(req, res) {
 	console.log("req body in create job_request: ");
 	console.log(req.body);
 
@@ -51,10 +51,10 @@ exports.create = (req, res) => {
 					err.message || "Some error occurred while creating the job_request.",
 			});
 		});
-};
+}
 
 // Find a single job_request with an id
-exports.findById = (req, res) => {
+function findById(req, res) {
 	const id = req.query.id;
 	console.log("job_request-controller findOne id = " + id);
 	JobRequest.findOne({
@@ -77,10 +77,10 @@ exports.findById = (req, res) => {
 					err.message,
 			});
 		});
-};
+}
 
 // Find a single Doer by services
-exports.findByServices = (req, res) => {
+function findByServices(req, res) {
 	const services = req.query.services;
 	console.log("job_request-controller findOne services = " + services);
 	JobRequest.findAll({
@@ -105,63 +105,61 @@ exports.findByServices = (req, res) => {
 					err.message,
 			});
 		});
-};
+}
+
+async function getDoers(services, time) {
+	const retArray = time.split(",");
+	const day = retArray[0];
+	const uri =
+		"http://localhost:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Wed%";
+	try {
+		const response_data = await request.get(uri);
+		//console.log("response data is " + JSON.stringify(response_data.text));
+		return response_data.text;
+	} catch (error) {
+		console.log("Can't get doers...");
+		console.error(error);
+		return null;
+	}
+}
 
 // Retrieve all Users from the database
 // or only those whose title  matches
-exports.findAll = (req, res) => {
-	console.log("job_request-controller findAll");
-};
-
-// Retrieve all Users from the database
-// or only those whose title  matches
-exports.findEligibleDoers = (req, res) => {
-	console.log("job_request-controller findAll");
+async function findEligibleDoers(req, res) {
+	console.log("job_request-controller findEligibleDoers");
 
 	const id = req.query.id;
-	JobRequest.findOne({
-		where: {
-			job_request_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			const services = data.services;
-			Doer.findAll({
-				where: {
-					services: {
-						[Op.like]: services,
-					},
-				},
-				attributes: {
-					exclude: ["updatedAt", "createdAt"],
-				},
-			})
-				.then((data) => {
-					res.send(data);
-				})
-				.catch((err) => {
-					res.status(500).send({
-						message:
-							"Can't find any doers for request id " +
-							id +
-							" error: " +
-							err.message,
-					});
-				});
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message:
-					"findEligibleDoers Error retrieving job_request with id=" +
-					id +
-					" error: " +
-					err.message,
-			});
+	try {
+		const data = await JobRequest.findOne({
+			where: {
+				job_request_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
 		});
-};
+		if (data == null) {
+			res.status(200).send("Couldn't find job request");
+		}
+		try {
+			const response_data = await getDoers(data.services, data.time);
+			console.log("response data is " + JSON.stringify(response_data));
+			res.status(200).send(response_data);
+		} catch (error) {
+			console.log("Can't get doers...");
+			res.status(200).send("Couldn't find doers   ");
+			return null;
+		}
+	} catch (err) {
+		res.status(500).send({
+			message:
+				"findEligibleDoers Error retrieving job_request with id=" +
+				id +
+				" error: " +
+				err.message,
+		});
+	}
+}
 
 /*
 exports.validateUserData = (data) => {
@@ -189,8 +187,8 @@ exports.validateUserData = (data) => {
 };
 */
 
-// Find a single User with an id
-exports.findOne = (req, res) => {
-	const id = req.query.id;
-	console.log("User-controller findOne id = " + id);
+module.exports = {
+	create,
+	findEligibleDoers,
+	getDoers,
 };
