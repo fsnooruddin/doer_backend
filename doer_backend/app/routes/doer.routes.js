@@ -3,6 +3,7 @@ module.exports = (app) => {
 	const job_requests = require("../controllers/job_request.controller.js");
 	const doer_trips = require("../controllers/doer_trip.controller.js");
 	const categories = require("../controllers/category.controller.js");
+	const reviews = require("../controllers/review.controller.js");
 
 	var router = require("express").Router();
 
@@ -11,6 +12,9 @@ module.exports = (app) => {
 	router.get("/getDoerByServices", doers.findByServices);
 	router.get("/getDoerByServicesAndDay", doers.findByServicesAndDay);
 	router.get("/getDoerHistory", doers.getHistory);
+	router.post("/rateDoer", doers.rating);
+
+	router.post("/reviewDoer", reviews.create);
 
 	router.post("/createJobRequest", job_requests.create);
 	router.get("/findEligibleDoers", job_requests.findEligibleDoers);

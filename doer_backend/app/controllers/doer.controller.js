@@ -242,6 +242,18 @@ exports.validateUserData = (data) => {
 
 */
 
+async function rating(req, res) {
+    const id = req.query.id;
+	console.log("User-controller getHistory id = " + id);
+
+    Doer.increment('rating', {
+      by: 1,
+      where: {
+        doer_id: id
+      }
+    });
+}
+
 async function getHistory(req, res) {
 	const id = req.query.id;
 	console.log("User-controller getHistory id = " + id);
@@ -314,4 +326,5 @@ module.exports = {
 	acceptJob,
 	completeJob,
 	getHistory,
+	rating
 };

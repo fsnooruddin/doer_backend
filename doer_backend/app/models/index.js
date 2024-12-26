@@ -111,9 +111,30 @@ const DoerTripLocationUpdate = sequelize.define("doer_trip_location_update", {
 	},
 });
 
+const Review = sequelize.define("review", {
+	review_id: {
+		type: Sequelize.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	doer_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+		references: {
+			model: db.doers,
+			key: "doer_id",
+		},
+	},
+	text: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+});
+
 db.accepted_jobs = AcceptedJob;
 db.completed_jobs = CompletedJob;
 db.doer_trips = DoerTrip;
 db.doer_trip_location_updates = DoerTripLocationUpdate;
+db.reviews = Review;
 
 module.exports = db;
