@@ -107,15 +107,21 @@ function findByServices(req, res) {
 		});
 }
 
+function filterByTime(timeRequested, availability) {
+
+}
+
 async function getDoers(services, time) {
 	const retArray = time.split(",");
 	const day = retArray[0];
+	const timeRequested = retArray[1];
 	const uri =
 		"http://localhost:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Wed%";
 	try {
-		const response_data = await request.get(uri);
-		//console.log("response data is " + JSON.stringify(response_data.text));
-		return response_data.text;
+		const doer_data = await request.get(uri);
+		console.log("response data is " + JSON.stringify(doer_data.text));
+		const response_data = filterByTime(timeRequested, doer_data.text);
+		return doer_data.text;
 	} catch (error) {
 		console.log("Can't get doers...");
 		console.error(error);
@@ -143,6 +149,7 @@ async function findEligibleDoers(req, res) {
 		}
 		try {
 			const response_data = await getDoers(data.services, data.time);
+			console.log("response data is " + JSON.parse(response_data));
 			console.log("response data is " + JSON.stringify(response_data));
 			res.status(200).send(response_data);
 		} catch (error) {

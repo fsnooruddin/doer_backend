@@ -148,8 +148,8 @@ def query_api(term, location, searchlimit):
     file = open(output_prefix + ".html", "w")
     tfile = open(output_prefix + ".json", "w")
     write_html_prelog(file)
-    tfile.write('const yelp_business_data = { "doers": [ ')
-
+#    tfile.write('const yelp_business_data = { "doers": [ ')
+    tfile.write('{ "doers": [ ')
     print(u'{0} businesses found, querying business info ' \
               'for details ...'.format(
                   len(businesses)))
@@ -190,7 +190,7 @@ def query_api(term, location, searchlimit):
     file.close()
 
     tfile.write("]}\n")
-    tfile.write("module.exports={yelp_business_data}")
+ # tfile.write("module.exports={yelp_business_data}")
     tfile.close()
 
 
@@ -221,7 +221,7 @@ def getOpeningSchedule():
     txt = "Sun,Mon,Tue,Wed,Thu,Fri,Sat" 
     days = txt.split(",")
 
-    tout = "\"" + "["
+    tout = "["
 
     for x in range(2):
         i = random.randrange(7)
@@ -231,13 +231,13 @@ def getOpeningSchedule():
         close_time = random.randrange(12, 24)
 
         out = ""
-        out = "{ \'day\': " + day + "," + "\'time\': " + "\'" + str(open_time) + "-" + str(close_time) + "\'"
+        out = "{ \'day\': " + "\'" + day + "\'" + "'," + "\'time\': " + "\'" + str(open_time) + "-" + str(close_time) + "\'"
         out = out + ", \'rate\': " + str(random.randrange(50,100)) + "}"
 
         if( x == 0 ):
             tout = tout + out
         else:
-            tout = tout + ", " + out + "]" + "\""
+            tout = tout + ", " + out + "]"
             print(tout)
 
     return tout
@@ -262,6 +262,10 @@ def write_html_business(fh, tfh, response):
     location = location + 'state: {0}'.format(response['location']['state'])
     location = location + ','
     location = location + 'zip_code: {0}'.format(response['location']['zip_code'])
+    location = location + ','
+    location = location + 'address: {0}'.format(response['location']['display_address'])
+    location = location + ','
+    location = location + 'coordinates: {0}'.format(response['coordinates'])
     location = location + '}'
     print(location)
     
@@ -293,8 +297,6 @@ def write_html_business(fh, tfh, response):
     tfh.write('"min_charges": "{0}"'.format(random.randrange(50,100)))
     tfh.write(",")
     tfh.write('"location": "{0}"'.format(location))
-    tfh.write(",")
-    tfh.write('"coordinates": "{0}"'.format(response['coordinates']))
     tfh.write(",")
     tfh.write('"img_url": "{0}"'.format(response['image_url']))
     tfh.write("}")

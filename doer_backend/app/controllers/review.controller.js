@@ -47,8 +47,62 @@ function create(req, res) {
 		});
 }
 
+// Find a single review with an id
+function findById(req, res) {
+	const id = req.query.id;
+	console.log("review-controller findOne id = " + id);
+	Review.findOne({
+		where: {
+			review_id: id,
+		},
+		attributes: {
+			exclude: ["updatedAt", "createdAt"],
+		},
+	})
+		.then((data) => {
+			res.send(data);
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					"Error retrieving review with id=" +
+					id +
+					" error: " +
+					err.message,
+			});
+		});
+}
+
+// Find  reviews for a doer
+function findByDoerId(req, res) {
+	const id = req.query.id;
+	console.log("review-controller findOne id = " + id);
+	Review.findAll({
+		where: {
+			doer_id: id,
+		},
+		attributes: {
+			exclude: ["updatedAt", "createdAt"],
+		},
+	})
+		.then((data) => {
+			res.send(data);
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message:
+					"Error retrieving review with doer id=" +
+					id +
+					" error: " +
+					err.message,
+			});
+		});
+}
+
 
 
 module.exports = {
-	create
+	create,
+	findById,
+	findByDoerId
 };

@@ -16,6 +16,12 @@ async function create(req, res) {
 	console.log(req.body);
 
 	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
+
+	console.log("services = " + data_obj.services);
+	console.log("services = " + JSON.stringify(data_obj.services));
+    data_obj.services = JSON.stringify(data_obj.services);
+    console.log("services = " + data_obj.services);
+    data_obj.availability = JSON.stringify(data_obj.availability);
 	const validation = doerCreateSchema.validate(data_obj);
 
 	/*

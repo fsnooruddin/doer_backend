@@ -15,6 +15,8 @@ module.exports = (app) => {
 	router.post("/rateDoer", doers.rating);
 
 	router.post("/reviewDoer", reviews.create);
+	router.get("/getReviewById", reviews.findById);
+	router.get("/getReviewsForDoer", reviews.findByDoerId);
 
 	router.post("/createJobRequest", job_requests.create);
 	router.get("/findEligibleDoers", job_requests.findEligibleDoers);

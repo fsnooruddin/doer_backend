@@ -1,7 +1,7 @@
 "use strict";
 const request = require('superagent');
-const categories_data = require('./categories.test.data.js');
-// const categories_data = require('./categories.top-level.test.data.js');
+const child_categories_data = require('./categories.test.data.js');
+const top_level_categories_data = require('./categories.top-level.test.data.js');
 
 // Find a single Doer by services
 async function getParentId(parents) {
@@ -65,25 +65,33 @@ function flatten_parent_aliases(parent_aliases) {
 async function main() {
 // console.log(categories_data.yelp_categories_test_data.categories);
 
-for(let i=0;i<categories_data.yelp_categories_test_data.categories.length;i++) {
+    create_category_enteries(top_level_categories_data);
 
-    var entry = categories_data.yelp_categories_test_data.categories[i];
-    entry.name = entry.title;
-    entry.parent_id = null;
-    var parent_id = await getParentId(entry.parent_aliases);
-    //parent_id.resolve();
-     var new_aliases = flatten_parent_aliases(entry.parent_aliases);
-        entry.parent_aliases = new_aliases;
-    if(parent_id == -1) {
-       console.log("Couldn't get parent id ..." + JSON.stringify(entry));
-       createCategory(entry);
-    } else {
-        entry.parent_id = parent_id;
-        console.log("Got parent id = " + parent_id + "    " + entry.parent_aliases);
-        console.log("create category call entry = " + JSON.stringify(entry));
-        createCategory(entry);
+    create_category_enteries(child_categories_data);
+}
+
+async function create_category_enteries(categories_data) {
+
+    for(let i=0;i<categories_data.yelp_categories_test_data.categories.length;i++) {
+
+        var entry = categories_data.yelp_categories_test_data.categories[i];
+        entry.name = entry.title;
+        entry.parent_id = null;
+        var parent_id = await getParentId(entry.parent_aliases);
+        //parent_id.resolve();
+         var new_aliases = flatten_parent_aliases(entry.parent_aliases);
+            entry.parent_aliases = new_aliases;
+        if(parent_id == -1) {
+           console.log("Couldn't get parent id ..." + JSON.stringify(entry));
+           createCategory(entry);
+        } else {
+            entry.parent_id = parent_id;
+            console.log("Got parent id = " + parent_id + "    " + entry.parent_aliases);
+            console.log("create category call entry = " + JSON.stringify(entry));
+            createCategory(entry);
+        }
     }
-   }
+
 }
 
 main();

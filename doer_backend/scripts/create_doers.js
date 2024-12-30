@@ -1,6 +1,7 @@
 "use strict";
 const request = require('superagent');
-const doer_data = require('./doer.test.data.js');
+const fs = require('fs');
+
 
 // Find a single Doer by services
 async function createDoer(entry) {
@@ -24,13 +25,23 @@ var uri = 'http://localhost:8080/api/doer/createDoer';
 
 async function main() {
 
-console.log(JSON.stringify(doer_data));
+    // Accessing command line arguments in Node.js
+    const args = process.argv.slice(2);
 
-for(let i=0;i<doer_data.yelp_business_data.doers.length;i++) {
-        var entry = doer_data.yelp_business_data.doers[i];
-        entry.minimum_charges = entry.min_charges;
-        createDoer(entry);
-   }
+    console.log("args = ");
+    console.log(args);
+
+    let rawdata = fs.readFileSync(args[0]);
+    let doer_data = JSON.parse(rawdata);
+
+    console.log(JSON.stringify(doer_data));
+
+    for(let i=0;i<doer_data.doers.length;i++) {
+            var entry = doer_data.doers[i];
+            entry.minimum_charges = entry.min_charges;
+            createDoer(entry);
+       }
+
 }
 
 
