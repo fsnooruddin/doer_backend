@@ -5,6 +5,7 @@ const utils = require("../utils/Utils.js");
 const JobRequest = db.job_requests;
 const request = require("superagent");
 const Op = db.Sequelize.Op;
+const KU = require("../utils/KafkaUtil.js");
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
 
@@ -43,6 +44,7 @@ function create(req, res) {
 	// Save doer in the database
 	JobRequest.create(job_request)
 		.then((data) => {
+		    KU.sendMessage("doer_messages", "new job request");
 			res.send(data);
 		})
 		.catch((err) => {
@@ -107,7 +109,17 @@ function findByServices(req, res) {
 		});
 }
 
-function filterByTime(timeRequested, availability) {
+function filterByTime(timeRequested, doers) {
+    console.log("data in filterByTime= ");
+    console.log(timeRequested);
+    for (let d_entry of doers) {
+     // console.log(d_entry);
+
+      for (let a_entry of d_entry.availability) {
+        console.log(a_entry);
+      }
+    }
+
 
 }
 
@@ -120,7 +132,7 @@ async function getDoers(services, time) {
 	try {
 		const doer_data = await request.get(uri);
 		console.log("response data is " + JSON.stringify(doer_data.text));
-		const response_data = filterByTime(timeRequested, doer_data.text);
+		const response_data = filterByTime(timeRequested, JSON.parse(doer_data.text));
 		return doer_data.text;
 	} catch (error) {
 		console.log("Can't get doers...");
@@ -152,8 +164,6 @@ async function findEligibleDoers(req, res) {
 		}
 		try {
 			const response_data = await getDoers(data.services, data.time);
-			console.log("response data is " + JSON.parse(response_data));
-			console.log("response data is " + JSON.stringify(response_data));
 			res.status(200).send(response_data);
 			return;
 		} catch (error) {

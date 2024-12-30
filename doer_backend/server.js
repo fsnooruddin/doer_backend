@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-
 const app = express();
+const ku = require("./app/utils/KafkaUtil.js")
 
 var corsOptions = {
     origin: ['http://127.0.0.1:8080', 'http://localhost:8080']
@@ -27,10 +27,8 @@ db.sequelize.sync({ force: false })
         console.log("Failed to sync db: " + err.message);
     });
 
-// // drop the table if it already exists
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log("Drop and re-sync db.");
-// });
+ku.init();
+
 
 // simple route
 app.get("/doer", (req, res) => {
