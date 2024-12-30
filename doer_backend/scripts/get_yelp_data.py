@@ -147,6 +147,7 @@ def query_api(term, location, searchlimit):
     # Open the file in write mode
     file = open(output_prefix + ".html", "w")
     tfile = open(output_prefix + ".json", "w")
+    rfile = open(output_prefix + "-raw.json", "w")
     write_html_prelog(file)
 #    tfile.write('const yelp_business_data = { "doers": [ ')
     tfile.write('{ "doers": [ ')
@@ -161,6 +162,7 @@ def query_api(term, location, searchlimit):
 
         response = get_business(API_KEY, business_id)
 
+        rfile.write(str(response))
         print(u'Result for business "{0}" found:'.format(business_id))
         print("\n")
         print("Keys:", list(response.keys()))
@@ -192,6 +194,7 @@ def query_api(term, location, searchlimit):
     tfile.write("]}\n")
  # tfile.write("module.exports={yelp_business_data}")
     tfile.close()
+    rfile.close()
 
 
 def write_html_prelog(fh):
@@ -231,8 +234,8 @@ def getOpeningSchedule():
         close_time = random.randrange(12, 24)
 
         out = ""
-        out = "{ \'day\': " + "\'" + day + "\'" + "'," + "\'time\': " + "\'" + str(open_time) + "-" + str(close_time) + "\'"
-        out = out + ", \'rate\': " + str(random.randrange(50,100)) + "}"
+        out = "{ \"day\": " + "\"" + day + "\"" + "," + "\"time\": " + "\"" + str(open_time) + "-" + str(close_time) + "\""
+        out = out + ", \"rate\": " + str(random.randrange(50,100)) + "}"
 
         if( x == 0 ):
             tout = tout + out

@@ -125,7 +125,7 @@ async function getDoers(services, time) {
 	} catch (error) {
 		console.log("Can't get doers...");
 		console.error(error);
-		return null;
+		return "Couldn't find any doers for given request";
 	}
 }
 
@@ -144,18 +144,22 @@ async function findEligibleDoers(req, res) {
 				exclude: ["updatedAt", "createdAt"],
 			},
 		});
+		console.log("data from find request is = " + data);
 		if (data == null) {
+		    console.log("data from find request is = null " + data);
 			res.status(200).send("Couldn't find job request");
+			return;
 		}
 		try {
 			const response_data = await getDoers(data.services, data.time);
 			console.log("response data is " + JSON.parse(response_data));
 			console.log("response data is " + JSON.stringify(response_data));
 			res.status(200).send(response_data);
+			return;
 		} catch (error) {
 			console.log("Can't get doers...");
 			res.status(200).send("Couldn't find doers   ");
-			return null;
+			return;
 		}
 	} catch (err) {
 		res.status(500).send({
