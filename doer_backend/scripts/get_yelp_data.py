@@ -144,6 +144,12 @@ def query_api(term, location, searchlimit):
     output_prefix = term.replace(" ", "") + "-" + location.replace(" ", "") + "-" + searchlimit
     print(output_prefix)
 
+    # Open the JSON file
+    with open("california_zip_codes.json", "r") as f:
+        # Load JSON data from the file
+        zip_code_data = json.load(f)
+    f.close()
+
     # Open the file in write mode
     file = open(output_prefix + ".html", "w")
     tfile = open(output_prefix + ".json", "w")
@@ -184,7 +190,7 @@ def query_api(term, location, searchlimit):
         else:
             tfile.write(",\n")
 
-        write_html_business(file, tfile, response)
+        write_html_business(file, tfile, response, zip_code_data)
 
 
 
@@ -220,10 +226,12 @@ def write_html_prelog(fh):
     labels += "  </tr>\n"
     fh.write(labels)
 
-def getOpeningSchedule():
+def getOpeningSchedule(zip_code_data):
     txt = "Sun,Mon,Tue,Wed,Thu,Fri,Sat" 
     days = txt.split(",")
-
+    i = random.randint(0, len(zip_code_data))
+    print("index = ")
+    print(i)
     tout = "["
 
     for x in range(2):
@@ -235,7 +243,8 @@ def getOpeningSchedule():
 
         out = ""
         out = "{ \"day\": " + "\"" + day + "\"" + "," + "\"time\": " + "\"" + str(open_time) + "-" + str(close_time) + "\""
-        out = out + ", \"rate\": " + str(random.randrange(50,100)) + "}"
+        out = out + ", \"rate\": " + str(random.randrange(50,100)) + ",";
+        out = out + "\"location\": " + "\"" + "94588" + "\"" "}"
 
         if( x == 0 ):
             tout = tout + out
@@ -245,7 +254,7 @@ def getOpeningSchedule():
 
     return tout
             
-def write_html_business(fh, tfh, response):
+def write_html_business(fh, tfh, response, zip_code_data):
 
     fh.write("<tr>\n")
     fh.write('<td>{0}</td> <td>{1}</td> <td>{2}</td>, <td>{3}</td>\n'.format(response['name'] , response['phone'] ,
@@ -293,7 +302,7 @@ def write_html_business(fh, tfh, response):
     tfh.write(",")
     tfh.write('"rating": "{0}"'.format(response['rating']))
     tfh.write(",")
-    tfh.write('"availability": {0}'.format(getOpeningSchedule()))
+    tfh.write('"availability": {0}'.format(getOpeningSchedule(zip_code_data)))
     tfh.write(",")
     tfh.write('"hourly_rate": "{0}"'.format(random.randrange(50,100)))
     tfh.write(",")

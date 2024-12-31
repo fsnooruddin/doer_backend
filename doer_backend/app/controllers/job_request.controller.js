@@ -8,7 +8,7 @@ const Op = db.Sequelize.Op;
 const KU = require("../utils/KafkaUtil.js");
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
-
+// https://www.zipcodeapi.com/rest/QZPX7dSqfyw89CJaAwX37gNO10EoQM2w7Op47UhhyTPB75eMlJPlDc5KkXz2mL0t/distance.json/94588/94104/km
 // Create and Save a new Job Request
 function create(req, res) {
 	console.log("req body in create job_request: ");
@@ -109,14 +109,52 @@ function findByServices(req, res) {
 		});
 }
 
-function filterByTime(timeRequested, doers) {
+function filterByDistance(timeRequested, doers) {
+
+    const options = {
+        method: 'GET',
+        hostname: 'distance-calculator8.p.rapidapi.com',
+        port: null,
+        path: '/calc?startLatitude=-26.311960&startLongitude=-48.880964&endLatitude=-26.313662&endLongitude=-48.881103',
+        headers: {
+            'x-rapidapi-key': 'b00a84708dmsh4a783e20708dbacp190650jsnae7c641c67d9',
+            'x-rapidapi-host': 'distance-calculator8.p.rapidapi.com'
+        }
+    };
+
+    const req = http.request(options, function (res) {
+        const chunks = [];
+
+        res.on('data', function (chunk) {
+            chunks.push(chunk);
+        });
+
+        res.on('end', function () {
+            const body = Buffer.concat(chunks);
+            console.log(body.toString());
+        });
+    });
+
+    req.end();
+    };
+
+function filterByTime(dayRequested, timeRequested, doers) {
     console.log("data in filterByTime= ");
+    console.log(dayRequested);
     console.log(timeRequested);
     for (let d_entry of doers) {
-     // console.log(d_entry);
+      console.log(d_entry);
 
-      for (let a_entry of d_entry.availability) {
+      console.log(typeof(d_entry.availability));
+      console.log(JSON.parse(d_entry.availability));
+      var objs = JSON.parse(d_entry.availability);
+      console.log( utils.processTimeMatch(dayRequested, timeRequested, objs));
+      for (let a_entry of objs) {
         console.log(a_entry);
+        var day = a_entry.day;
+         console.log(day);
+        var time = a_entry.time;
+
       }
     }
 
@@ -125,14 +163,14 @@ function filterByTime(timeRequested, doers) {
 
 async function getDoers(services, time) {
 	const retArray = time.split(",");
-	const day = retArray[0];
+	const dayRequested = retArray[0];
 	const timeRequested = retArray[1];
 	const uri =
 		"http://localhost:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Wed%";
 	try {
 		const doer_data = await request.get(uri);
 		console.log("response data is " + JSON.stringify(doer_data.text));
-		const response_data = filterByTime(timeRequested, JSON.parse(doer_data.text));
+		const response_data = filterByTime(dayRequested, timeRequested, JSON.parse(doer_data.text));
 		return doer_data.text;
 	} catch (error) {
 		console.log("Can't get doers...");

@@ -1,10 +1,10 @@
 const db = require("../models");
 
 module.exports = {
-	add_to_nofications_queue,
 	escapeJSONString,
 	getTimeFromAvailability,
 	getDayFromAvailability,
+	processTimeMatch
 };
 
 function escapeJSONString(server_return_string) {
@@ -40,52 +40,52 @@ function getTimeFromAvailability(availability) {
 	}
 }
 
-function add_to_nofications_queue(topic, entry) {
-	console.log("in add to notifications queue ");
 
-	const kafka = require("kafka-node");
-	const kafka_topic = topic;
-	try {
-		const Producer = kafka.Producer;
-		const client = new kafka.KafkaClient({
-			kafkaHost: "127.0.0.1:9092",
-		});
-		const producer = new Producer(client);
+ function timesMatch (reqSlotTime, slotTime) {
 
-		console.log("Producer Initialised..");
+        let retArray=slotTime.split("-");
+        let doerStartTime = parseInt(retArray[0]);
+        let doerCloseTime = parseInt(retArray[1]);
+        console.log("doer start time = " + doerStartTime);
+        console.log("doer end time = " + doerCloseTime);
 
-		console.log("message in queue is " + JSON.stringify(entry));
+        retArray=reqSlotTime.split("-");
+        let reqStartTime = parseInt(retArray[0]);
+        let reqCloseTime = parseInt(retArray[1]);
+        console.log("req start time = " + reqStartTime);
+        console.log("req end time = " + reqCloseTime);
 
-		payload = [
-			{
-				topic: kafka_topic,
-				messages: JSON.stringify(entry),
-				partition: 0,
-			},
-		];
-
-		producer.on("ready", function () {
-			producer.send(payload, (err, data) => {
-				if (err) {
-					console.log(
-						"[kafka-producer -> " + kafka_topic + "]: broker update failed",
-					);
-				} else {
-					console.log(
-						"[kafka-producer -> " + kafka_topic + "]: added activity",
-					);
-				}
-			});
-		});
-
-		producer.on("error", function (err) {
-			console.log(err);
-			console.log(
-				"[kafka-producer -> " + kafka_topic + "]: connection errored",
-			);
-			throw err;
-		});
-	} catch (e) {
-		console.log(e);
-	}
+    	if(reqStartTime >= doerStartTime) {
+          console.log("start times match...");
+          if(reqCloseTime <= doerCloseTime) {
+         	 console.log("close times match...");
+          	 return true;
+          }
+        }
+        return false;
 }
+
+  function processTimeMatch(reqSlotDay, reqSlotTime, avail) {
+
+    for (let a_entry of avail) {
+      //  console.log(a_entry);
+        var slotDay = a_entry.day;
+      //  console.log(day);
+        var slotTime = a_entry.time;
+
+        let dayMatch = false;
+        let timeMatch = false;
+
+        if(slotDay.indexOf(reqSlotDay) !== -1) {
+            dayMatch = true;
+        }
+
+        timeMatch = timesMatch(reqSlotTime, slotTime);
+
+        if(dayMatch === true && timeMatch === true) {
+         return true;
+        }
+    }
+
+     return false;
+    }
