@@ -14,7 +14,7 @@ const createDoerTrip_1 = {
 }
 
 const updateDoerTrip_1 = {
-  id: "1",
+  id: "2",
   location_update: {
     type: "Point",
     coordinates: [77.6879689, 27.4072289],
