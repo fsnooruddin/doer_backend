@@ -31,7 +31,7 @@ async function rpost(url, dataString) {
 async function makeCreateCall(endpoint, url, entry) {
 
   try {
-    console.log("update " + endpoint + " entry = " + JSON.stringify(entry));
+    console.log("create " + endpoint + "  url  " + url + " entry = " + JSON.stringify(entry));
     const response_data = await rpost(url, entry);
 
     // console.log("response.body     " + response_data);
