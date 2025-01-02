@@ -1,5 +1,5 @@
 "use strict";
-const request = require('superagent');
+const request = require('axios');
 const child_categories_data = require('./categories.test.data.js');
 const top_level_categories_data = require('./categories.top-level.test.data.js');
 
@@ -32,7 +32,7 @@ var uri = 'http://localhost:8080/api/doer/createCategory';
 
     try {
     console.log("create category entry = " + JSON.stringify(entry));
-    const response_data = await request.post(uri).send(entry);
+    const response_data = await request.post(uri, entry);
 
    //    console.log("response.body     " + response_data.body);
    //    console.log("createCategory response = " + JSON.stringify(response_data.body) + "    " );
