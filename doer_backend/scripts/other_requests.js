@@ -9,10 +9,10 @@ var {
   createDoerReview_1,
 } = require("./other_requests_data.js");
 
-const createJobRequestUrl = "http://localhost:8080/api/doer/createJobRequest";
-const createDoerTripUrl = "http://localhost:8080/api/doer/createDoerTrip";
-const updateDoerTripUrl = "http://localhost:8080/api/doer/updateDoerTripLocation";
-const createDoerReviewUrl = "http://localhost:8080/api/doer/reviewDoer";
+const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/createJobRequest";
+const createDoerTripUrl = "http://127.0.0.1:8080/api/doer/createDoerTrip";
+const updateDoerTripUrl = "http://127.0.0.1:8080/api/doer/updateDoerTripLocation";
+const createDoerReviewUrl = "http://127.0.0.1:8080/api/doer/reviewDoer";
 
 async function rget(url) {
   const response = await axios.get(url);
@@ -29,14 +29,14 @@ async function rpost(url, dataString) {
 async function makeCreateCall(endpoint, url, entry) {
 
   try {
-    console.log("create " + endpoint + " entry = " + JSON.stringify(entry));
+    console.log("update " + endpoint + " entry = " + JSON.stringify(entry));
     const response_data = await rpost(url, entry);
 
     // console.log("response.body     " + response_data);
     console.log(endpoint + " response = " + JSON.stringify(response_data));
     return true;
   } catch (error) {
-    console.log("Couldn't create " + endpoint + " ..." + JSON.stringify(entry));
+    console.log("Couldn't update " + endpoint + " ..." + JSON.stringify(entry));
     console.error(error);
     return false;
   }
@@ -60,38 +60,38 @@ async function makePostRequests() {
 
 async function makeGetRequests() {
   var response_data = await rget(
-    "http://localhost:8080/api/doer/getDoerById?id=2",
+    "http://127.0.0.1:8080/api/doer/getDoerById?id=2",
   );
   console.log("getDoerById = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://localhost:8080/api/doer/getDoerByServices?services=%elec%",
+    "http://127.0.0.1:8080/api/doer/getDoerByServices?services=%elec%",
   );
   console.log("getDoerByServices = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://localhost:8080/api/doer/getReviewsForDoer?doerId=1",
+    "http://127.0.0.1:8080/api/doer/getReviewsForDoer?doerId=1",
   );
   console.log("getReviewsForDoer = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://localhost:8080/api/doer/findEligibleDoers?jobRequestId=19",
+    "http://127.0.0.1:8080/api/doer/findEligibleDoers?jobRequestId=19",
   );
   console.log("findEligibileDoers = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://localhost:8080/api/doer/getReviewById?id=2",
+    "http://127.0.0.1:8080/api/doer/getReviewById?id=2",
   );
   console.log("getReviewById = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
 
    var response_data = await rget(
-      "http://localhost:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Wed%"
+      "http://127.0.0.1:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Wed%"
     );
     console.log("getDoerByServicesAndDay = \n\n\n" + JSON.stringify(response_data));
 
@@ -100,7 +100,7 @@ async function makeGetRequests() {
 
 async function main() {
   makePostRequests();
-  //makeGetRequests();
+  makeGetRequests();
 }
 
 main();

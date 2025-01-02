@@ -5,7 +5,7 @@ const axios = require("axios");
 
 async function rpost(url, dataString) {
   const response = await axios.post(
-    "http://localhost:8080/api/doer/createDoer",
+    "http://127.0.0.1:8080/api/doer/createDoer",
     dataString,
   );
 
@@ -14,7 +14,7 @@ async function rpost(url, dataString) {
 
 // Find a single Doer by services
 async function createDoer(entry) {
-  var uri = "http://localhost:8080/api/doer/createDoer";
+  var uri = "http://127.0.0.1:8080/api/doer/createDoer";
 
   try {
     console.log("create Doer entry = " + JSON.stringify(entry));
