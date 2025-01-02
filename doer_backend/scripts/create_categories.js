@@ -34,8 +34,8 @@ var uri = 'http://localhost:8080/api/doer/createCategory';
     console.log("create category entry = " + JSON.stringify(entry));
     const response_data = await request.post(uri).send(entry);
 
-       console.log("response.body     " + response_data.body);
-       console.log("createCategory response = " + JSON.stringify(response_data.body) + "    " );
+   //    console.log("response.body     " + response_data.body);
+   //    console.log("createCategory response = " + JSON.stringify(response_data.body) + "    " );
        return true;
       }
       catch(error)  {
