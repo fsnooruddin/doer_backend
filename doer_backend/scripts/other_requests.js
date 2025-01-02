@@ -28,7 +28,7 @@ async function rpost(url, dataString) {
 async function makeCreateCall(endpoint, url, entry) {
 
   try {
-    console.log("create " + endpoint + " DoerReview entry = " + JSON.stringify(entry));
+    console.log("create " + endpoint + " entry = " + JSON.stringify(entry));
     const response_data = await rpost(url, entry);
 
     // console.log("response.body     " + response_data);
@@ -44,7 +44,6 @@ async function makeCreateCall(endpoint, url, entry) {
 
 async function makePostRequests() {
 
-
   makeCreateCall("createDoerReview", createDoerReviewUrl, createDoerReview_1);
   console.log("\n\n\n **************** \n\n\n");
 
@@ -59,38 +58,45 @@ async function makeGetRequests() {
   var response_data = await rget(
     "http://localhost:8080/api/doer/getDoerById?id=2",
   );
-  console.log("getDoerById = " + JSON.stringify(response_data));
+  console.log("getDoerById = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
     "http://localhost:8080/api/doer/getDoerByServices?services=%elec%",
   );
-  console.log("getDoerByServices = " + JSON.stringify(response_data));
+  console.log("getDoerByServices = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
     "http://localhost:8080/api/doer/getReviewsForDoer?doerId=1",
   );
-  console.log("getReviewsForDoer = " + JSON.stringify(response_data));
+  console.log("getReviewsForDoer = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
     "http://localhost:8080/api/doer/findEligibleDoers?jobRequestId=19",
   );
-  console.log("findEligibileDoers = " + JSON.stringify(response_data));
+  console.log("findEligibileDoers = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
     "http://localhost:8080/api/doer/getReviewById?id=2",
   );
-  console.log("getReviewById = " + JSON.stringify(response_data));
+  console.log("getReviewById = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
+
+   var response_data = await rget(
+      "http://localhost:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Wed%"
+    );
+    console.log("getDoerByServicesAndDay = \n\n\n" + JSON.stringify(response_data));
+
+    console.log("\n\n\n **************** \n\n\n");
 }
 
 async function main() {
   makePostRequests();
- // makeGetRequests();
+  makeGetRequests();
 }
 
 main();
