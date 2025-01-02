@@ -11,6 +11,7 @@ var {
 
 const createJobRequestUrl = "http://localhost:8080/api/doer/createJobRequest";
 const createDoerTripUrl = "http://localhost:8080/api/doer/createDoerTrip";
+const updateDoerTripUrl = "http://localhost:8080/api/doer/updateDoerTripLocation";
 const createDoerReviewUrl = "http://localhost:8080/api/doer/reviewDoer";
 
 async function rget(url) {
@@ -49,6 +50,9 @@ async function makePostRequests() {
 
   makeCreateCall("createDoerTrip", createDoerTripUrl, createDoerTrip_1);
   console.log("\n\n\n **************** \n\n\n");
+
+  makeCreateCall("updateDoerTrip", updateDoerTripUrl, updateDoerTrip_1);
+    console.log("\n\n\n **************** \n\n\n");
 
    makeCreateCall("createJobRequest", createJobRequestUrl, createJobRequest_1);
   console.log("\n\n\n **************** \n\n\n");
@@ -96,7 +100,7 @@ async function makeGetRequests() {
 
 async function main() {
   makePostRequests();
-  makeGetRequests();
+  //makeGetRequests();
 }
 
 main();
