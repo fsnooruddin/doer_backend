@@ -13,6 +13,8 @@ const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/createJobRequest";
 const createDoerTripUrl = "http://127.0.0.1:8080/api/doer/createDoerTrip";
 const updateDoerTripUrl = "http://127.0.0.1:8080/api/doer/updateDoerTripLocation";
 const createDoerReviewUrl = "http://127.0.0.1:8080/api/doer/reviewDoer";
+const acceptJobUrl = "http://127.0.0.1:8080/api/doer/acceptJob?doerId=1&jobId=3";
+const completeJobUrl = "http://127.0.0.1:8080/api/doer/completeJob?doerId=1&jobId=3&duration=22";
 
 async function rget(url) {
   const response = await axios.get(url);
@@ -56,6 +58,12 @@ async function makePostRequests() {
 
    makeCreateCall("createJobRequest", createJobRequestUrl, createJobRequest_1);
   console.log("\n\n\n **************** \n\n\n");
+
+  makeCreateCall("acceptJob", acceptJobUrl, null);
+    console.log("\n\n\n **************** \n\n\n");
+
+    makeCreateCall("completeJob", completeJobUrl, null);
+        console.log("\n\n\n **************** \n\n\n");
 }
 
 async function makeGetRequests() {
