@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile.doer_api
     container_name: doer_api
     image: doer_api:0.0.3
-    entrypoint: ./wait-for-it.sh doer_db:5432 --strict -- node server.js
+    entrypoint: ./wait-for-it.sh doer_db:5432 --strict -- node server.js --force_sync true
     ports:
       - "127.0.0.1:8080:8080"
     networks:
