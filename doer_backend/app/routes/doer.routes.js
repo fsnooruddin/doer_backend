@@ -13,6 +13,7 @@ module.exports = (app) => {
 	router.get("/getDoerByServicesAndDay", doers.findByServicesAndDay);
 	router.get("/getDoerHistory", doers.getHistory);
 	router.post("/rateDoer", doers.rating);
+	router.post("/updateDoerAvailability", doers.updateAvailability);
 
 	router.post("/reviewDoer", reviews.create);
 	router.get("/getReviewById", reviews.findById);
