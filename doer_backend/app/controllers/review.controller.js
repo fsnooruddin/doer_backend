@@ -3,7 +3,6 @@
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Review = db.reviews;
-const request = require("superagent");
 const Op = db.Sequelize.Op;
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
@@ -75,8 +74,16 @@ function findById(req, res) {
 
 // Find  reviews for a doer
 function findByDoerId(req, res) {
-	const id = req.query.id;
+	const id = req.query.doerId;
 	console.log("review-controller findOne id = " + id);
+	if(id == null) {
+        res.status(500).send({
+                message:
+                  "Error retrieving Doer Id is missing"
+              });
+
+        return;
+      }
 	Review.findAll({
 		where: {
 			doer_id: id,

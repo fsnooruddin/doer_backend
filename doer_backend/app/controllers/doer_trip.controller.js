@@ -77,6 +77,7 @@ async function updateDoerTripLocation(req, res) {
 
 	const doer = await DoerTripLocationUpdate.create(update)
 		.then((data) => {
+		console.log("Doer Trip-controller updated location for DoerTrip id = " + id);
 			res.send(data);
 		})
 		.catch((err) => {
