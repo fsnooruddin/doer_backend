@@ -7,6 +7,7 @@ var {
   createDoerTrip_1,
   updateDoerTrip_1,
   createDoerReview_1,
+  createDoerReview_2,
 } = require("./other_requests_data.js");
 
 const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/createJobRequest";
@@ -50,6 +51,9 @@ async function makePostRequests() {
   makeCreateCall("createDoerReview", createDoerReviewUrl, createDoerReview_1);
   console.log("\n\n\n **************** \n\n\n");
 
+   makeCreateCall("createDoerReview", createDoerReviewUrl, createDoerReview_2);
+    console.log("\n\n\n **************** \n\n\n");
+
   makeCreateCall("createDoerTrip", createDoerTripUrl, createDoerTrip_1);
   console.log("\n\n\n **************** \n\n\n");
 
@@ -82,13 +86,13 @@ async function makeGetRequests() {
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://127.0.0.1:8080/api/doer/getReviewsForDoer?doerId=1",
+    "http://127.0.0.1:8080/api/doer/getReviewsForDoer?doerId=2",
   );
   console.log("getReviewsForDoer = \n\n\n" + JSON.stringify(response_data));
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://127.0.0.1:8080/api/doer/findEligibleDoers?jobRequestId=2",
+    "http://127.0.0.1:8080/api/doer/findEligibleDoers?jobRequestId=1",
   );
   console.log("findEligibileDoers = \n\n\n" + JSON.stringify(response_data));
 

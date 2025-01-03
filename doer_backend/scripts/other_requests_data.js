@@ -1,7 +1,7 @@
 const createJobRequest_1 = {
   user_id: "11",
   location: "94588",
-  time: "Mon, 12-5",
+  time: "Sun, 12-5",
   services: "Electrician",
 }
 
@@ -14,7 +14,7 @@ const createDoerTrip_1 = {
 }
 
 const updateDoerTrip_1 = {
-  id: "2",
+  id: "1",
   location_update: {
     type: "Point",
     coordinates: [77.6879689, 27.4072289],
@@ -26,9 +26,15 @@ const createDoerReview_1 = {
   text: "Best Doer Ever"
 }
 
+const createDoerReview_2 = {
+  doer_id: "2",
+  text: "Another review Best Doer Ever"
+}
+
 module.exports = {
   createJobRequest_1,
   createDoerTrip_1,
   updateDoerTrip_1,
-  createDoerReview_1
+  createDoerReview_1,
+  createDoerReview_2
 };
