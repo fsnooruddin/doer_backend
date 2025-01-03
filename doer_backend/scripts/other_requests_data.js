@@ -1,6 +1,6 @@
 const createJobRequest_1 = {
   user_id: "11",
-  location: "94588",
+  location: "[77.6879689, 27.4072289]",
   time: "Sun, 12-5",
   services: "Electrician",
 }

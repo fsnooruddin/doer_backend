@@ -137,8 +137,10 @@ async function makeGetRequests() {
 }
 
 async function main() {
-  makePostRequests();
+  //makePostRequests();
   // makeGetRequests();
+   makeCreateCall("createJobRequest", createJobRequestUrl, createJobRequest_1);
+    console.log("\n\n\n **************** \n\n\n");
 }
 
 main();
