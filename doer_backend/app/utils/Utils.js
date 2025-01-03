@@ -46,19 +46,19 @@ function getTimeFromAvailability(availability) {
         let retArray=slotTime.split("-");
         let doerStartTime = parseInt(retArray[0]);
         let doerCloseTime = parseInt(retArray[1]);
-        console.log("doer start time = " + doerStartTime);
-        console.log("doer end time = " + doerCloseTime);
+     //   console.log("doer start time = " + doerStartTime);
+     //   console.log("doer end time = " + doerCloseTime);
 
         retArray=reqSlotTime.split("-");
         let reqStartTime = parseInt(retArray[0]);
         let reqCloseTime = parseInt(retArray[1]);
-        console.log("req start time = " + reqStartTime);
-        console.log("req end time = " + reqCloseTime);
+    //    console.log("req start time = " + reqStartTime);
+    //    console.log("req end time = " + reqCloseTime);
 
     	if(reqStartTime >= doerStartTime) {
-          console.log("start times match...");
+         // console.log("start times match...");
           if(reqCloseTime <= doerCloseTime) {
-         	 console.log("close times match...");
+         //	 console.log("close times match...");
           	 return true;
           }
         }
@@ -83,6 +83,8 @@ function getTimeFromAvailability(availability) {
         timeMatch = timesMatch(reqSlotTime, slotTime);
 
         if(dayMatch === true && timeMatch === true) {
+
+         console.log("reqSlot: " + reqSlotDay + " , " + reqSlotTime + " matches " + JSON.stringify(a_entry));
          return true;
         }
     }
