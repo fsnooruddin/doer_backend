@@ -19,7 +19,14 @@ app.use(express.urlencoded({
 
 const db = require("./app/models");
 
-db.sequelize.sync({ force: false })
+let forceFlag = false;
+const customIndex = process.argv.indexOf('--force_sync');
+if (customIndex > -1) {
+  // Retrieve the value after --custom
+  forceFlag = process.argv[customIndex + 1];
+}
+
+db.sequelize.sync({ force: forceFlag })
     .then(() => {
         console.log("Synced db.");
     })
@@ -27,7 +34,7 @@ db.sequelize.sync({ force: false })
         console.log("Failed to sync db: " + err.message);
     });
 
-ku.init();
+// ku.init();
 
 
 // simple route
