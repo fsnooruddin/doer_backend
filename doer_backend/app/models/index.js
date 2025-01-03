@@ -15,6 +15,12 @@ db.job_requests = require("./job_request.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
 
 const AcceptedJob = sequelize.define("accepted_job", {
+	accepted_job_id: {
+		type: Sequelize.DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+		allowNull: false,
+	},
 	doer_id: {
 		type: Sequelize.DataTypes.INTEGER,
 		references: {
@@ -32,6 +38,12 @@ const AcceptedJob = sequelize.define("accepted_job", {
 });
 
 const CompletedJob = sequelize.define("completed_job", {
+	completed_job_id: {
+		type: Sequelize.DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+		allowNull: false,
+	},
 	doer_id: {
 		type: Sequelize.DataTypes.INTEGER,
 		references: {
@@ -69,18 +81,12 @@ const DoerTrip = sequelize.define("doer_trip", {
 	},
 	doer_id: {
 		type: Sequelize.DataTypes.INTEGER,
-		references: {
-			model: db.doers,
-			key: "doer_id",
-		},
+
 		allowNull: false,
 	},
 	job_request_id: {
 		type: Sequelize.DataTypes.INTEGER,
-		references: {
-			model: db.job_requests,
-			key: "job_request_id",
-		},
+
 		allowNull: false,
 	},
 	description: {
@@ -130,6 +136,44 @@ const Review = sequelize.define("review", {
 		allowNull: false,
 	},
 });
+
+/*
+const Invoice = sequelize.define("invoice", {
+	invoice_id: {
+		type: Sequelize.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	doer_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+		references: {
+			model: db.doers,
+			key: "doer_id",
+		},
+	},
+	job_id: {
+    		type: Sequelize.INTEGER,
+    		allowNull: false,
+    		references: {
+    			model: db.job_requests,
+    			key: "job_id",
+    		},
+    	},
+    user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+    },
+	job_location: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	total_cost: {
+    		type: Sequelize.INTEGER,
+    		allowNull: false,
+    },
+});
+*/
 
 db.accepted_jobs = AcceptedJob;
 db.completed_jobs = CompletedJob;

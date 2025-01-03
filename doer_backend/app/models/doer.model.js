@@ -37,10 +37,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.FLOAT,
             allowNull: false,
         },
-        coordinates: {
-            type: Sequelize.STRING,
-            allowNull: true,
-        },
 		img_url: {
 			type: Sequelize.STRING,
 			allowNull: true,
