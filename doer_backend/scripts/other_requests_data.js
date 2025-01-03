@@ -31,10 +31,29 @@ const createDoerReview_2 = {
   text: "Another review Best Doer Ever"
 }
 
+const updateDoerAvailability_1 = {
+                                     "doer_id": "5",
+                                     "availability": [
+                                         {
+                                             "day": "Fri",
+                                             "time": "10-13",
+                                             "rate": 99,
+                                             "location": "94588"
+                                         },
+                                         {
+                                             "day": "Sat",
+                                             "time": "9-17",
+                                             "rate": 80,
+                                             "location": "94588"
+                                         }
+                                     ]
+                                 }
+
 module.exports = {
   createJobRequest_1,
   createDoerTrip_1,
   updateDoerTrip_1,
   createDoerReview_1,
-  createDoerReview_2
+  createDoerReview_2,
+  updateDoerAvailability_1
 };

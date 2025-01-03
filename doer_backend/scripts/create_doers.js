@@ -17,12 +17,12 @@ async function createDoer(entry) {
   var uri = "http://127.0.0.1:8080/api/doer/createDoer";
 
   try {
-    console.log("create Doer entry = " + JSON.stringify(entry));
+  //  console.log("create Doer entry = " + JSON.stringify(entry));
     const response_data = await rpost(uri, entry);
 
-    console.log("response.body     " + response_data);
+   // console.log("response.body     " + response_data);
     console.log(
-      "createDoer response = " + JSON.stringify(response_data) + "    ",
+      "\n\n createDoer response = " + JSON.stringify(response_data) + "\n\n",
     );
     return true;
   } catch (error) {
@@ -36,13 +36,13 @@ async function main() {
   // Accessing command line arguments in Node.js
   const args = process.argv.slice(2);
 
-  console.log("args = ");
-  console.log(args);
+ // console.log("args = ");
+ // console.log(args);
 
   let rawdata = fs.readFileSync(args[0]);
   let doer_data = JSON.parse(rawdata);
 
-  console.log(JSON.stringify(doer_data));
+ // console.log(JSON.stringify(doer_data));
 
   for (let i = 0; i < doer_data.doers.length; i++) {
     var entry = doer_data.doers[i];
