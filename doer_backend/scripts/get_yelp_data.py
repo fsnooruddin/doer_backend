@@ -175,6 +175,8 @@ def query_api(term, location, searchlimit):
         print("\n")
         print("response: ", response)
         print("\n")
+        rfile.write(json.dumps(response))
+        rfile.write(",\n")
 
 #       json_obj = json.loads(response)
 
@@ -232,7 +234,7 @@ def getOpeningSchedule(zip_code_data):
     i = random.randint(0, len(zip_code_data))
     print("index = ")
     print(i)
-    tout = "["
+    tout = "{\"slots\": ["
 
     for x in range(2):
         i = random.randrange(7)
@@ -242,14 +244,17 @@ def getOpeningSchedule(zip_code_data):
         close_time = random.randrange(12, 24)
 
         out = ""
-        out = "{ \"day\": " + "\"" + day + "\"" + "," + "\"time\": " + "\"" + str(open_time) + "-" + str(close_time) + "\""
-        out = out + ", \"rate\": " + str(random.randrange(50,100)) + ",";
-        out = out + "\"location\": " + "\"" + "94588" + "\"" "}"
+        out = "{ \"slot\": {\"day\": " + "\"" + day + "\"" + "," + "\"time\": " + "\"" + str(open_time) + "-" + str(close_time) + "\"" + "}"
+        out = out + ", \"rate\": " + str(random.randrange(50,100)) + ","
+        out = out + "\"location\": " + "{ \"coordinates\": " + "{ \"latitude\": 22.222 " + "," + "\"longitude\":  333.333" + "}"
+        out = out + ", \"radius\": " + str(random.randrange(10,50)) + "}}"
 
         if( x == 0 ):
             tout = tout + out
         else:
             tout = tout + ", " + out + "]"
+            tout = tout + ", " + "\"instant_book\": {\"on\": false"
+            tout = tout + ", " + "\"hourly_rate\": " + str(random.randrange(50,100)) + "}}"
             print(tout)
 
     return tout
@@ -303,8 +308,6 @@ def write_html_business(fh, tfh, response, zip_code_data):
     tfh.write('"rating": "{0}"'.format(response['rating']))
     tfh.write(",")
     tfh.write('"availability": {0}'.format(getOpeningSchedule(zip_code_data)))
-    tfh.write(",")
-    tfh.write('"hourly_rate": "{0}"'.format(random.randrange(50,100)))
     tfh.write(",")
     tfh.write('"min_charges": "{0}"'.format(random.randrange(50,100)))
     tfh.write(",")
