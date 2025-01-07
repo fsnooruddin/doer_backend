@@ -18,7 +18,7 @@ function create(req, res) {
   // Save doer in the database
   JobRequest.create(data_obj)
     .then((data) => {
- //     KU.sendMessage("doer_messages", "new job request");
+      KU.sendMessage("doer_messages", "new job request");
       res.send(data);
     })
     .catch((err) => {
@@ -148,6 +148,9 @@ async function getDoers(services, time) {
     const sdays = "%" + dayRequested + "%";
     const doer_data = await Doers.findByServicesAndDayDirect(sservices, sdays);
     if (doer_data) {
+      if (doer_data.length == 0) {
+        console.log("Found 0 Doers for services = " + services + " day = " + day );
+      }
       console.log("response data is " + JSON.stringify(doer_data));
       const response_data = await filterByTime(
         dayRequested,

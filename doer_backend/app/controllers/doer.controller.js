@@ -265,10 +265,10 @@ async function completeJob(req, res) {
     cost: cost,
   };
 
-  // Save doer in the database
+  // Save completed_job] in the database
   CompletedJobs.create(completed_job)
     .then((data) => {
-      //Utils.add_to_nofications_queue("completed_jobs", completed_job);
+      Utils.add_to_nofications_queue("completed_jobs", completed_job);
       res.send(data);
     })
     .catch((err) => {
