@@ -18,11 +18,11 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 		},
 		services: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(2048),
 			allowNull: false,
 		},
 		availability: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(2048),
 			allowNull: false,
 		},
 		rating: {
