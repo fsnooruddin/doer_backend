@@ -27,7 +27,8 @@ function createTopics() {
 async function init() {
 
     const Consumer = kafka.Consumer;
-    const client = new kafka.KafkaClient({ kafkaHost: "localhost:9092" });
+    // const client = new kafka.KafkaClient({ kafkaHost: "localhost:9092" });
+    const client = new kafka.KafkaClient({ kafkaHost: "kafka:9092" });
 
     const Producer = kafka.Producer;
     const producer = new Producer(client);
@@ -36,11 +37,16 @@ async function init() {
         KafkaUtils.kafkaClient = client;
         KafkaUtils.kafkaProducer = producer;
         createTopics();
+        KafkaUtils.Initialized = true;
     });
 
 }
 
 async function sendMessage(ktopic, kmessage) {
+    if( KafkaUtils.Initialized !== true ) {
+        console.log("Kafka, sendMessage not initialized");
+        return;
+    }
     var payload = [{
         topic: ktopic,
         messages: kmessage
