@@ -22,6 +22,7 @@ module.exports = (app) => {
 	router.post("/createJobRequest", job_requests.create);
 	router.get("/findEligibleDoers", job_requests.findEligibleDoers);
 	router.post("/acceptJob", doers.acceptJob);
+	router.post("/startJob", doers.startJob);
 	router.post("/completeJob", doers.completeJob);
 
 	router.post("/createDoerTrip", doer_trips.create);

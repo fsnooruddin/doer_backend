@@ -37,6 +37,34 @@ const AcceptedJob = sequelize.define("accepted_job", {
   },
 });
 
+const StartedJob = sequelize.define("started_job", {
+  started_job_id: {
+    type: Sequelize.DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false,
+  },
+  doer_id: {
+    type: Sequelize.DataTypes.INTEGER,
+    references: {
+      model: db.doers,
+      key: "doer_id",
+    },
+  },
+  job_request_id: {
+    type: Sequelize.DataTypes.INTEGER,
+    references: {
+      model: db.job_requests,
+      key: "job_request_id",
+    },
+  },
+   start_time: {
+      type: Sequelize.DataTypes.DATE,
+      defaultValue: Sequelize.DataTypes.NOW,
+      allowNull: false,
+    },
+});
+
 const CompletedJob = sequelize.define("completed_job", {
   completed_job_id: {
     type: Sequelize.DataTypes.INTEGER,
@@ -200,6 +228,7 @@ const Invoice = sequelize.define("invoice", {
 */
 
 db.accepted_jobs = AcceptedJob;
+db.started_jobs = StartedJob;
 db.completed_jobs = CompletedJob;
 db.doer_trips = DoerTrip;
 db.doer_trip_location_updates = DoerTripLocationUpdate;

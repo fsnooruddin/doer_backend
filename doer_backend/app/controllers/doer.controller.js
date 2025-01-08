@@ -4,6 +4,7 @@ const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Doer = db.doers;
 const AcceptedJobs = db.accepted_jobs;
+const StartedJobs = db.started_jobs;
 const CompletedJobs = db.completed_jobs;
 const JobRequest = db.job_requests;
 const Op = db.Sequelize.Op;
@@ -208,6 +209,33 @@ function acceptJob(req, res) {
 
 // Retrieve all Users from the database
 // or only those whose title  matches
+function startJob(req, res) {
+  console.log("Doer-controller startJob");
+  const doerId = req.query.doerId;
+  const jobReqId = req.query.jobId;
+
+  // Create a doer
+  const started_job = {
+    doer_id: doerId,
+    job_request_id: jobReqId
+  };
+
+  // Save doer in the database
+  StartedJobs.create(started_job)
+    .then((data) => {
+      //Utils.add_to_nofications_queue("accepted_jobs", accepted_job);
+      console.log("started_job success!")
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while starting the job.",
+      });
+    });
+}
+
+// Retrieve all Users from the database
+// or only those whose title  matches
 async function completeJob(req, res) {
   console.log("Doer-controller completeJob");
   const doerId = req.query.doerId;
@@ -397,6 +425,7 @@ module.exports = {
   findByServicesAndDay,
   findByServicesAndDayDirect,
   acceptJob,
+  startJob,
   completeJob,
   getHistory,
   rating,
