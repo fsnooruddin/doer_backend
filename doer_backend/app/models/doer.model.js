@@ -29,10 +29,6 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.FLOAT,
 			allowNull: false,
 		},
-		hourly_rate: {
-			type: Sequelize.FLOAT,
-			allowNull: false,
-		},
 		minimum_charges: {
             type: Sequelize.FLOAT,
             allowNull: false,
