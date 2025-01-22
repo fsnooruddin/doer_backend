@@ -265,7 +265,7 @@ async function completeJob(req, res) {
   try {
     jrequest = await Job.findOne({
       where: { job_request_id: jobReqId },
-      attributes: ["user_id"],
+      attributes: ["user_id", "time"],
     });
   } catch (err) {
     console.log(
@@ -283,22 +283,48 @@ async function completeJob(req, res) {
           });
           return;
   }
-  console.log("doer completing job = " + JSON.stringify(jrequest));
+  console.log("completing job = " + JSON.stringify(jrequest));
   console.log(typeof jrequest);
 
   console.log("doer completing job = " + JSON.stringify(rdoer));
   console.log(typeof rdoer);
 
-  /* Create a completed_job
-  const cost = duration * rdoer.hourly_rate;
+
+  var dayRequested = Utils.getDayFromAvailability(jrequest.time);
+  var timeRequested = Utils.getTimeFromAvailability(jrequest.time);
+
+  console.log(jrequest.time);
+  console.log(dayRequested);
+  console.log(timeRequested);
+
+  var objs = JSON.parse(rdoer.availability);
+		console.log ("availability = " + objs);
+		console.log ("availability = " + JSON.stringify(objs));
+		console.log ("one slot = " + JSON.stringify(objs.slots[0]));
+		console.log ("slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
+		//console.log(JSON.parse (objs));
+		var hourly_rate = Utils.getRateFromAvailabilitySlot(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
+		if (hourly_rate == -1) {
+			 res.status(500).send({
+                        message:
+                          "Error retrieving rate or  job completion request, doer id = " +
+                          doerId
+
+                      });
+                      return;
+		}
+
+
+  // Create a completed_job
+  const cost = duration * hourly_rate;
   console.log(
     "Doer-controller completeJob total cost is duration * rate: " +
       duration +
       " * " +
-      rdoer.hourly_rate,
+      hourly_rate,
   );
-  */
-  const cost = 33;
+
+
   const completed_job = {
     doer_id: doerId,
     user_id: jrequest.user_id,
