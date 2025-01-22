@@ -21,7 +21,7 @@ const acceptJobUrl =
 const startJobUrl =
     "http://127.0.0.1:8080/api/doer/startJob?doerId=1&jobId=1";
 const completeJobUrl =
-  "http://127.0.0.1:8080/api/doer/completeJob?doerId=1&jobId=1&duration=22";
+  "http://127.0.0.1:8080/api/doer/completeJob?doerId=1&jobId=4&duration=22";
 const updateDoerAvailabilityUrl =
   "http://127.0.0.1:8080/api/doer/updateDoerAvailability";
 
@@ -119,7 +119,7 @@ async function makeGetRequests() {
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://127.0.0.1:8080/api/doer/findEligibleDoers?jobId=1",
+    "http://127.0.0.1:8080/api/doer/findEligibleDoers?jobRequestId=1",
   );
   console.log("findEligibileDoers = \n\n\n" + JSON.stringify(response_data));
 
@@ -132,7 +132,7 @@ async function makeGetRequests() {
   console.log("\n\n\n **************** \n\n\n");
 
   var response_data = await rget(
-    "http://127.0.0.1:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Wed%",
+    "http://127.0.0.1:8080/api/doer/getDoerByServicesAndDay?services=%Elect%&day=%Mon%",
   );
   console.log(
     "getDoerByServicesAndDay = \n\n\n" + JSON.stringify(response_data),
@@ -142,7 +142,7 @@ async function makeGetRequests() {
 }
 
 async function main() {
-   //makePostRequests();
+   makePostRequests();
    makeGetRequests();
    //makeCreateCall("startJobRequest", startJobUrl, null);
    console.log("\n\n\n **************** \n\n\n");
