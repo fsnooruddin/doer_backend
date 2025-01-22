@@ -34,11 +34,16 @@ async function createDoer(entry) {
 
 async function main() {
   // Accessing command line arguments in Node.js
+
+
   const args = process.argv.slice(2);
 
- // console.log("args = ");
- // console.log(args);
-
+  console.log("args = ");
+  console.log(args);
+  if(args.length == 0) {
+  console.log("Doer data Filename required ... ");
+  return;
+  }
   let rawdata = fs.readFileSync(args[0]);
   let doer_data = JSON.parse(rawdata);
 
