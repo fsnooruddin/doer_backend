@@ -6,7 +6,7 @@ const Doer = db.doers;
 const AcceptedJobs = db.accepted_jobs;
 const StartedJobs = db.started_jobs;
 const CompletedJobs = db.completed_jobs;
-const JobRequest = db.job_requests;
+const Job = db.job_requests;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
 const Joi = require("joi");
@@ -17,15 +17,19 @@ async function create(req, res) {
   console.log(req.body);
 
   const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
+  //const data_obj_1 = JSON.parse(Utils.escapeJSONString(data_obj.availability));
 
   console.log("services = " + data_obj.services);
   console.log("services = " + JSON.stringify(data_obj.services));
-  data_obj.services = JSON.stringify(data_obj.services);
-  console.log("services = " + data_obj.services);
+
   data_obj.availability = JSON.stringify(data_obj.availability);
+ console.log("availability = " + data_obj.availability);
+  console.log("slots = " + JSON.stringify(data_obj.availability.slots));
+
+/*
+
   const validation = doerCreateSchema.validate(data_obj);
 
-  /*
     if(validation.error === undefined) {
         console.log("doer schema validation succeeded");
     } else {
@@ -247,8 +251,7 @@ async function completeJob(req, res) {
   var jrequest;
   try {
     rdoer = await Doer.findOne({
-      where: { doer_id: doerId },
-      attributes: ["hourly_rate"],
+      where: { doer_id: doerId }
     });
   } catch (err) {
     console.log(
@@ -260,7 +263,7 @@ async function completeJob(req, res) {
   }
 
   try {
-    jrequest = await JobRequest.findOne({
+    jrequest = await Job.findOne({
       where: { job_request_id: jobReqId },
       attributes: ["user_id"],
     });
@@ -270,14 +273,23 @@ async function completeJob(req, res) {
     );
   }
 
-
+  if(jrequest == null || rdoer == null){
+     res.status(500).send({
+            message:
+              "Error retrieving doer or job for job completion request, doer id = " +
+              doerId +
+              " job request id = " +
+              jobReqId
+          });
+          return;
+  }
   console.log("doer completing job = " + JSON.stringify(jrequest));
   console.log(typeof jrequest);
 
   console.log("doer completing job = " + JSON.stringify(rdoer));
   console.log(typeof rdoer);
 
-  // Create a completed_job
+  /* Create a completed_job
   const cost = duration * rdoer.hourly_rate;
   console.log(
     "Doer-controller completeJob total cost is duration * rate: " +
@@ -285,6 +297,8 @@ async function completeJob(req, res) {
       " * " +
       rdoer.hourly_rate,
   );
+  */
+  const cost = 33;
   const completed_job = {
     doer_id: doerId,
     user_id: jrequest.user_id,
@@ -296,7 +310,6 @@ async function completeJob(req, res) {
   // Save completed_job] in the database
   CompletedJobs.create(completed_job)
     .then((data) => {
-      Utils.add_to_nofications_queue("completed_jobs", completed_job);
       res.send(data);
     })
     .catch((err) => {
