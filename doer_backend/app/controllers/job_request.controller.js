@@ -120,25 +120,6 @@ function filterByDistance(timeRequested, doers) {
   req.end();
 }
 
-async function filterByTime(dayRequested, timeRequested, doers) {
-  console.log("data in filterByTime= " + dayRequested + "  " + timeRequested);
-
-  var ret_doers = [];
-  for (let d_entry of doers) {
-    //console.log("Processing" + "     " + d_entry);
-
-    //console.log(typeof d_entry.availability);
-    //console.log(JSON.parse(d_entry.availability));
-    var objs = JSON.parse(d_entry.availability);
-    var retVal = Utils.processTimeMatch(dayRequested, timeRequested, objs);
-    if (retVal == true) {
-      ret_doers.push(d_entry);
-    }
-  }
-  console.log("returning filterByTime size of return = " + ret_doers.length);
-  return ret_doers;
-}
-
 async function getDoers(services, time) {
   const retArray = time.split(",");
   const dayRequested = retArray[0];
@@ -152,7 +133,7 @@ async function getDoers(services, time) {
         console.log("Found 0 Doers for services = " + services + " day = " + day );
       }
       console.log("response data is " + JSON.stringify(doer_data));
-      const response_data = await filterByTime(
+      const response_data = await Utils.filterByTime(
         dayRequested,
         timeRequested,
         doer_data,
