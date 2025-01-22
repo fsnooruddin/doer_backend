@@ -18,6 +18,8 @@ const updateDoerTripUrl =
 const createDoerReviewUrl = "http://127.0.0.1:8080/api/doer/reviewDoer";
 const acceptJobUrl =
   "http://127.0.0.1:8080/api/doer/acceptJob?doerId=1&jobId=1";
+const startJobUrl =
+    "http://127.0.0.1:8080/api/doer/startJob?doerId=1&jobId=1";
 const completeJobUrl =
   "http://127.0.0.1:8080/api/doer/completeJob?doerId=1&jobId=1&duration=22";
 const updateDoerAvailabilityUrl =
@@ -25,7 +27,7 @@ const updateDoerAvailabilityUrl =
 
 async function rget(url) {
   try {
-    const response = await axios.post(url, data);
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     console.error("GET from : " + url + " error is: " + error);
@@ -80,6 +82,9 @@ async function makePostRequests() {
   makeCreateCall("acceptJob", acceptJobUrl, null);
   console.log("\n\n\n **************** \n\n\n");
 
+   makeCreateCall("startJob", startJobUrl, null);
+   console.log("\n\n\n **************** \n\n\n");
+
   makeCreateCall("completeJob", completeJobUrl, null);
   console.log("\n\n\n **************** \n\n\n");
 
@@ -114,7 +119,7 @@ async function makeGetRequests() {
 
   console.log("\n\n\n **************** \n\n\n");
   var response_data = await rget(
-    "http://127.0.0.1:8080/api/doer/findEligibleDoers?jobRequestId=1",
+    "http://127.0.0.1:8080/api/doer/findEligibleDoers?jobId=1",
   );
   console.log("findEligibileDoers = \n\n\n" + JSON.stringify(response_data));
 
@@ -137,10 +142,11 @@ async function makeGetRequests() {
 }
 
 async function main() {
-  //makePostRequests();
-  // makeGetRequests();
-   makeCreateCall("createJobRequest", createJobRequestUrl, createJobRequest_1);
-    console.log("\n\n\n **************** \n\n\n");
+   //makePostRequests();
+   makeGetRequests();
+   //makeCreateCall("startJobRequest", startJobUrl, null);
+   console.log("\n\n\n **************** \n\n\n");
+
 }
 
 main();
