@@ -59,14 +59,14 @@ function filterByDistance(timeRequested, doers) {
 }
 
 async function filterByTime(dayRequested, timeRequested, doers) {
-	console.log('data in filterByTime= ' + dayRequested + '  ' + timeRequested)
+	console.log('data in filterByTime= ' + dayRequested + '  ' + timeRequested);
 
-	var ret_doers = []
+	var ret_doers = [];
 	for (let d_entry of doers) {
-		//console.log("Processing" + "     " + d_entry);
+		console.log("Processing Doer Availability" + "     " + JSON.stringify(d_entry));
 
-		//console.log(typeof d_entry.availability);
-		//console.log(JSON.parse(d_entry.availability));
+		console.log(typeof d_entry.availability);
+		console.log(JSON.parse(d_entry.availability));
 
 		var objs = JSON.parse(d_entry.availability);
 		console.log ("availability = " + objs);
@@ -178,5 +178,6 @@ function getRateFromAvailabilitySlot(reqSlotDay, reqSlotTime, avail) {
 			return a_entry.rate;
 		}
 	}
+	console.log("getRateFromAvailabilitySlot didn't find time match...");
 	return -1;
 }
