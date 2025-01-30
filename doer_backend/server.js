@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const ku = require("./app/utils/KafkaUtil.js")
+const ku = require("./app/utils/KafkaUtil.js");
+const logger = require("./app/utils/Logger.js");
 
 var corsOptions = {
     origin: ['http://127.0.0.1:8080', 'http://localhost:8080']
@@ -34,7 +35,7 @@ db.sequelize.sync({ force: forceFlag })
         console.log("Failed to sync db: " + err.message);
     });
 
-// ku.init();
+//ku.init();
 
 
 // simple route
@@ -49,7 +50,7 @@ require("./app/routes/doer.routes")(app);
 // set port, listen for requests
 const PORT = 8080;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+    logger.info("Server is running on port + " +  PORT) ;
 });
 
 module.exports = app;
