@@ -54,7 +54,7 @@ async function create(req, res) {
 }
 
 // Find a single Doer with an id
-function findById(req, res) {
+async function findById(req, res) {
 	const id = req.query.id;
 	console.log("Doer-controller findOne id = " + id);
 	if (id == null) {
@@ -65,22 +65,40 @@ function findById(req, res) {
 		return;
 	}
 
-	Doer.findOne({
-		where: {
-			doer_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			res.send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: "Error retrieving Doer with id=" + id + " error: " + err.message,
-			});
+	const data = await findByIdDBCall(id);
+
+	if (data == null) {
+		res.status(500).send({
+			message: "Error retrieving Doer with id=" + id,
 		});
+	} else {
+		res.status(200).send(data);
+		return;
+	}
+}
+
+// Find a single Doer with an id
+async function findByIdDBCall(id) {
+	try {
+		const data = await Doer.findOne({
+			where: {
+				doer_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+
+		if (data == null) {
+			res.status(200).send("find doer failed  " + "couldn't find doer");
+			return;
+		}
+
+		return data;
+	} catch (err) {
+		console.log("Error retrieving Doer with id=" + id + " error: " + err.message);
+		return null;
+	}
 }
 
 // Find a single Doer by services
@@ -107,7 +125,7 @@ function findByServices(req, res) {
 		});
 }
 
-function findByServicesAndDay(req, res) {
+async function findByServicesAndDay(req, res) {
 	const services = req.query.services;
 	const day = req.query.day;
 	console.log("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
@@ -134,7 +152,7 @@ function findByServicesAndDay(req, res) {
 		});
 }
 
-async function findByServicesAndDayDirect(services, day) {
+async function findByServicesAndDayDBCall(services, day) {
 	console.log("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
 	let data = null;
 	try {
@@ -158,65 +176,6 @@ async function findByServicesAndDayDirect(services, day) {
 	console.log("findByServicesAndDayDirect returning  " + data);
 	return data;
 }
-
-/*
-	if (jrequest == null || rdoer == null) {
-		res.status(500).send({
-			message: "Error retrieving doer or job for job completion request, doer id = " + doerId + " job request id = " + jobReqId,
-		});
-		return;
-	}
-	console.log("completing job = " + JSON.stringify(jrequest));
-	console.log(typeof jrequest);
-
-	console.log("doer completing job = " + JSON.stringify(rdoer));
-	console.log(typeof rdoer);
-
-	var dayRequested = Utils.getDayFromAvailability(jrequest.time);
-	var timeRequested = Utils.getTimeFromAvailability(jrequest.time);
-
-	console.log(jrequest.time);
-	console.log(dayRequested);
-	console.log(timeRequested);
-
-	var objs = JSON.parse(rdoer.availability);
-	console.log("availability = " + objs);
-	console.log("availability = " + JSON.stringify(objs));
-	console.log("one slot = " + JSON.stringify(objs.slots[0]));
-	console.log("slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
-	//console.log(JSON.parse (objs));
-	var hourly_rate = Utils.getRateFromAvailabilitySlot(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
-	if (hourly_rate == -1) {
-		res.status(500).send({
-			message: "Error retrieving rate or  job completion request, doer id = " + doerId,
-		});
-		return;
-	}
-
-	// Create a completed_job
-	const cost = duration * hourly_rate;
-	console.log("Doer-controller completeJob total cost is duration * rate: " + duration + " * " + hourly_rate);
-
-	const completed_job = {
-		doer_id: doerId,
-		user_id: jrequest.user_id,
-		job_request_id: jobReqId,
-		duration: duration,
-		cost: cost,
-	};
-
-	// Save completed_job] in the database
-	CompletedJobs.create(completed_job)
-		.then((data) => {
-			res.send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: err.message || "Some error occurred while completing the job.",
-			});
-		});
-}
-*/
 
 async function updateAvailability(req, res) {
 	const id = req.body.doer_id;
@@ -316,9 +275,10 @@ async function getHistory(req, res) {
 module.exports = {
 	create,
 	findById,
+	findByIdDBCall,
 	findByServices,
 	findByServicesAndDay,
-	findByServicesAndDayDirect,
+	findByServicesAndDayDBCall,
 	getHistory,
 	rating,
 	updateAvailability,
