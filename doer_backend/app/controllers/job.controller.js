@@ -4,11 +4,14 @@ const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Doers = require("./doer.controller.js");
 const Job = db.jobs;
+const JobInvoices = db.invoices;
 const Op = db.Sequelize.Op;
 const KU = require("../utils/KafkaUtil.js");
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
 // https://www.zipcodeapi.com/rest/QZPX7dSqfyw89CJaAwX37gNO10EoQM2w7Op47UhhyTPB75eMlJPlDc5KkXz2mL0t/distance.json/94588/94104/km
+
+
 // Create and Save a new Job Request
 function create(req, res) {
 	console.log("req body in create job_request: ");
@@ -63,7 +66,7 @@ async function findByIdDBCall(id) {
 		await data;
 		console.log("data from find request from db is = " + data);
 		if (data == null) {
-			console.log("data from find request is = null " + data);
+			console.log("data from find request is = null " + id);
 			return null;
 		} else {
 			return data;
@@ -133,7 +136,7 @@ async function getDoers(services, time) {
 	try {
 		const sservices = "%" + services + "%";
 		const sdays = "%" + dayRequested + "%";
-		const doer_data = await Doers.findByServicesAndDayDirect(sservices, sdays);
+		const doer_data = await Doers.findByServicesAndDayDBCall(sservices, sdays);
 		if (doer_data) {
 			if (doer_data.length == 0) {
 				console.log("Found 0 Doers for services = " + services + " day = " + day);
@@ -156,23 +159,15 @@ async function getDoers(services, time) {
 async function findEligibleDoers(req, res) {
 	console.log("job_request-controller findEligibleDoers");
 
-	const id = req.query.JobId;
-	try {
-		const data = await Job.findOne({
-			where: {
-				job_request_id: id,
-			},
-			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
-		});
-		await data;
+	const id = req.query.jobId;
+	const data = await findByIdDBCall(id);
 		console.log("data from find request is = " + data);
 		if (data == null) {
 			console.log("data from find request is = null " + data);
 			res.status(200).send("Couldn't find job request");
 			return;
 		}
+
 		try {
 			const response_data = await getDoers(data.services, data.time);
 			res.status(200).send(response_data);
@@ -182,11 +177,6 @@ async function findEligibleDoers(req, res) {
 			res.status(200).send("Couldn't find doers   ");
 			return;
 		}
-	} catch (err) {
-		res.status(500).send({
-			message: "findEligibleDoers Error retrieving job_request with id=" + id + " error: " + err.message,
-		});
-	}
 }
 
 // Retrieve all Users from the database
@@ -289,28 +279,33 @@ async function completeJob(req, res) {
 	}
 }
 
-/*
-async function generateInvoice(jobId, duration) {
-	if (jrequest == null || rdoer == null) {
+
+async function generateInvoice(req, res) {
+
+    const job = await findByIdDBCall(req.query.jobId);
+    console.log(job);
+    const doer = await Doers.findByIdDBCall(job.doer_id);
+
+	if (job == null || doer == null) {
 		res.status(500).send({
 			message: "Error retrieving doer or job for job completion request, doer id = " + doerId + " job request id = " + jobReqId,
 		});
 		return;
 	}
-	console.log("completing job = " + JSON.stringify(jrequest));
-	console.log(typeof jrequest);
+	console.log("generating invoice job = " + JSON.stringify(job));
+	console.log(typeof job);
 
-	console.log("doer completing job = " + JSON.stringify(rdoer));
-	console.log(typeof rdoer);
+	console.log("generating invoice doer = " + JSON.stringify(doer));
+	console.log(typeof doer);
 
-	var dayRequested = Utils.getDayFromAvailability(jrequest.time);
-	var timeRequested = Utils.getTimeFromAvailability(jrequest.time);
+	var dayRequested = Utils.getDayFromAvailability(job.time);
+	var timeRequested = Utils.getTimeFromAvailability(job.time);
 
-	console.log(jrequest.time);
+	console.log(job.time);
 	console.log(dayRequested);
 	console.log(timeRequested);
 
-	var objs = JSON.parse(rdoer.availability);
+	var objs = JSON.parse(doer.availability);
 	console.log("availability = " + objs);
 	console.log("availability = " + JSON.stringify(objs));
 	console.log("one slot = " + JSON.stringify(objs.slots[0]));
@@ -319,35 +314,41 @@ async function generateInvoice(jobId, duration) {
 	var hourly_rate = Utils.getRateFromAvailabilitySlot(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
 	if (hourly_rate == -1) {
 		res.status(500).send({
-			message: "Error retrieving rate or  job completion request, doer id = " + doerId,
+			message: "Error retrieving rate or  job completion request, doer id = " + job.doer_id,
 		});
 		return;
 	}
 
 	// Create a completed_job
-	const cost = duration * hourly_rate;
-	console.log("Doer-controller completeJob total cost is duration * rate: " + duration + " * " + hourly_rate);
+	const cost = req.query.duration * hourly_rate;
+	console.log("Doer-controller completeJob total cost is duration * rate: " + req.query.duration + " * " + hourly_rate);
 
 	const job_invoice = {
-		doer_id: doerId,
-		user_id: jrequest.user_id,
-		job_request_id: jobReqId,
-		duration: duration,
+		doer_id: job.doer_id,
+		user_id: job.user_id,
+		job_id: job.job_id,
+		duration: req.query.duration,
 		cost: cost,
+		location: job.location
 	};
+
+    console.log("invoive object is = " + JSON.stringify(job_invoice));
+
 
 	// Save completed_job] in the database
 	JobInvoices.create(job_invoice)
 		.then((data) => {
 			res.send(data);
+			return;
 		})
 		.catch((err) => {
 			res.status(500).send({
 				message: err.message || "Some error occurred while generating the job invoice.",
 			});
+			return;
 		});
 }
-*/
+
 
 module.exports = {
 	create,
@@ -358,4 +359,5 @@ module.exports = {
 	acceptJob,
 	startJob,
 	completeJob,
+	generateInvoice
 };
