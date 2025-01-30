@@ -29,33 +29,49 @@ function create(req, res) {
 }
 
 // Find a single job_request with an id
-function findById(req, res) {
+async function findById(req, res) {
 	const id = req.query.JobId;
 	console.log("job_request-controller findOne id = " + id);
 	if (id == null) {
 		res.status(500).send({
-			message: "Error retrieving Job Request Id is missing",
+			message: "Error retrieving Job Job Id is missing",
 		});
-
 		return;
 	}
 
-	Job.findOne({
-		where: {
-			job_request_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			res.send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: "Error retrieving job_request with id=" + id + " error: " + err.message,
-			});
+	const data = await findByIdDBCall(id);
+	if (data == null) {
+		res.status(200).send("job find failed   " + id);
+		return;
+	} else {
+		res.status(200).send(data);
+		return;
+	}
+}
+
+// Find a single job_request with an id
+async function findByIdDBCall(id) {
+	try {
+		const data = await Job.findOne({
+			where: {
+				job_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
 		});
+		await data;
+		console.log("data from find request from db is = " + data);
+		if (data == null) {
+			console.log("data from find request is = null " + data);
+			return null;
+		} else {
+			return data;
+		}
+	} catch (error) {
+		console.log("Can't get job..." + error.message);
+		return null;
+	}
 }
 
 // Find a single Doer by services
@@ -180,38 +196,37 @@ async function acceptJob(req, res) {
 	const doerId = req.query.doerId;
 	const jobId = req.query.jobId;
 
-	try {
-		const data = await Job.findOne({
-			where: {
-				job_id:jobId,
-			},
-			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
-		});
-		await data;
-		console.log("data from find request is = " + data);
-		if (data == null) {
-			console.log("data from find request is = null " + data);
-			res.status(200).send("Couldn't find job to accept job request");
-			return;
-		}
-		try {
-			await data.update({ doer_id: doerId, status: 'accepted'});
-			res.status(200).send("accept job success");
-			return;
-		} catch (error) {
-			console.log("Job update failed...");
-			res.status(200).send("job update failed   ");
-			return;
-		}
-	} catch (err) {
+	if (jobId == null) {
 		res.status(500).send({
-			message: err.message || "Some error occurred while accepting the job.",
+			message: "Error accepting Job - Job Id is missing",
 		});
+		return;
+	}
+
+	if (doerId == null) {
+		res.status(500).send({
+			message: "Error accepting Job - Doer Id is missing",
+		});
+		return;
+	}
+
+	const data = await findByIdDBCall(jobId);
+
+	if (data == null) {
+		res.status(200).send("job accept failed   " + "couldn't find job");
+		return;
+	}
+
+	try {
+		await data.update({ doer_id: doerId, status: "accepted" });
+		res.status(200).send("accept job success");
+		return;
+	} catch (error) {
+		console.log("Job update failed...");
+		res.status(200).send("job update failed   ");
+		return;
 	}
 }
-
 
 // Retrieve all Users from the database
 // or only those whose title  matches
@@ -219,35 +234,28 @@ async function startJob(req, res) {
 	console.log("job-controller startJob");
 	const jobId = req.query.jobId;
 
-	try {
-		const data = await Job.findOne({
-			where: {
-				job_id:jobId,
-			},
-			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
-		});
-		await data;
-		console.log("data from find request is = " + data);
-		if (data == null) {
-			console.log("data from find request is = null " + data);
-			res.status(200).send("Couldn't find job to start job request");
-			return;
-		}
-		try {
-			await data.update({status: 'in-progress'});
-			res.status(200).send("start job success");
-			return;
-		} catch (error) {
-			console.log("Job update failed...");
-			res.status(200).send("job start failed   " + error.message);
-			return;
-		}
-	} catch (err) {
+	if (jobId == null) {
 		res.status(500).send({
-			message: err.message || "Some error occurred while starting the job.",
+			message: "Error starting Job - Job Id is missing",
 		});
+		return;
+	}
+
+	const data = await findByIdDBCall(jobId);
+
+	if (data == null) {
+		res.status(200).send("job start failed   " + "couldn't find job");
+		return;
+	}
+
+	try {
+		await data.update({ status: "in-progress" });
+		res.status(200).send("start job success");
+		return;
+	} catch (error) {
+		console.log("Job update failed...");
+		res.status(200).send("job start failed   " + error.message);
+		return;
 	}
 }
 
@@ -257,43 +265,97 @@ async function completeJob(req, res) {
 	console.log("job-controller completeJob");
 	const jobId = req.query.jobId;
 
-	try {
-		const data = await Job.findOne({
-			where: {
-				job_id:jobId,
-			},
-			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
-		});
-		await data;
-		console.log("data from find request is = " + data);
-		if (data == null) {
-			console.log("data from find request is = null " + data);
-			res.status(200).send("Couldn't find job to complete job request");
-			return;
-		}
-		try {
-			await data.update({status: 'completed'});
-			res.status(200).send("complete job success");
-			return;
-		} catch (error) {
-			console.log("Job update failed...");
-			res.status(200).send("job complete failed   ");
-			return;
-		}
-	} catch (err) {
+	if (jobId == null) {
 		res.status(500).send({
-			message: err.message || "Some error occurred while completeing the job.",
+			message: "Error completing Job - Job Id is missing",
 		});
+		return;
+	}
+
+	const data = await findByIdDBCall(jobId);
+	if (data == null) {
+		res.status(200).send("job complete failed   " + "couldn't find job");
+		return;
+	}
+
+	try {
+		await data.update({ status: "completed" });
+		res.status(200).send("complete job success");
+		return;
+	} catch (error) {
+		console.log("Job update failed...");
+		res.status(200).send("job complete failed   " + error.message);
+		return;
 	}
 }
+
+/*
+async function generateInvoice(jobId, duration) {
+	if (jrequest == null || rdoer == null) {
+		res.status(500).send({
+			message: "Error retrieving doer or job for job completion request, doer id = " + doerId + " job request id = " + jobReqId,
+		});
+		return;
+	}
+	console.log("completing job = " + JSON.stringify(jrequest));
+	console.log(typeof jrequest);
+
+	console.log("doer completing job = " + JSON.stringify(rdoer));
+	console.log(typeof rdoer);
+
+	var dayRequested = Utils.getDayFromAvailability(jrequest.time);
+	var timeRequested = Utils.getTimeFromAvailability(jrequest.time);
+
+	console.log(jrequest.time);
+	console.log(dayRequested);
+	console.log(timeRequested);
+
+	var objs = JSON.parse(rdoer.availability);
+	console.log("availability = " + objs);
+	console.log("availability = " + JSON.stringify(objs));
+	console.log("one slot = " + JSON.stringify(objs.slots[0]));
+	console.log("slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
+	//console.log(JSON.parse (objs));
+	var hourly_rate = Utils.getRateFromAvailabilitySlot(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
+	if (hourly_rate == -1) {
+		res.status(500).send({
+			message: "Error retrieving rate or  job completion request, doer id = " + doerId,
+		});
+		return;
+	}
+
+	// Create a completed_job
+	const cost = duration * hourly_rate;
+	console.log("Doer-controller completeJob total cost is duration * rate: " + duration + " * " + hourly_rate);
+
+	const job_invoice = {
+		doer_id: doerId,
+		user_id: jrequest.user_id,
+		job_request_id: jobReqId,
+		duration: duration,
+		cost: cost,
+	};
+
+	// Save completed_job] in the database
+	JobInvoices.create(job_invoice)
+		.then((data) => {
+			res.send(data);
+		})
+		.catch((err) => {
+			res.status(500).send({
+				message: err.message || "Some error occurred while generating the job invoice.",
+			});
+		});
+}
+*/
 
 module.exports = {
 	create,
 	findEligibleDoers,
 	getDoers,
+	findById,
+	findByIdDBCall,
 	acceptJob,
 	startJob,
-	completeJob
+	completeJob,
 };
