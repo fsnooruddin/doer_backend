@@ -1,6 +1,7 @@
 module.exports = (app) => {
 	const doers = require("../controllers/doer.controller.js");
-	const job_requests = require("../controllers/job_request.controller.js");
+//	const job_requests = require("../controllers/job_request.controller.js");
+	const jobs = require("../controllers/job.controller.js");
 	const doer_trips = require("../controllers/doer_trip.controller.js");
 	const categories = require("../controllers/category.controller.js");
 	const reviews = require("../controllers/review.controller.js");
@@ -19,9 +20,13 @@ module.exports = (app) => {
 	router.get("/getReviewById", reviews.findById);
 	router.get("/getReviewsForDoer", reviews.findByDoerId);
 
-	router.post("/createJobRequest", job_requests.create);
-	router.get("/findEligibleDoers", job_requests.findEligibleDoers);
-	router.post("/acceptJob", doers.acceptJob);
+	router.post("/createJob", jobs.create);
+	router.get("/findEligibleDoers", jobs.findEligibleDoers);
+    router.post("/acceptJob", jobs.acceptJob);
+
+	router.post("/createJobRequest", jobs.create);
+
+
 	router.post("/startJob", doers.startJob);
 	router.post("/completeJob", doers.completeJob);
 
