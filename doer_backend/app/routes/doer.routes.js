@@ -23,12 +23,12 @@ module.exports = (app) => {
 	router.post("/createJob", jobs.create);
 	router.get("/findEligibleDoers", jobs.findEligibleDoers);
     router.post("/acceptJob", jobs.acceptJob);
+    router.post("/startJob", jobs.startJob);
+	router.post("/completeJob", jobs.completeJob);
 
 	router.post("/createJobRequest", jobs.create);
 
 
-	router.post("/startJob", doers.startJob);
-	router.post("/completeJob", doers.completeJob);
 
 	router.post("/createDoerTrip", doer_trips.create);
 	router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);

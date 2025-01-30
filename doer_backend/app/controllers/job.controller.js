@@ -212,9 +212,88 @@ async function acceptJob(req, res) {
 	}
 }
 
+
+// Retrieve all Users from the database
+// or only those whose title  matches
+async function startJob(req, res) {
+	console.log("job-controller startJob");
+	const jobId = req.query.jobId;
+
+	try {
+		const data = await Job.findOne({
+			where: {
+				job_id:jobId,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		await data;
+		console.log("data from find request is = " + data);
+		if (data == null) {
+			console.log("data from find request is = null " + data);
+			res.status(200).send("Couldn't find job to start job request");
+			return;
+		}
+		try {
+			await data.update({status: 'in-progress'});
+			res.status(200).send("start job success");
+			return;
+		} catch (error) {
+			console.log("Job update failed...");
+			res.status(200).send("job start failed   " + error.message);
+			return;
+		}
+	} catch (err) {
+		res.status(500).send({
+			message: err.message || "Some error occurred while starting the job.",
+		});
+	}
+}
+
+// Retrieve all Users from the database
+// or only those whose title  matches
+async function completeJob(req, res) {
+	console.log("job-controller completeJob");
+	const jobId = req.query.jobId;
+
+	try {
+		const data = await Job.findOne({
+			where: {
+				job_id:jobId,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		await data;
+		console.log("data from find request is = " + data);
+		if (data == null) {
+			console.log("data from find request is = null " + data);
+			res.status(200).send("Couldn't find job to complete job request");
+			return;
+		}
+		try {
+			await data.update({status: 'completed'});
+			res.status(200).send("complete job success");
+			return;
+		} catch (error) {
+			console.log("Job update failed...");
+			res.status(200).send("job complete failed   ");
+			return;
+		}
+	} catch (err) {
+		res.status(500).send({
+			message: err.message || "Some error occurred while completeing the job.",
+		});
+	}
+}
+
 module.exports = {
 	create,
 	findEligibleDoers,
 	getDoers,
-	acceptJob
+	acceptJob,
+	startJob,
+	completeJob
 };
