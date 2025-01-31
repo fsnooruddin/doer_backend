@@ -7,6 +7,7 @@ const Job = db.jobs;
 const JobInvoices = db.invoices;
 const Op = db.Sequelize.Op;
 const KU = require("../utils/KafkaUtil.js");
+const logger = require("../utils/Logger.js");
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
 // https://www.zipcodeapi.com/rest/QZPX7dSqfyw89CJaAwX37gNO10EoQM2w7Op47UhhyTPB75eMlJPlDc5KkXz2mL0t/distance.json/94588/94104/km
@@ -160,6 +161,12 @@ async function findEligibleDoers(req, res) {
 	console.log("job_request-controller findEligibleDoers");
 
 	const id = req.query.jobId;
+	if(id == null) {
+	    logger.error("job_request-controller findEligibleDoers missing jobId");
+		res.status(500).send("findEligibleDoers -- jobId was missing.");
+    	return;
+	}
+
 	const data = await findByIdDBCall(id);
 		console.log("data from find request is = " + data);
 		if (data == null) {
@@ -174,7 +181,7 @@ async function findEligibleDoers(req, res) {
 			return;
 		} catch (error) {
 			console.log("Can't get doers...");
-			res.status(200).send("Couldn't find doers   ");
+			res.status(500).send("Couldn't find doers   ");
 			return;
 		}
 }
@@ -187,6 +194,7 @@ async function acceptJob(req, res) {
 	const jobId = req.query.jobId;
 
 	if (jobId == null) {
+	 logger.error("job_request-controller accept job missing job Id");
 		res.status(500).send({
 			message: "Error accepting Job - Job Id is missing",
 		});
@@ -194,6 +202,7 @@ async function acceptJob(req, res) {
 	}
 
 	if (doerId == null) {
+	logger.error("job_request-controller accept job missing doer Id");
 		res.status(500).send({
 			message: "Error accepting Job - Doer Id is missing",
 		});
@@ -203,7 +212,8 @@ async function acceptJob(req, res) {
 	const data = await findByIdDBCall(jobId);
 
 	if (data == null) {
-		res.status(200).send("job accept failed   " + "couldn't find job");
+	     logger.error("job_request-controller accept job -- couldn't find job with jobId " + jobId);
+		res.status(200).send("job accept failed   " + "couldn't find job " + jobId);
 		return;
 	}
 
@@ -212,8 +222,8 @@ async function acceptJob(req, res) {
 		res.status(200).send("accept job success");
 		return;
 	} catch (error) {
-		console.log("Job update failed...");
-		res.status(200).send("job update failed   ");
+		logger.error("job_request-controller accept job failed with error " + error);
+		res.status(500).send("job update failed   " + error);
 		return;
 	}
 }
@@ -225,15 +235,15 @@ async function startJob(req, res) {
 	const jobId = req.query.jobId;
 
 	if (jobId == null) {
-		res.status(500).send({
-			message: "Error starting Job - Job Id is missing",
-		});
+	logger.error("job_request-controller start job missing job Id");
+		res.status(500).send({message: "Error starting Job - Job Id is missing"});
 		return;
 	}
 
 	const data = await findByIdDBCall(jobId);
 
 	if (data == null) {
+	logger.error("job_request-controller start job -- couldn't find job with jobId " + jobId);
 		res.status(200).send("job start failed   " + "couldn't find job");
 		return;
 	}
@@ -243,7 +253,7 @@ async function startJob(req, res) {
 		res.status(200).send("start job success");
 		return;
 	} catch (error) {
-		console.log("Job update failed...");
+		logger.error("job_request-controller accept job failed with error " + error);
 		res.status(200).send("job start failed   " + error.message);
 		return;
 	}
@@ -256,6 +266,7 @@ async function completeJob(req, res) {
 	const jobId = req.query.jobId;
 
 	if (jobId == null) {
+	logger.error("job_request-controller complete job missing job Id");
 		res.status(500).send({
 			message: "Error completing Job - Job Id is missing",
 		});
@@ -264,6 +275,7 @@ async function completeJob(req, res) {
 
 	const data = await findByIdDBCall(jobId);
 	if (data == null) {
+	logger.error("job_request-controller complete job -- couldn't find job with jobId " + jobId);
 		res.status(200).send("job complete failed   " + "couldn't find job");
 		return;
 	}
@@ -273,7 +285,7 @@ async function completeJob(req, res) {
 		res.status(200).send("complete job success");
 		return;
 	} catch (error) {
-		console.log("Job update failed...");
+		logger.error("job_request-controller accept job failed with error " + error);
 		res.status(200).send("job complete failed   " + error.message);
 		return;
 	}
