@@ -11,7 +11,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.doers = require("./doer.model.js")(sequelize, Sequelize);
-db.job_requests = require("./job_request.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
 db.jobs = require("./job.model.js")(sequelize, Sequelize);
 
