@@ -1,7 +1,28 @@
 "use strict";
-const request = require("axios");
+const axios = require("axios");
 const child_categories_data = require("./categories.test.data.js");
 const top_level_categories_data = require("./categories.top-level.test.data.js");
+
+async function rget(url) {
+	try {
+		const response = await axios.get(url);
+		return response.data;
+	} catch (error) {
+		console.error("GET from : " + url + " error is: " + error);
+		return null;
+	}
+}
+
+async function rpost(url, dataString) {
+	try {
+		const response = await axios.post(url, dataString);
+		return response.data;
+	} catch (error) {
+		console.error("POST to : " + url + " error is: " + error);
+		return null;
+	}
+}
+
 
 // Find a single Doer by services
 async function getParentId(parents) {
@@ -10,17 +31,18 @@ async function getParentId(parents) {
     uri = uri + parents[i];
     try {
       console.log("calling for parent id = " + uri);
-      const response_data = await request.get(uri);
+      const response_data = await rget(uri);
 
-      if (response_data.body != null && response_data.body.length > 0) {
-        console.log("return parent id = " + response_data.body[0].category_id);
-        return response_data.body[0].category_id;
-      } else {
-        return -1;
+    //  console.log("calling for parent id response = " + console.log(response_data));
+      if (response_data != null && response_data.length > 0) {
+        console.log("return parent id = " + response_data[0].category_id);
+        return response_data[0].category_id;
+      } else
+      {
+        console.log("get parent id returning empty");
       }
     } catch (error) {
-      console.log("Can't get parent id..." + parents[i]);
-      console.error(error);
+      console.log("Can't get parent id..." + parents[i] + " error + " + error);
       return -1;
     }
   }
@@ -33,7 +55,7 @@ async function createCategory(entry) {
 
   try {
     console.log("create category entry = " + JSON.stringify(entry));
-    const response_data = await request.post(uri, entry);
+    const response_data = await rpost(uri, entry);
 
     //    console.log("response.body     " + response_data.body);
     //    console.log("createCategory response = " + JSON.stringify(response_data.body) + "    " );
