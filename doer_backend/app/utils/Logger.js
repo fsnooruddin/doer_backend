@@ -1,13 +1,21 @@
-const pino = require('pino');
-module.exports = pino({
-  level: process.env.PINO_LOG_LEVEL || 'info',
-  formatters: {
-    bindings: (bindings) => {
-      return {  };
-    },
-    level: (label) => {
-      return { level: label.toUpperCase() };
-    },
-  },
-  timestamp: pino.stdTimeFunctions.isoTime,
+const pino = require("pino");
+
+const transports = pino.transport({
+	targets: [
+		{
+			level: "info",
+			target: "pino/file",
+			options: { destination: "./logs/log.txt" },
+		},
+		{
+			target: "pino-pretty",
+			options: {
+				colorize: true,
+			},
+		},
+	],
 });
+
+const logger = pino(transports);
+
+module.exports = logger;
