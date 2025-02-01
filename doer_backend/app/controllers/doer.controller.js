@@ -133,7 +133,7 @@ function findByServices(req, res) {
 
 	services = "%" + services + "%";
 	logger.info("Doer-controller findOne services = " + services);
-	
+
 	Doer.findAll({
 		where: {
 			services: {
