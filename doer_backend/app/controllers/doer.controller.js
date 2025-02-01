@@ -1,23 +1,42 @@
 "use strict";
 
+/**
+ * @namespace Doer
+ */
+
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Doer = db.doers;
-const AcceptedJobs = db.accepted_jobs;
-const StartedJobs = db.started_jobs;
-const CompletedJobs = db.completed_jobs;
 const Job = db.job_requests;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
 const Joi = require("joi");
+const logger = require("../utils/Logger.js");
+const opentelemetry = require("@opentelemetry/api");
 
-// Create and Save a new Doer
+/**
+ * Create a Doer
+ * @param {object} doer - JSON representing Doer
+ * @param {number} doer.user_id - User Id of user requesting the doer
+ * @param {string} doer.services - Description of doer
+ * @param {string} doer.review_count - Address of doer, e.g. "[77.6879689, 27.4072289]",
+ * @param {string} doer.phone_number - Time for doer request, e.g. "Sun, 12-5",
+ * @param {string} doer.rating - Services requested, e.g. "Electrician"
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Doer
+ */
 async function create(req, res) {
 	console.log("req body in create doer: ");
 	console.log(req.body);
+	if (req.body == null) {
+		logger.error("doer-controller create call missing payload");
+		res.status(500).send({
+			message: "Error creating Doer, data is missing",
+		});
 
+		return;
+	}
 	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
-	//const data_obj_1 = JSON.parse(Utils.escapeJSONString(data_obj.availability));
 
 	console.log("services = " + data_obj.services);
 	console.log("services = " + JSON.stringify(data_obj.services));
@@ -25,22 +44,6 @@ async function create(req, res) {
 	data_obj.availability = JSON.stringify(data_obj.availability);
 	console.log("availability = " + data_obj.availability);
 	console.log("slots = " + JSON.stringify(data_obj.availability.slots));
-
-	/*
-
-  const validation = doerCreateSchema.validate(data_obj);
-
-    if(validation.error === undefined) {
-        console.log("doer schema validation succeeded");
-    } else {
-        console.log("\t doer schema validation failed");
-        console.log(validation.error.details[0].message);
-        res.status(400).send({
-                    message: "input data failed doer scheme validation: " + validation.error.details[0].message
-                });
-        return;
-    }
-*/
 
 	try {
 		// Save category in the database
@@ -53,11 +56,17 @@ async function create(req, res) {
 	}
 }
 
-// Find a single Doer with an id
+/**
+ * Find a single Doer with an id
+ * @param {number} id - Doer Id of doer to retreive
+ * @return {string|null} Doer - null if failure, JSON object representing Doer if success
+ * @memberof Doer
+ */
 async function findById(req, res) {
 	const id = req.query.id;
-	console.log("Doer-controller findOne id = " + id);
+
 	if (id == null) {
+		logger.error("doer-controller findById missing doerId");
 		res.status(500).send({
 			message: "Error retrieving Doer Id is missing",
 		});
@@ -65,9 +74,11 @@ async function findById(req, res) {
 		return;
 	}
 
+	logger.info("Doer-controller findOne id = " + id);
 	const data = await findByIdDBCall(id);
 
 	if (data == null) {
+		logger.error("doer-controller findById couldn't find doer with doerId " + id);
 		res.status(500).send({
 			message: "Error retrieving Doer with id=" + id,
 		});
@@ -90,21 +101,33 @@ async function findByIdDBCall(id) {
 		});
 
 		if (data == null) {
-			res.status(200).send("find doer failed  " + "couldn't find doer");
-			return;
+			logger.error("doer-controller findByIdDBCall couldn't find doer with doerId " + id);
+			return null;
 		}
 
 		return data;
 	} catch (err) {
-		console.log("Error retrieving Doer with id=" + id + " error: " + err.message);
+		logger.error("doer-controller findByIdDBCall couldn't find doer with doerId " + id + "with error " + error.message);
 		return null;
 	}
 }
 
-// Find a single Doer by services
+/**
+ * Find Doers by services offered
+ * @param {string} services - Services to search by
+ * @memberof Doer
+ */
 function findByServices(req, res) {
 	const services = req.query.services;
-	console.log("Doer-controller findOne services = " + services);
+	if (services == null || services.trim() === "") {
+		logger.error("doer-controller findByServices -- services is null or empty!");
+		res.status(500).send({
+			message: "Error retrieving Doer with services =" + services + " malformed input params.",
+		});
+		return;
+	}
+
+	logger.info("Doer-controller findOne services = " + services);
 	Doer.findAll({
 		where: {
 			services: {
@@ -119,6 +142,7 @@ function findByServices(req, res) {
 			res.send(data);
 		})
 		.catch((err) => {
+			logger.error("doer-controller findByServices -- services is " + services + " error is " + err.message);
 			res.status(500).send({
 				message: "Error retrieving Doer with services =" + services + " error: " + err.message,
 			});
@@ -128,7 +152,16 @@ function findByServices(req, res) {
 async function findByServicesAndDay(req, res) {
 	const services = req.query.services;
 	const day = req.query.day;
-	console.log("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
+	if (services == null || services.trim() === "" || day == null || day.trim() === "") {
+		logger.error("doer-controller findByServicesAndDay -- services or day is null!");
+		res.status(500).send({
+			message: "Error retrieving Doer with services =" + services + ", day: " + day + " malformed input params.",
+		});
+		return;
+	}
+
+	logger.info("Doer-controller findByServicesAndDay services = " + services + ", day = " + day);
+
 	Doer.findAll({
 		where: {
 			services: {
@@ -153,7 +186,7 @@ async function findByServicesAndDay(req, res) {
 }
 
 async function findByServicesAndDayDBCall(services, day) {
-	console.log("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
+	logger.info("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
 	let data = null;
 	try {
 		data = await Doer.findAll({
@@ -173,15 +206,33 @@ async function findByServicesAndDayDBCall(services, day) {
 		console.log("Error retrieving Doer with services =" + services + " error: " + err.message);
 		return null;
 	}
-	console.log("findByServicesAndDayDirect returning  " + data);
+	logger.info("findByServicesAndDayDirect returning  " + data);
 	return data;
 }
 
 async function updateAvailability(req, res) {
-	const id = req.body.doer_id;
+	const id = req.query.id;
 	const avail = req.body.availability;
 
-	console.log("Doer-controller updateAvailability id = " + id);
+	if (id == null) {
+		logger.error("doer-controller updateAvailability missing doerId");
+		res.status(500).send({
+			message: "Error updateAvailability Doer Id is missing",
+		});
+
+		return;
+	}
+
+	if (avail == null) {
+		logger.error("doer-controller updateAvailability availability is missing or empty");
+		res.status(500).send({
+			message: "Error updateAvailability availabilty is missing or empty",
+		});
+
+		return;
+	}
+
+	logger.info("Doer-controller updateAvailability id = " + id + " avail = " + avail);
 
 	var doer = {};
 	try {
@@ -210,7 +261,15 @@ async function updateAvailability(req, res) {
 
 async function rating(req, res) {
 	const id = req.query.id;
-	console.log("Doer-controller getHistory id = " + id);
+	if (id == null) {
+		logger.error("doer-controller rating missing doerId");
+		res.status(500).send({
+			message: "Error rating Doer Id is missing",
+		});
+
+		return;
+	}
+	logger.info("Doer-controller rating id = " + id);
 
 	Doer.increment("rating", {
 		by: 1,
@@ -218,6 +277,8 @@ async function rating(req, res) {
 			doer_id: id,
 		},
 	});
+
+	res.status(200).send("successfully rated doer with id = " + id);
 }
 
 async function getHistory(req, res) {
@@ -237,8 +298,9 @@ async function getHistory(req, res) {
 			});
 		});
 
-	const completed_jobs_history = await CompletedJobs.findAll({
-		where: { doer_id: id },
+	/*
+	const completed_jobs_history = await Job.findAll({
+		where: { doer_id: id, status: 'completed' },
 		attributes: { exclude: ["updatedAt"] },
 	})
 		.then((data) => {
@@ -250,8 +312,8 @@ async function getHistory(req, res) {
 			});
 		});
 
-	const accepted_jobs_history = await AcceptedJobs.findAll({
-		where: { doer_id: id },
+	const accepted_jobs_history = await Job.findAll({
+		where: { doer_id: id, status: 'accepted' },
 		attributes: { exclude: ["updatedAt"] },
 	})
 		.then((data) => {
@@ -270,6 +332,7 @@ async function getHistory(req, res) {
 	};
 
 	res.send(history);
+	*/
 }
 
 module.exports = {
