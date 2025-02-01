@@ -17,11 +17,14 @@ const opentelemetry = require("@opentelemetry/api");
 /**
  * Create a Doer
  * @param {object} doer - JSON representing Doer
- * @param {number} doer.user_id - User Id of user requesting the doer
- * @param {string} doer.services - Description of doer
- * @param {string} doer.review_count - Address of doer, e.g. "[77.6879689, 27.4072289]",
- * @param {string} doer.phone_number - Time for doer request, e.g. "Sun, 12-5",
- * @param {string} doer.rating - Services requested, e.g. "Electrician"
+ * @param {string} doer.name - Name of Doer
+ * @param {string} doer.phone_number - Phone number of Doer
+ * @param {string} doer.location - Address of doer, e.g. "{city: Union City ,state: CA,zip_code: 94587,address: ['2837 Whipple Rd', 'Ste A', 'Union City , CA 94587'],coordinates: {'latitude': 37.6059449, 'longitude': -122.0708683}}"
+ * @param {string} doer.services - Services offered by Doer (these are categories). E.g. "[{'alias': 'electricians', 'title': 'Electricians'}, {'alias': 'lighting', 'title': 'Lighting Fixtures & Equipment'}]"
+ * @param {string} doer.availability - Array of timeslots when Doer is available. e.g. "[{\"day\":\"Fri\",\"time\":\"10-13\",\"rate\":99,\"location\":\"94588\"},{\"day\":\"Sat\",\"time\":\"9-17\",\"rate\":80,\"location\":\"94588\"}]"
+ * @param {number} doer.rating - Current Rating of Doer
+ * @param {number} doer.minimum_charges - Minimum the Doer will charge for any service
+ * @param {string} doer.img_url - URL for Doer
  * @return {string|null} error string - null if success, error details if failure
  * @memberof Doer
  */
@@ -115,10 +118,11 @@ async function findByIdDBCall(id) {
 /**
  * Find Doers by services offered
  * @param {string} services - Services to search by
+ * @return {string|null} Doer - null if failure, JSON array object representing Doers offering services if success
  * @memberof Doer
  */
 function findByServices(req, res) {
-	const services = req.query.services;
+	var services = req.query.services;
 	if (services == null || services.trim() === "") {
 		logger.error("doer-controller findByServices -- services is null or empty!");
 		res.status(500).send({
@@ -127,7 +131,9 @@ function findByServices(req, res) {
 		return;
 	}
 
+	services = "%" + services + "%";
 	logger.info("Doer-controller findOne services = " + services);
+	
 	Doer.findAll({
 		where: {
 			services: {
@@ -139,7 +145,8 @@ function findByServices(req, res) {
 		},
 	})
 		.then((data) => {
-			res.send(data);
+			logger.error("doer-controller findByServices -- services is " + services + " returning " + data);
+			res.status(200).send(data);
 		})
 		.catch((err) => {
 			logger.error("doer-controller findByServices -- services is " + services + " error is " + err.message);
@@ -149,9 +156,16 @@ function findByServices(req, res) {
 		});
 }
 
+/**
+ * Find Doers by services offered AND availability on given day
+ * @param {string} services - Services to search by
+ * @param {string} day - Day on which Doer should have availability
+ * @return {string|null} Doer - null if failure, JSON array object representing Doers offering services if success
+ * @memberof Doer
+ */
 async function findByServicesAndDay(req, res) {
-	const services = req.query.services;
-	const day = req.query.day;
+	var services = req.query.services;
+	var day = req.query.day;
 	if (services == null || services.trim() === "" || day == null || day.trim() === "") {
 		logger.error("doer-controller findByServicesAndDay -- services or day is null!");
 		res.status(500).send({
@@ -160,6 +174,8 @@ async function findByServicesAndDay(req, res) {
 		return;
 	}
 
+	services = "%" + services + "%";
+	day = "%" + day + "%";
 	logger.info("Doer-controller findByServicesAndDay services = " + services + ", day = " + day);
 
 	Doer.findAll({
@@ -210,6 +226,12 @@ async function findByServicesAndDayDBCall(services, day) {
 	return data;
 }
 
+/**
+ * Update Availability of a Doer
+ * @param {number} id - ID of Doer to update
+ * @param {string} availability - String representing new Availability JSON structure
+ * @memberof Doer
+ */
 async function updateAvailability(req, res) {
 	const id = req.query.id;
 	const avail = req.body.availability;
@@ -259,6 +281,12 @@ async function updateAvailability(req, res) {
 	res.status(200).send("successfully update doer availability. doer id = " + id);
 }
 
+/**
+ * Rate a Doer
+ * @param {number} id - ID of Doer being rated
+ *
+ * @memberof Doer
+ */
 async function rating(req, res) {
 	const id = req.query.id;
 	if (id == null) {
