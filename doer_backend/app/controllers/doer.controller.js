@@ -19,9 +19,28 @@ const opentelemetry = require("@opentelemetry/api");
  * @param {object} doer - JSON representing Doer
  * @param {string} doer.name - Name of Doer
  * @param {string} doer.phone_number - Phone number of Doer
- * @param {string} doer.location - Address of doer, e.g. "{city: Union City ,state: CA,zip_code: 94587,address: ['2837 Whipple Rd', 'Ste A', 'Union City , CA 94587'],coordinates: {'latitude': 37.6059449, 'longitude': -122.0708683}}"
+ * @param {string} doer.location - Address of doer, e.g.
+ * ```
+ * "{city: Union City ,state: CA,zip_code: 94587,address: ['2837 Whipple Rd', 'Ste A', 'Union City , CA 94587'],coordinates: {'latitude': 37.6059449, 'longitude': -122.0708683}}"
+ * ```
  * @param {string} doer.services - Services offered by Doer (these are categories). E.g. "[{'alias': 'electricians', 'title': 'Electricians'}, {'alias': 'lighting', 'title': 'Lighting Fixtures & Equipment'}]"
- * @param {string} doer.availability - Array of timeslots when Doer is available. e.g. "[{\"day\":\"Fri\",\"time\":\"10-13\",\"rate\":99,\"location\":\"94588\"},{\"day\":\"Sat\",\"time\":\"9-17\",\"rate\":80,\"location\":\"94588\"}]"
+ * @param {string} doer.availability - Array of timeslots when Doer is available. e.g.
+ * ```
+ * [
+ *      {
+ *           "day": "Fri",
+ *           "time": "10-13",
+ *           "rate": 99,
+ *           "location": "94588"
+ *       },
+ *       {
+ *           "day": "Sat",
+ *           "time": "9-17",
+ *           "rate": 80,
+ *           "location": "94588"
+ *       }
+ *   ]
+ * ```
  * @param {number} doer.rating - Current Rating of Doer
  * @param {number} doer.minimum_charges - Minimum the Doer will charge for any service
  * @param {string} doer.img_url - URL for Doer
@@ -39,23 +58,27 @@ async function create(req, res) {
 
 		return;
 	}
-	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 
-	console.log("services = " + data_obj.services);
-	console.log("services = " + JSON.stringify(data_obj.services));
+	var data_obj;
+	try {
+		data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
+	} catch (err) {
+		console.log("error parsing json + " + err.message);
+		return;
+	}
 
 	data_obj.availability = JSON.stringify(data_obj.availability);
-	console.log("availability = " + data_obj.availability);
-	console.log("slots = " + JSON.stringify(data_obj.availability.slots));
 
 	try {
 		// Save category in the database
 		const response_data = await Doer.create(data_obj);
 		res.status(200).send(response_data);
 	} catch (err) {
+		logger.error("doer-controller create call failed. error = " + err.message);
 		res.status(500).send({
 			message: err.message || "Some error occurred while creating the Doer.",
 		});
+		return;
 	}
 }
 
@@ -230,6 +253,23 @@ async function findByServicesAndDayDBCall(services, day) {
  * Update Availability of a Doer
  * @param {number} id - ID of Doer to update
  * @param {string} availability - String representing new Availability JSON structure
+ * Example payload:
+ * ```
+ * [
+ *      {
+ *           "day": "Fri",
+ *           "time": "10-13",
+ *           "rate": 99,
+ *           "location": "94588"
+ *       },
+ *       {
+ *           "day": "Sat",
+ *           "time": "9-17",
+ *           "rate": 80,
+ *           "location": "94588"
+ *       }
+ *   ]
+ * ```
  * @memberof Doer
  */
 async function updateAvailability(req, res) {

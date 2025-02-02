@@ -27,22 +27,24 @@ const Joi = require("joi");
  * @return {string|null} error string - null if success, error details if failure
  * @memberof Job
  */
-function create(req, res) {
-	console.log("req body in create job_request: ");
-	console.log(req.body);
+async function create(req, res) {
+	logger.info("job-controller create ... body = " + JSON.stringify(req.body));
+
 	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 
-	// Save doer in the database
-	Job.create(data_obj)
-		.then((data) => {
-			KU.sendMessage("doer_messages", "new job request");
-			res.send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: err.message || "Some error occurred while creating the job_request.",
-			});
+	try {
+		// Save category in the database
+		const response_data = await Job.create(data_obj);
+		logger.info("job-controller create SUCCESS ... ");
+		KU.sendMessage("doer_messages", "new job request");
+		res.status(200).send(response_data);
+	} catch (err) {
+		logger.error("job-controller create call failed. error = " + err.message);
+		res.status(500).send({
+			message: err.message || "Some error occurred while creating the Job.",
 		});
+		return;
+	}
 }
 
 /**
@@ -54,23 +56,19 @@ async function findById(req, res) {
 	const id = req.query.JobId;
 	if (id == null || isNaN(parseInt(jobId))) {
 		logger.error("job-controller findById missing jobId or job Id not integer: " + jobId);
-		res.status(500).send({ message: "Error retrieving Doer Id is missing  or job Id not integer " });
+		res.status(500).send({ message: "Error retrieving job Id is missing  or job Id not integer " });
 		return;
 	}
 
 	logger.info("job_request-controller findOne id = " + id);
-	if (id == null) {
-		res.status(500).send({
-			message: "Error retrieving Job Job Id is missing",
-		});
-		return;
-	}
 
 	const data = await findByIdDBCall(id);
 	if (data == null) {
+		logger.warn("job-controller findById returing null, id = " + id);
 		res.status(200).send("job find failed   " + id);
 		return;
 	} else {
+		logger.debug("job-controller findById returing " + JSON.stringify(data));
 		res.status(200).send(data);
 		return;
 	}
@@ -140,7 +138,7 @@ async function getDoers(services, time) {
 		const doer_data = await Doers.findByServicesAndDayDBCall(sservices, sdays);
 		if (doer_data) {
 			if (doer_data.length == 0) {
-				logger.info("Found 0 Doers for services = " + services + " day = " + day);
+				logger.warn("Found 0 Doers for services = " + services + " day = " + day);
 				return null;
 			}
 			logger.debug("response data from getDoers is " + JSON.stringify(doer_data));
@@ -152,7 +150,7 @@ async function getDoers(services, time) {
 			return null;
 		}
 	} catch (error) {
-		logger.error("Can't get doers in getDoers...error is: " + error);
+		logger.error("Can't get doers in getDoers...error is: " + error.message);
 		return "Couldn't find any doers for given request";
 	}
 }
@@ -170,7 +168,7 @@ async function findEligibleDoers(req, res) {
 	const data = await findByIdDBCall(id);
 	logger.trace("data from find job request is = " + data + ", job id = " + id);
 	if (data == null) {
-		logger.error("data from find job request is = " + data + ", job id = " + id);
+		logger.warn("data from find job request is = null , job id = " + id);
 		res.status(500).send("Couldn't find job request");
 		return;
 	}
@@ -181,7 +179,7 @@ async function findEligibleDoers(req, res) {
 		res.status(200).send(response_data);
 		return;
 	} catch (error) {
-		logger.error("Can't get doers in findEligibleDoers...error is: " + error);
+		logger.error("Can't get doers in findEligibleDoers...error is: " + error.message);
 		res.status(500).send("Couldn't find doers   ");
 		return;
 	}
@@ -214,13 +212,14 @@ async function acceptJob(req, res) {
 	const data = await findByIdDBCall(jobId);
 
 	if (data == null) {
-		logger.error("job_request-controller accept job -- couldn't find job with jobId = " + jobId);
+		logger.warn("job_request-controller accept job -- couldn't find job with jobId = " + jobId);
 		res.status(500).send("job accept failed   " + "couldn't find job " + jobId);
 		return;
 	}
 
 	try {
 		await data.update({ doer_id: doerId, status: "accepted" });
+		logger.info("job_request-controller acceptJob SUCCESS, doerId = " + doerId + " job id = " + jobId);
 		res.status(200).send("accept job success");
 		return;
 	} catch (error) {
@@ -249,17 +248,18 @@ async function startJob(req, res) {
 	const data = await findByIdDBCall(jobId);
 
 	if (data == null) {
-		logger.error("job_request-controller start job -- couldn't find job with jobId " + jobId);
+		logger.warn("job_request-controller start job -- couldn't find job with jobId " + jobId);
 		res.status(500).send("job start failed   " + "couldn't find job");
 		return;
 	}
 
 	try {
 		await data.update({ status: "in-progress" });
+		logger.info("job_request-controller start job SUCCESS,  job id = " + jobId);
 		res.status(200).send("start job success");
 		return;
 	} catch (error) {
-		logger.error("job_request-controller accept job failed with error " + error);
+		logger.error("job_request-controller start job failed with error " + error);
 		res.status(200).send("job start failed   " + error.message);
 		return;
 	}
@@ -300,10 +300,11 @@ async function completeJob(req, res) {
 
 	try {
 		await data.update({ status: "completed" });
+		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId);
 		res.status(200).send("complete job success");
 		return;
 	} catch (error) {
-		logger.error("job_request-controller accept job failed with error " + error);
+		logger.error("job_request-controller complete job failed with error " + error);
 		res.status(200).send("job complete failed   " + error.message);
 		return;
 	}
