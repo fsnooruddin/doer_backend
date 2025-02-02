@@ -61,12 +61,13 @@ function filterByDistance(timeRequested, doers) {
 async function filterByTime(dayRequested, timeRequested, doers) {
 	logger.trace("data in filterByTime= " + dayRequested + "  " + timeRequested);
 
+try {
 	var ret_doers = [];
 	for (let d_entry of doers) {
 		logger.trace("Processing Doer Availability" + "     " + JSON.stringify(d_entry));
 
-		//console.log(typeof d_entry.availability);
-		//console.log(JSON.parse(d_entry.availability));
+		console.log(typeof d_entry.availability);
+		console.log(JSON.parse(d_entry.availability));
 
 		var objs = JSON.parse(d_entry.availability);
 		//console.log ("availability = " + objs);
@@ -78,8 +79,12 @@ async function filterByTime(dayRequested, timeRequested, doers) {
 			ret_doers.push(d_entry);
 		}
 	}
-	//console.log('returning filterByTime size of return = ' + ret_doers.length)
+	logger.trace('returning filterByTime size of return = ' + ret_doers.length)
 	return ret_doers;
+	} catch (error) {
+	    logger.error('filterByTime caught error  = ' + error.message);
+	    return [];
+	}
 }
 
 function getDayFromAvailability(availability) {
