@@ -30,9 +30,9 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 		},
 		minimum_charges: {
-            type: Sequelize.FLOAT,
-            allowNull: false,
-        },
+			type: Sequelize.FLOAT,
+			allowNull: false,
+		},
 		img_url: {
 			type: Sequelize.STRING,
 			allowNull: true,
@@ -41,4 +41,3 @@ module.exports = (sequelize, Sequelize) => {
 
 	return Doer;
 };
-
