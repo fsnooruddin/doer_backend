@@ -11,14 +11,12 @@ var {
 	updateDoerAvailability_1,
 } = require("./other_requests_data.js");
 
-const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/createJob";
-const createDoerTripUrl = "http://127.0.0.1:8080/api/doer/createDoerTrip";
-const updateDoerTripUrl = "http://127.0.0.1:8080/api/doer/updateDoerTripLocation";
-const createDoerReviewUrl = "http://127.0.0.1:8080/api/doer/reviewDoer";
-const acceptJobUrl = "http://127.0.0.1:8080/api/doer/acceptJob?doerId=1&jobId=1";
-const startJobUrl = "http://127.0.0.1:8080/api/doer/startJob?doerId=1&jobId=1";
-const completeJobUrl = "http://127.0.0.1:8080/api/doer/completeJob?doerId=1&jobId=4&duration=22";
-const updateDoerAvailabilityUrl = "http://127.0.0.1:8080/api/doer/updateDoerAvailability";
+var {
+	createJobRequestUrl,
+	acceptJobUrl,
+	startJobUrl,
+	completeJobUrl,
+} = require("./test_urls.js");
 
 async function rget(url) {
 	try {
@@ -59,15 +57,15 @@ async function makePostRequests() {
 	console.log("\n\n\n **************** \n\n\n");
 
 	var response_data;
-	response_data = await rpost(acceptJobUrl, null);
+	response_data = await rpost(acceptJobUrl  + "?doerId=1&jobId=1", null);
 	console.log("acceptJob " + " response = " + JSON.stringify(response_data));
 	console.log("\n\n\n **************** \n\n\n");
 
-	response_data = await rpost(startJobUrl, null);
+	response_data = await rpost(startJobUrl + "?jobId=1", null);
 	console.log("startJob " + " response = " + JSON.stringify(response_data));
 	console.log("\n\n\n **************** \n\n\n");
 
-	response_data = await rpost(completeJobUrl, null);
+	response_data = await rpost(completeJobUrl + "?jobId=1&duration=3", null);
 	console.log("completeJob " + " response = " + JSON.stringify(response_data));
 	console.log("\n\n\n **************** \n\n\n");
 }
