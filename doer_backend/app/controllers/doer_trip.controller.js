@@ -36,8 +36,7 @@ function create(req, res) {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					err.message || "Some error occurred while creating the doer trip.",
+				message: err.message || "Some error occurred while creating the doer trip.",
 			});
 		});
 }
@@ -59,8 +58,7 @@ function findByDoerId(req, res) {
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					"Error retrieving Doer with id=" + id + " error: " + err.message,
+				message: "Error retrieving Doer with id=" + id + " error: " + err.message,
 			});
 		});
 }
@@ -77,16 +75,12 @@ async function updateDoerTripLocation(req, res) {
 
 	const doer = await DoerTripLocationUpdate.create(update)
 		.then((data) => {
-		console.log("Doer Trip-controller updated location for DoerTrip id = " + id);
+			console.log("Doer Trip-controller updated location for DoerTrip id = " + id);
 			res.send(data);
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message:
-					"Error updating location for trip with id =" +
-					id +
-					" error: " +
-					err.message,
+				message: "Error updating location for trip with id =" + id + " error: " + err.message,
 			});
 		});
 }

@@ -145,7 +145,7 @@ function findByServices(req, res) {
 		},
 	})
 		.then((data) => {
-			logger.error("doer-controller findByServices -- services is " + services + " returning " + data);
+			logger.info("doer-controller findByServices -- services is " + services + " returning " + data);
 			res.status(200).send(data);
 		})
 		.catch((err) => {

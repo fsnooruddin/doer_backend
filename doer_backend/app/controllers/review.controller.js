@@ -6,16 +6,16 @@ const Review = db.reviews;
 const Op = db.Sequelize.Op;
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
+const logger = require("../utils/Logger.js");
 
 // Create and Save a new Review
 function create(req, res) {
 	console.log("req body in create review: ");
 	console.log(req.body);
 
+	const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
 
-    const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
-
-    /*
+	/*
     const validation = doerCreateSchema.validate(data_obj);
 
     if(validation.error === undefined) {
@@ -33,15 +33,16 @@ function create(req, res) {
 	console.log("new review in create review: ");
 	console.log(data_obj);
 
-	// Save doer in the database
+	// Save review in the database
 	Review.create(data_obj)
 		.then((data) => {
-			res.send(data);
+			logger.info("Success creating review with review data =" + req.body);
+			res.status(200).send(data);
 		})
 		.catch((err) => {
+			logger.error("Error creating review with review data =" + req.body + " error: " + err.message);
 			res.status(500).send({
-				message:
-					err.message || "Some error occurred while creating the review.",
+				message: err.message || "Some error occurred while creating the review.",
 			});
 		});
 }
@@ -49,7 +50,27 @@ function create(req, res) {
 // Find a single review with an id
 function findById(req, res) {
 	const id = req.query.id;
-	console.log("review-controller findOne id = " + id);
+	if (id == null) {
+		logger.error("Error retrieving reviews by ID, review Id is missing");
+		res.status(500).send({
+			message: "Error retrieving reviews by id, review Id is missing",
+		});
+
+		return;
+	}
+	logger.info("review-controller findById review id = " + id);
+	console.log(typeof id);
+	console.log(parseInt(id));
+
+	if (isNaN(parseInt(id))) {
+		logger.error("Error retrieving reviews by ID, review Id is not integer");
+		res.status(500).send({
+			message: "Error retrieving reviews by id, review Id is not integer",
+		});
+
+		return;
+	}
+
 	Review.findOne({
 		where: {
 			review_id: id,
@@ -59,15 +80,13 @@ function findById(req, res) {
 		},
 	})
 		.then((data) => {
-			res.send(data);
+			logger.info("review-controller findById -- review id is " + id + " returning " + data);
+			res.status(200).send(data);
 		})
 		.catch((err) => {
+			logger.error("Error retrieving review with review id=" + id + " error: " + err.message);
 			res.status(500).send({
-				message:
-					"Error retrieving review with id=" +
-					id +
-					" error: " +
-					err.message,
+				message: "Error retrieving review with id=" + id + " error: " + err.message,
 			});
 		});
 }
@@ -75,15 +94,26 @@ function findById(req, res) {
 // Find  reviews for a doer
 function findByDoerId(req, res) {
 	const id = req.query.doerId;
-	console.log("review-controller findOne id = " + id);
-	if(id == null) {
-        res.status(500).send({
-                message:
-                  "Error retrieving Doer Id is missing"
-              });
 
-        return;
-      }
+	if (id == null) {
+		logger.error("Error retrieving reviews by DoerID, Doer Id is missing");
+		res.status(500).send({
+			message: "Error retrieving reviews by DoerID, Doer Id is missing",
+		});
+
+		return;
+	}
+	logger.info("review-controller findByDoerId doer id = " + id);
+
+	if (isNaN(parseInt(id))) {
+		logger.error("Error retrieving reviews by Doer ID, doer Id is not integer");
+		res.status(500).send({
+			message: "Error retrieving reviews by doer id, doer Id is not integer",
+		});
+
+		return;
+	}
+
 	Review.findAll({
 		where: {
 			doer_id: id,
@@ -93,23 +123,21 @@ function findByDoerId(req, res) {
 		},
 	})
 		.then((data) => {
-			res.send(data);
+			logger.info("review-controller findByDoerId -- doer id is " + id + " returning " + data);
+			res.status(200).send(data);
+			return;
 		})
 		.catch((err) => {
+			logger.error("Error retrieving review with doer id=" + id + " error: " + err.message);
 			res.status(500).send({
-				message:
-					"Error retrieving review with doer id=" +
-					id +
-					" error: " +
-					err.message,
+				message: "Error retrieving review with doer id=" + id + " error: " + err.message,
 			});
+			return;
 		});
 }
-
-
 
 module.exports = {
 	create,
 	findById,
-	findByDoerId
+	findByDoerId,
 };

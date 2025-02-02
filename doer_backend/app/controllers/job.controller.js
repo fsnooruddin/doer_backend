@@ -1,5 +1,9 @@
 "use strict";
 
+/**
+ * @namespace Job
+ */
+
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Doers = require("./doer.controller.js");
@@ -12,8 +16,17 @@ const logger = require("../utils/Logger.js");
 const Joi = require("joi");
 // https://www.zipcodeapi.com/rest/QZPX7dSqfyw89CJaAwX37gNO10EoQM2w7Op47UhhyTPB75eMlJPlDc5KkXz2mL0t/distance.json/94588/94104/km
 
-
-// Create and Save a new Job Request
+/**
+ * Create a Job
+ * @param {object} job - JSON representing job
+ * @param {number} job.user_id - User Id of user requesting the job
+ * @param {string} job.description - Description of job
+ * @param {string} job.location - Address of job, e.g. "[77.6879689, 27.4072289]"
+ * @param {string} job.time - Time for job request, e.g. "Sun, 12-5"
+ * @param {string} job.services - Services requested, e.g. "Electrician"
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Job
+ */
 function create(req, res) {
 	console.log("req body in create job_request: ");
 	console.log(req.body);
@@ -32,10 +45,20 @@ function create(req, res) {
 		});
 }
 
-// Find a single job_request with an id
+/**
+ * Find a single Job with an id
+ * @param {number} jobId - Job id to fetch
+ * @memberof Job
+ */
 async function findById(req, res) {
 	const id = req.query.JobId;
-	console.log("job_request-controller findOne id = " + id);
+	if (id == null || isNaN(parseInt(jobId))) {
+		logger.error("job-controller findById missing jobId or job Id not integer: " + jobId);
+		res.status(500).send({ message: "Error retrieving Doer Id is missing  or job Id not integer " });
+		return;
+	}
+
+	logger.info("job_request-controller findOne id = " + id);
 	if (id == null) {
 		res.status(500).send({
 			message: "Error retrieving Job Job Id is missing",
@@ -65,41 +88,18 @@ async function findByIdDBCall(id) {
 			},
 		});
 		await data;
-		console.log("data from find request from db is = " + data);
+
 		if (data == null) {
-			console.log("data from find request is = null " + id);
+			logger.info("data from find job is = null, id = " + id);
 			return null;
 		} else {
+			logger.debug("data from find job  from db is = " + JSON.stringify(data));
 			return data;
 		}
 	} catch (error) {
-		console.log("Can't get job..." + error.message);
+		logger.error("Can't get job, id = " + id + " error message is: " + error.message);
 		return null;
 	}
-}
-
-// Find a single Doer by services
-function findByServices(req, res) {
-	const services = req.query.services;
-	console.log("job_request-controller findOne services = " + services);
-	Job.findAll({
-		where: {
-			services: {
-				[Op.like]: services,
-			},
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			res.send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: "Error retrieving job_request with id=" + id + " error: " + err.message,
-			});
-		});
 }
 
 function filterByDistance(timeRequested, doers) {
@@ -140,17 +140,19 @@ async function getDoers(services, time) {
 		const doer_data = await Doers.findByServicesAndDayDBCall(sservices, sdays);
 		if (doer_data) {
 			if (doer_data.length == 0) {
-				console.log("Found 0 Doers for services = " + services + " day = " + day);
+				logger.info("Found 0 Doers for services = " + services + " day = " + day);
+				return null;
 			}
-			console.log("response data is " + JSON.stringify(doer_data));
+			logger.debug("response data from getDoers is " + JSON.stringify(doer_data));
+			logger.info("Found " + doer_data.length + " Doers for services + day ... filtering for time...");
 			const response_data = await Utils.filterByTime(dayRequested, timeRequested, doer_data);
+			logger.info("Doers left after filtering for time =  " + response_data.length);
 			return response_data;
 		} else {
 			return null;
 		}
 	} catch (error) {
-		console.log("Can't get doers...");
-		console.error(error);
+		logger.error("Can't get doers in getDoers...error is: " + error);
 		return "Couldn't find any doers for given request";
 	}
 }
@@ -158,62 +160,62 @@ async function getDoers(services, time) {
 // Retrieve all Users from the database
 // or only those whose title  matches
 async function findEligibleDoers(req, res) {
-	console.log("job_request-controller findEligibleDoers");
-
 	const id = req.query.jobId;
-	if(id == null) {
-	    logger.error("job_request-controller findEligibleDoers missing jobId");
-		res.status(500).send("findEligibleDoers -- jobId was missing.");
-    	return;
+	if (id == null || isNaN(parseInt(id))) {
+		logger.error("job_request-controller findEligibleDoers missing jobId or job Id not integer: " + jobId);
+		res.status(500).send("findEligibleDoers -- jobId was missing or job Id not integer: " + jobId);
+		return;
+	}
+	logger.info("job_request-controller findEligibleDoers, id = " + id);
+	const data = await findByIdDBCall(id);
+	logger.trace("data from find job request is = " + data + ", job id = " + id);
+	if (data == null) {
+		logger.error("data from find job request is = " + data + ", job id = " + id);
+		res.status(500).send("Couldn't find job request");
+		return;
 	}
 
-	const data = await findByIdDBCall(id);
-		console.log("data from find request is = " + data);
-		if (data == null) {
-			console.log("data from find request is = null " + data);
-			res.status(200).send("Couldn't find job request");
-			return;
-		}
-
-		try {
-			const response_data = await getDoers(data.services, data.time);
-			res.status(200).send(response_data);
-			return;
-		} catch (error) {
-			console.log("Can't get doers...");
-			res.status(500).send("Couldn't find doers   ");
-			return;
-		}
+	try {
+		const response_data = await getDoers(data.services, data.time);
+		logger.debug("findEligibleDoers returning: " + JSON.stringify(response_data));
+		res.status(200).send(response_data);
+		return;
+	} catch (error) {
+		logger.error("Can't get doers in findEligibleDoers...error is: " + error);
+		res.status(500).send("Couldn't find doers   ");
+		return;
+	}
 }
 
-// Retrieve all Users from the database
-// or only those whose title  matches
+/**
+ * Called by a Doer to accept a job.
+ * @param {number} doerId - Doer accepting the job
+ * @param {number} jobId - Job being accepted
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Job
+ */
 async function acceptJob(req, res) {
-	console.log("job_request-controller acceptJob");
 	const doerId = req.query.doerId;
 	const jobId = req.query.jobId;
 
-	if (jobId == null) {
-	 logger.error("job_request-controller accept job missing job Id");
-		res.status(500).send({
-			message: "Error accepting Job - Job Id is missing",
-		});
+	if (jobId == null || isNaN(parseInt(jobId))) {
+		logger.error("job_request-controller accept job missing job Id or job Id not integer: " + jobId);
+		res.status(500).send({ message: "Error accepting Job - Job Id is missing or job id is not integer" });
 		return;
 	}
 
-	if (doerId == null) {
-	logger.error("job_request-controller accept job missing doer Id");
-		res.status(500).send({
-			message: "Error accepting Job - Doer Id is missing",
-		});
+	if (doerId == null || isNaN(parseInt(doerId))) {
+		logger.error("job_request-controller accept job missing doer Id or doer id is not integer: " + doerId);
+		res.status(500).send({ message: "Error accepting Job - Doer Id is missing or not integer" });
 		return;
 	}
 
+	logger.info("job_request-controller acceptJob, doerId = " + doerId + " job id = " + jobId);
 	const data = await findByIdDBCall(jobId);
 
 	if (data == null) {
-	     logger.error("job_request-controller accept job -- couldn't find job with jobId " + jobId);
-		res.status(200).send("job accept failed   " + "couldn't find job " + jobId);
+		logger.error("job_request-controller accept job -- couldn't find job with jobId = " + jobId);
+		res.status(500).send("job accept failed   " + "couldn't find job " + jobId);
 		return;
 	}
 
@@ -228,23 +230,27 @@ async function acceptJob(req, res) {
 	}
 }
 
-// Retrieve all Users from the database
-// or only those whose title  matches
+/**
+ * Called by a Doer to start a job.
+ * @param {number} jobId - Job being started
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Job
+ */
 async function startJob(req, res) {
-	console.log("job-controller startJob");
+	logger.info("job-controller startJob");
 	const jobId = req.query.jobId;
 
-	if (jobId == null) {
-	logger.error("job_request-controller start job missing job Id");
-		res.status(500).send({message: "Error starting Job - Job Id is missing"});
+	if (jobId == null || isNaN(parseInt(jobId))) {
+		logger.error("job_request-controller start job, missing job Id or job Id not integer: " + jobId);
+		res.status(500).send({ message: "Error starting Job - Job Id is missing or not integer" });
 		return;
 	}
 
 	const data = await findByIdDBCall(jobId);
 
 	if (data == null) {
-	logger.error("job_request-controller start job -- couldn't find job with jobId " + jobId);
-		res.status(200).send("job start failed   " + "couldn't find job");
+		logger.error("job_request-controller start job -- couldn't find job with jobId " + jobId);
+		res.status(500).send("job start failed   " + "couldn't find job");
 		return;
 	}
 
@@ -259,23 +265,35 @@ async function startJob(req, res) {
 	}
 }
 
-// Retrieve all Users from the database
-// or only those whose title  matches
+/**
+ * Called by a Doer to complete a job.
+ * @param {number} jobId - Job being completed
+ * @param {number} duration - How long the job took to complete
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Job
+ */
 async function completeJob(req, res) {
-	console.log("job-controller completeJob");
 	const jobId = req.query.jobId;
+	const duration = req.query.duration;
 
-	if (jobId == null) {
-	logger.error("job_request-controller complete job missing job Id");
+	if (jobId == null || isNaN(parseInt(jobId))) {
+		logger.error("job_request-controller complete job,  missing job Id or job Id not integer: " + jobId);
 		res.status(500).send({
-			message: "Error completing Job - Job Id is missing",
+			message: "Error completing Job - Job Id is missing or job Id not integer: " + jobId,
 		});
 		return;
 	}
-
+	if (duration == null || isNaN(parseInt(duration))) {
+		logger.error("job_request-controller complete job,  missing duration or duration not integer: " + jobId);
+		res.status(500).send({
+			message: "Error completing Job - duration is missing or duration not integer: " + jobId,
+		});
+		return;
+	}
+	logger.info("job-controller completeJob, job id = " + jobId + " job complete duration is " + duration);
 	const data = await findByIdDBCall(jobId);
 	if (data == null) {
-	logger.error("job_request-controller complete job -- couldn't find job with jobId " + jobId);
+		logger.error("job_request-controller complete job -- couldn't find job with jobId " + jobId);
 		res.status(200).send("job complete failed   " + "couldn't find job");
 		return;
 	}
@@ -291,17 +309,13 @@ async function completeJob(req, res) {
 	}
 }
 
-
 async function generateInvoice(req, res) {
-
-    const job = await findByIdDBCall(req.query.jobId);
-    console.log(job);
-    const doer = await Doers.findByIdDBCall(job.doer_id);
+	const job = await findByIdDBCall(req.query.jobId);
+	console.log(job);
+	const doer = await Doers.findByIdDBCall(job.doer_id);
 
 	if (job == null || doer == null) {
-		res.status(500).send({
-			message: "Error retrieving doer or job for job completion request, doer id = " + doerId + " job request id = " + jobReqId,
-		});
+		res.status(500).send({ message: "Error retrieving doer or job for job completion request, doer id = " + doerId + " job request id = " + jobReqId });
 		return;
 	}
 	console.log("generating invoice job = " + JSON.stringify(job));
@@ -341,11 +355,10 @@ async function generateInvoice(req, res) {
 		job_id: job.job_id,
 		duration: req.query.duration,
 		cost: cost,
-		location: job.location
+		location: job.location,
 	};
 
-    console.log("invoive object is = " + JSON.stringify(job_invoice));
-
+	console.log("invoive object is = " + JSON.stringify(job_invoice));
 
 	// Save completed_job] in the database
 	JobInvoices.create(job_invoice)
@@ -361,7 +374,6 @@ async function generateInvoice(req, res) {
 		});
 }
 
-
 module.exports = {
 	create,
 	findEligibleDoers,
@@ -371,5 +383,5 @@ module.exports = {
 	acceptJob,
 	startJob,
 	completeJob,
-	generateInvoice
+	generateInvoice,
 };
