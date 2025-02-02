@@ -13,12 +13,19 @@ const Joi = require("joi");
 
 /**
  * Create a new Category
- * @param {object} job - JSON representing job
- * @param {number} job.user_id - User Id of user requesting the job
- * @param {string} job.description - Description of job
- * @param {string} job.location - Address of job, e.g. "[77.6879689, 27.4072289]",
- * @param {string} job.time - Time for job request, e.g. "Sun, 12-5",
- * @param {string} job.services - Services requested, e.g. "Electrician"
+ * @param {object} category - JSON representing Category
+ * @param {string} category.title - Name of category ( suitable for display )
+ * @param {string} category.parent_aliases - Array containing aliases of parent categories.
+ *
+ * @example
+ * Sample Payload:
+ *
+ *  {
+ *      "alias": "professional",
+ *      "title": "Professional Services",
+ *      "parent_aliases": []
+ *    }
+ *
  * @return {string|null} error string - null if success, error details if failure
  * @memberof Category
  */

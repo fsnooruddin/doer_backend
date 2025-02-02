@@ -21,10 +21,25 @@ const Joi = require("joi");
  * @param {object} job - JSON representing job
  * @param {number} job.user_id - User Id of user requesting the job
  * @param {string} job.description - Description of job
- * @param {string} job.location - Address of job, e.g. "[77.6879689, 27.4072289]"
- * @param {string} job.time - Time for job request, e.g. "Sun, 12-5"
- * @param {string} job.services - Services requested, e.g. "Electrician"
+ * @param {string} job.location - Location ( coordinates )  of job, e.g.
+ * ```
+ * [77.6879689, 27.4072289]
+ * ```
+ * @param {string} job.time - Time for job request, [ day, startTime-endTime ]. e.g.
+ * ```
+  * Sun, 12-5
+  * ```
+ * @param {string} job.services - Services requested, e.g. "Electrician". Must correspond to a category in the system.
  * @return {string|null} error string - null if success, error details if failure
+ *
+ * @example
+ * Sample payload:
+ * {
+ *    user_id: "11",
+ *    location: "[77.6879689, 27.4072289]",
+ *    time: "Sun, 12-5",
+ *    services: "Electrician",
+ *  }
  * @memberof Job
  */
 async function create(req, res) {

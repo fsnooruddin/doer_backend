@@ -25,6 +25,7 @@ const opentelemetry = require("@opentelemetry/api");
  * ```
  * @param {string} doer.services - Services offered by Doer (these are categories). E.g. "[{'alias': 'electricians', 'title': 'Electricians'}, {'alias': 'lighting', 'title': 'Lighting Fixtures & Equipment'}]"
  * @param {string} doer.availability - Array of timeslots when Doer is available. e.g.
+ *
  * ```
  * [
  *      {
@@ -45,6 +46,19 @@ const opentelemetry = require("@opentelemetry/api");
  * @param {number} doer.minimum_charges - Minimum the Doer will charge for any service
  * @param {string} doer.img_url - URL for Doer
  * @return {string|null} error string - null if success, error details if failure
+ * @example
+ * Sample Payload:
+ *  {
+ *      "doer_id": 2,
+ *      "name": "TD West Electric",
+ *      "phone_number": "(510) 342-2818",
+ *      "location": "{city: Union City ,state: CA,zip_code: 94587,address: ['2837 Whipple Rd', 'Ste A', 'Union City , CA 94587'],coordinates: {'latitude': 37.6059449, 'longitude': -122.0708683}}",
+ *      "services": "[{'alias': 'electricians', 'title': 'Electricians'}, {'alias': 'lighting', 'title': 'Lighting Fixtures & Equipment'}]",
+ *      "availability": "[{\"day\":\"Fri\",\"time\":\"10-13\",\"rate\":99,\"location\":\"94588\"},{\"day\":\"Sat\",\"time\":\"9-17\",\"rate\":80,\"location\":\"94588\"}]",
+ *      "rating": 5.8,
+ *      "minimum_charges": 97,
+ *      "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/NLxw4Bt_7-clB1mIm0n31Q/o.jpg"
+ *  }
  * @memberof Doer
  */
 async function create(req, res) {
@@ -253,8 +267,9 @@ async function findByServicesAndDayDBCall(services, day) {
  * Update Availability of a Doer
  * @param {number} id - ID of Doer to update
  * @param {string} availability - String representing new Availability JSON structure
- * Example payload:
- * ```
+ *
+ * @example
+ * Sample payload:
  * [
  *      {
  *           "day": "Fri",
@@ -269,7 +284,6 @@ async function findByServicesAndDayDBCall(services, day) {
  *           "location": "94588"
  *       }
  *   ]
- * ```
  * @memberof Doer
  */
 async function updateAvailability(req, res) {
