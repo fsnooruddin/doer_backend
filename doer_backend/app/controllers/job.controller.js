@@ -147,13 +147,14 @@ async function getDoers(services, time) {
 	const retArray = time.split(",");
 	const dayRequested = retArray[0];
 	const timeRequested = retArray[1];
+	logger.info("Finding Doers for services = " + services + " day = " + dayRequested + " time = " + timeRequested);
 	try {
 		const sservices = "%" + services + "%";
 		const sdays = "%" + dayRequested + "%";
 		const doer_data = await Doers.findByServicesAndDayDBCall(sservices, sdays);
 		if (doer_data) {
 			if (doer_data.length == 0) {
-				logger.warn("Found 0 Doers for services = " + services + " day = " + day);
+				logger.warn("Found 0 Doers for services = " + services + " day = " + dayRequested + " time = " + timeRequested);
 				return null;
 			}
 			logger.debug("response data from getDoers is " + JSON.stringify(doer_data));
