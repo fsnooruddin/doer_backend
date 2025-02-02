@@ -3,12 +3,12 @@ const pino = require("pino");
 const transports = pino.transport({
 	targets: [
 		{
-			level: "info",
+			level: "trace",
 			target: "pino/file",
 			options: { destination: "./logs/log.txt" },
 		},
 		{
-			level: "info",
+			level: "trace",
 			target: "pino-pretty",
 			options: {
 				colorize: true,
@@ -19,7 +19,7 @@ const transports = pino.transport({
 
 const logger = pino(
 	{
-		level: process.env.PINO_LOG_LEVEL || "info",
+		level: "trace",
 		timestamp: pino.stdTimeFunctions.isoTime,
 		formatters: {
 			bindings: (bindings) => {
