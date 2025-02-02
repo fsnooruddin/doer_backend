@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-	const JobRequest = sequelize.define("job_request", {
-		job_request_id: {
+	const Job = sequelize.define('job', {
+		job_id: {
 			type: Sequelize.INTEGER,
 			primaryKey: true,
 			autoIncrement: true,
@@ -13,6 +13,11 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.INTEGER,
 			allowNull: false,
 		},
+		doer_id: {
+			type: Sequelize.INTEGER,
+			allowNull: true,
+			defaultValue: -1,
+		},
 		time: {
 			type: Sequelize.STRING,
 			allowNull: false,
@@ -21,7 +26,16 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING,
 			allowNull: false,
 		},
-	});
+		description: {
+			type: Sequelize.STRING,
+			allowNull: true,
+		},
+		status: {
+			type: Sequelize.ENUM('requested', 'accepted', 'rejected', 'in-progress', 'completed'),
+			allowNull: false,
+			defaultValue: 'requested'
+		}
+	})
 
-	return JobRequest;
-};
+	return Job
+}
