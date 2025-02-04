@@ -9,6 +9,7 @@ const Utils = require("../utils/Utils.js");
 const Doers = require("./doer.controller.js");
 const Job = db.jobs;
 const JobInvoices = db.invoices;
+const JobHistories = db.job_histories;
 const Op = db.Sequelize.Op;
 const KU = require("../utils/KafkaUtil.js");
 const logger = require("../utils/Logger.js");
@@ -27,8 +28,8 @@ const Joi = require("joi");
  * ```
  * @param {string} job.time - Time for job request, [ day, startTime-endTime ]. e.g.
  * ```
-  * Sun, 12-5
-  * ```
+ * Sun, 12-5
+ * ```
  * @param {string} job.services - Services requested, e.g. "Electrician". Must correspond to a category in the system.
  * @return {string|null} error string - null if success, error details if failure
  *
@@ -176,8 +177,8 @@ async function getDoers(services, time) {
 async function findEligibleDoers(req, res) {
 	const id = req.query.jobId;
 	if (id == null || isNaN(parseInt(id))) {
-		logger.error("job_request-controller findEligibleDoers missing jobId or job Id not integer: " + jobId);
-		res.status(500).send("findEligibleDoers -- jobId was missing or job Id not integer: " + jobId);
+		logger.error("job_request-controller findEligibleDoers missing jobId or job Id not integer: " + id);
+		res.status(500).send("findEligibleDoers -- jobId was missing or job Id not integer: " + id);
 		return;
 	}
 	logger.info("job_request-controller findEligibleDoers, id = " + id);
@@ -236,6 +237,7 @@ async function acceptJob(req, res) {
 	try {
 		await data.update({ doer_id: doerId, status: "accepted" });
 		logger.info("job_request-controller acceptJob SUCCESS, doerId = " + doerId + " job id = " + jobId);
+		updateJobHistory(jobId, "status", "accepted", "doer");
 		res.status(200).send("accept job success");
 		return;
 	} catch (error) {
@@ -272,6 +274,7 @@ async function startJob(req, res) {
 	try {
 		await data.update({ status: "in-progress" });
 		logger.info("job_request-controller start job SUCCESS,  job id = " + jobId);
+		updateJobHistory(jobId, "status", "started", "doer");
 		res.status(200).send("start job success");
 		return;
 	} catch (error) {
@@ -315,8 +318,9 @@ async function completeJob(req, res) {
 	}
 
 	try {
-		await data.update({ status: "completed" });
+		await data.update({ status: "completed", duration: duration });
 		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId);
+		updateJobHistory(jobId, "status", "completed", "doer");
 		res.status(200).send("complete job success");
 		return;
 	} catch (error) {
@@ -327,19 +331,32 @@ async function completeJob(req, res) {
 }
 
 async function generateInvoice(req, res) {
-	const job = await findByIdDBCall(req.query.jobId);
-	console.log(job);
+	const jobId = req.query.jobId;
+	if (jobId == null || isNaN(parseInt(jobId))) {
+		logger.error("job_request-controller generateInvoice,  missing job Id or job Id not integer: " + jobId);
+		res.status(500).send({
+			message: "Error generateInvoice - Job Id is missing or job Id not integer: " + jobId,
+		});
+		return;
+	}
+
+	logger.info("job-controller generateInvoice, job id = " + jobId);
+	const job = await findByIdDBCall(jobId);
 	const doer = await Doers.findByIdDBCall(job.doer_id);
 
 	if (job == null || doer == null) {
-		res.status(500).send({ message: "Error retrieving doer or job for job completion request, doer id = " + doerId + " job request id = " + jobReqId });
+		logger.error(
+			"job_request-controller - generateInvoice -  Error retrieving doer or job for generate invoice request, doer id = " + doerId + " job id = " + jobId
+		);
+		res.status(500).send({
+			message:
+				"job_request-controller - generateInvoice - Error retrieving doer or job for generate invoice request, doer id = " +
+				doerId +
+				" job id = " +
+				jobId,
+		});
 		return;
 	}
-	console.log("generating invoice job = " + JSON.stringify(job));
-	console.log(typeof job);
-
-	console.log("generating invoice doer = " + JSON.stringify(doer));
-	console.log(typeof doer);
 
 	var dayRequested = Utils.getDayFromAvailability(job.time);
 	var timeRequested = Utils.getTimeFromAvailability(job.time);
@@ -363,14 +380,14 @@ async function generateInvoice(req, res) {
 	}
 
 	// Create a completed_job
-	const cost = req.query.duration * hourly_rate;
-	console.log("Doer-controller completeJob total cost is duration * rate: " + req.query.duration + " * " + hourly_rate);
+	const cost = job.duration * hourly_rate;
+	console.log("Doer-controller completeJob total cost is duration * rate: " + job.duration + " * " + hourly_rate);
 
 	const job_invoice = {
 		doer_id: job.doer_id,
 		user_id: job.user_id,
 		job_id: job.job_id,
-		duration: req.query.duration,
+		duration: job.duration,
 		cost: cost,
 		location: job.location,
 	};
@@ -389,6 +406,37 @@ async function generateInvoice(req, res) {
 			});
 			return;
 		});
+}
+
+/**
+ * Called by a Doer to start a job.
+ * @param {number} jobId - Job being started
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Job
+ */
+async function updateJobHistory(jobId, change_field, change_value, changed_by) {
+	logger.info("job-controller updateJobHistory");
+
+	if (jobId == null || isNaN(parseInt(jobId))) {
+		logger.error("job_request-controller updateJobHistory, missing job Id or job Id not integer: " + jobId);
+		return false;
+	}
+
+	const entry = {
+		job_id: jobId,
+		change_field: change_field,
+		change_value: change_value,
+		changed_by: changed_by,
+	};
+
+	try {
+		await JobHistories.create(entry);
+		logger.info("job_request-controller updateJobHistory SUCCESS,  job id = " + jobId);
+		return true;
+	} catch (error) {
+		logger.error("job_request-controller updateJobHistory failed with error " + error);
+		return false;
+	}
 }
 
 module.exports = {

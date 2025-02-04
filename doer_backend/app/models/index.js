@@ -16,7 +16,44 @@ db.sequelize = sequelize;
 
 db.doers = require("./doer.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
-db.jobs = require("./job.model.js")(sequelize, Sequelize);
+
+const Job = sequelize.define("job", {
+	job_id: {
+		type: Sequelize.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	location: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	user_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+	},
+	doer_id: {
+		type: Sequelize.INTEGER,
+		allowNull: true,
+		defaultValue: -1,
+	},
+	time: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	services: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	description: {
+		type: Sequelize.STRING,
+		allowNull: true,
+	},
+	status: {
+		type: Sequelize.ENUM("requested", "accepted", "rejected", "in-progress", "completed"),
+		allowNull: false,
+		defaultValue: "requested",
+	},
+});
 
 const DoerTrip = sequelize.define("doer_trip", {
 	doer_trip_id: {
@@ -27,7 +64,6 @@ const DoerTrip = sequelize.define("doer_trip", {
 	},
 	doer_id: {
 		type: Sequelize.DataTypes.INTEGER,
-
 		allowNull: false,
 	},
 	job_request_id: {
@@ -52,10 +88,6 @@ const DoerTrip = sequelize.define("doer_trip", {
 const DoerTripLocationUpdate = sequelize.define("doer_trip_location_update", {
 	doer_trip_id: {
 		type: Sequelize.DataTypes.INTEGER,
-		references: {
-			model: DoerTrip,
-			key: "doer_trip_id",
-		},
 	},
 	location_update: {
 		type: Sequelize.DataTypes.JSONB,
@@ -72,10 +104,6 @@ const Review = sequelize.define("review", {
 	doer_id: {
 		type: Sequelize.INTEGER,
 		allowNull: false,
-		references: {
-			model: db.doers,
-			key: "doer_id",
-		},
 	},
 	text: {
 		type: Sequelize.STRING,
@@ -125,7 +153,7 @@ const Invoice = sequelize.define("invoice", {
 		type: Sequelize.INTEGER,
 		allowNull: false,
 		references: {
-			model: db.jobs,
+			model: Job,
 			key: "job_id",
 		},
 	},
@@ -143,6 +171,32 @@ const Invoice = sequelize.define("invoice", {
 	},
 });
 
+const JobHistory = sequelize.define("job_history", {
+	job_history_id: {
+		type: Sequelize.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	job_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+	},
+	changed_by: {
+		type: Sequelize.ENUM("doer", "user", "admin"),
+		allowNull: false,
+	},
+	change_field: {
+		type: Sequelize.ENUM("status", "time", "location", "duration"),
+		allowNull: false,
+	},
+	change_value: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+});
+
+db.jobs = Job;
+db.job_histories = JobHistory;
 db.doer_trips = DoerTrip;
 db.doer_trip_location_updates = DoerTripLocationUpdate;
 db.reviews = Review;
