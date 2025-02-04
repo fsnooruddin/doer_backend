@@ -62,8 +62,7 @@ const opentelemetry = require("@opentelemetry/api");
  * @memberof Doer
  */
 async function create(req, res) {
-	console.log("req body in create doer: ");
-	console.log(req.body);
+
 	if (req.body == null) {
 		logger.error("doer-controller create call missing payload");
 		res.status(500).send({
@@ -75,9 +74,11 @@ async function create(req, res) {
 
 	var data_obj;
 	try {
+	    logger.info("req body in create doer: " + JSON.stringify(req.body));
 		data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 	} catch (err) {
-		console.log("error parsing json + " + err.message);
+		logger.error("error parsing json + " + err.message);
+		res.status(500).send("Error parsing json body. error = " + err.message);
 		return;
 	}
 
@@ -256,7 +257,7 @@ async function findByServicesAndDayDBCall(services, day) {
 			},
 		});
 	} catch (err) {
-		console.log("Error retrieving Doer with services =" + services + " error: " + err.message);
+		logger.info("Error retrieving Doer with services =" + services + " error: " + err.message);
 		return null;
 	}
 	logger.info("findByServicesAndDayDirect returning  " + data);
@@ -327,11 +328,11 @@ async function updateAvailability(req, res) {
 		res.status(200).send("couldn't update doer availability. Couldn't find doer with id = " + id);
 		return;
 	}
-	console.log("result of get doer in update avail = " + JSON.stringify(doer));
+	logger.info("result of get doer in update avail = " + JSON.stringify(doer));
 	doer.availability = JSON.stringify(avail);
 	doer.changed("availability", true);
 	const result = await doer.save();
-	console.log("result of save doer in update avail = " + JSON.stringify(result));
+	logger.info("result of save doer in update avail = " + JSON.stringify(result));
 	res.status(200).send("successfully update doer availability. doer id = " + id);
 }
 
@@ -365,7 +366,7 @@ async function rating(req, res) {
 
 async function getHistory(req, res) {
 	const id = req.query.id;
-	console.log("User-controller getHistory id = " + id);
+	logger.info("User-controller getHistory id = " + id);
 
 	const doer = await Doer.findOne({
 		where: { doer_id: id },
