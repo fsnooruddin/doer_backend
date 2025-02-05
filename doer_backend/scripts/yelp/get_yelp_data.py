@@ -285,7 +285,19 @@ def write_html_business(fh, tfh, response, zip_code_data):
     location = location + 'coordinates: {0}'.format(response['coordinates'])
     location = location + '}'
     print(location)
-    
+
+
+    rating = '{'
+    rating = rating + '"rating": {0}'.format(response['rating'])
+    rating = rating + ','
+    rating = rating + '"raw": {'
+    rating = rating + '"total": {0}'.format(response['rating']*100)
+    rating = rating + ','
+    rating = rating + '"count": {0}'.format(100)
+    rating = rating + '}'
+    rating = rating + '}'
+    print(rating)
+
     cats = response['categories'];
     first = 0
     ocats = ""
@@ -305,7 +317,7 @@ def write_html_business(fh, tfh, response, zip_code_data):
     tfh.write(",")
     tfh.write('"phone_number": "{0}"'.format(response['display_phone']))
     tfh.write(",")
-    tfh.write('"rating": "{0}"'.format(response['rating']))
+    tfh.write('"rating": {0}'.format(rating))
     tfh.write(",")
     tfh.write('"availability": {0}'.format(getOpeningSchedule(zip_code_data)))
     tfh.write(",")

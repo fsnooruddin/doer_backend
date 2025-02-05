@@ -4,6 +4,8 @@ const fs = require("fs");
 const axios = require("axios");
 var {
 	createJobRequest_1,
+	createJobRequest_2,
+	createJobRequest_3,
 	createDoerTrip_1,
 	updateDoerTrip_1,
 	createDoerReview_1,
@@ -68,6 +70,40 @@ async function makePostRequests() {
 	response_data = await rpost(completeJobUrl + "?jobId=1&duration=3", null);
 	console.log("completeJob " + " response = " + JSON.stringify(response_data));
 	console.log("\n\n\n **************** \n\n\n");
+
+	makeCreateCall("createJob", createJobRequestUrl, createJobRequest_2);
+    	console.log("\n\n\n **************** \n\n\n");
+
+    	var response_data;
+    	response_data = await rpost(acceptJobUrl  + "?doerId=17&jobId=2", null);
+    	console.log("acceptJob " + " response = " + JSON.stringify(response_data));
+    	console.log("\n\n\n **************** \n\n\n");
+
+    	response_data = await rpost(startJobUrl + "?jobId=2", null);
+    	console.log("startJob " + " response = " + JSON.stringify(response_data));
+    	console.log("\n\n\n **************** \n\n\n");
+
+    	response_data = await rpost(completeJobUrl + "?jobId=2&duration=5", null);
+    	console.log("completeJob " + " response = " + JSON.stringify(response_data));
+    	console.log("\n\n\n **************** \n\n\n");
+
+ makeCreateCall("createJob", createJobRequestUrl, createJobRequest_3);
+     	console.log("\n\n\n **************** \n\n\n");
+
+     	var response_data;
+     	response_data = await rpost(acceptJobUrl  + "?doerId=18&jobId=3", null);
+     	console.log("acceptJob " + " response = " + JSON.stringify(response_data));
+     	console.log("\n\n\n **************** \n\n\n");
+
+     	response_data = await rpost(startJobUrl + "?jobId=3", null);
+     	console.log("startJob " + " response = " + JSON.stringify(response_data));
+     	console.log("\n\n\n **************** \n\n\n");
+
+     	response_data = await rpost(completeJobUrl + "?jobId=3&duration=9", null);
+     	console.log("completeJob " + " response = " + JSON.stringify(response_data));
+     	console.log("\n\n\n **************** \n\n\n");
+
+
 }
 
 async function makeGetRequests() {

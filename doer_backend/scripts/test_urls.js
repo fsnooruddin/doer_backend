@@ -14,9 +14,14 @@ const updateDoerTripUrl = "http://127.0.0.1:8080/api/doer/updateDoerTripLocation
 const updateDoerAvailabilityUrl = "http://127.0.0.1:8080/api/doer/updateDoerAvailability";
 
 const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/createJob";
-const acceptJobUrl = "http://127.0.0.1:8080/api/doer/acceptJob?doerId=1&jobId=1";
-const startJobUrl = "http://127.0.0.1:8080/api/doer/startJob?doerId=1&jobId=1";
-const completeJobUrl = "http://127.0.0.1:8080/api/doer/completeJob?doerId=1&jobId=4&duration=22";
+const acceptJobUrl = "http://127.0.0.1:8080/api/doer/acceptJob";
+const startJobUrl = "http://127.0.0.1:8080/api/doer/startJob";
+const completeJobUrl = "http://127.0.0.1:8080/api/doer/completeJob";
+const findEligibleDoersUrl = "http://127.0.0.1:8080/api/doer/findEligibleDoers";
+
+const createMessageUrl = "http://127.0.0.1:8080/api/doer/createMessage";
+const getMessageByIdUrl = "http://127.0.0.1:8080/api/doer/getMessageById";
+const getMessageByJobIdUrl = "http://127.0.0.1:8080/api/doer/getMessageByJobId";
 
 module.exports = {
 	getCategoryByIdRequestUrl,
@@ -40,4 +45,8 @@ module.exports = {
 	startJobUrl,
 	completeJobUrl,
 	updateDoerAvailabilityUrl,
+	findEligibleDoersUrl,
+	createMessageUrl,
+	getMessageByIdUrl,
+	getMessageByJobIdUrl
 };

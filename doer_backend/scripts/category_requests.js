@@ -3,9 +3,11 @@
 const fs = require("fs");
 const axios = require("axios");
 
-const getCategoryByIdRequestUrl = "http://127.0.0.1:8080/api/doer/getCategoryById";
-const getCategoryByNameRequestUrl = "http://127.0.0.1:8080/api/doer/getCategoryByName";
-const getCategoryTreeRequestUrl = "http://127.0.0.1:8080/api/doer/getCategoryTree";
+var {
+ getCategoryByIdRequestUrl,
+ getCategoryByNameRequestUrl,
+ getCategoryTreeRequestUrl,
+ } = require("./test_urls.js");
 
 async function rget(url) {
 	try {
@@ -74,6 +76,7 @@ async function makeGetRequests() {
 
 async function main() {
 
+    console.log("url is "  + getCategoryByIdRequestUrl);
 	makeGetRequests();
 
 	console.log("\n\n\n **************** \n\n\n");
