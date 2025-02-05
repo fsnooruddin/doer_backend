@@ -34,7 +34,10 @@ const Job = sequelize.define("job", {
 	doer_id: {
 		type: Sequelize.INTEGER,
 		allowNull: true,
-		defaultValue: -1,
+		references: {
+			model: db.doers,
+			key: "doer_id",
+		},
 	},
 	time: {
 		type: Sequelize.STRING,
@@ -65,11 +68,19 @@ const DoerTrip = sequelize.define("doer_trip", {
 	doer_id: {
 		type: Sequelize.DataTypes.INTEGER,
 		allowNull: false,
+		references: {
+			model: db.doers,
+			key: "doer_id",
+		},
 	},
-	job_request_id: {
+	job_id: {
 		type: Sequelize.DataTypes.INTEGER,
 
 		allowNull: false,
+		references: {
+			model: Job,
+			key: "job_id",
+		},
 	},
 	description: {
 		type: Sequelize.DataTypes.STRING,
@@ -185,6 +196,10 @@ const JobHistory = sequelize.define("job_history", {
 		type: Sequelize.ENUM("doer", "user", "admin"),
 		allowNull: false,
 	},
+	changed_by_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+	},
 	change_field: {
 		type: Sequelize.ENUM("status", "time", "location", "duration"),
 		allowNull: false,
@@ -195,11 +210,44 @@ const JobHistory = sequelize.define("job_history", {
 	},
 });
 
+const Message = sequelize.define("message", {
+	message_id: {
+		type: Sequelize.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	doer_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+		references: {
+			model: db.doers,
+			key: "doer_id",
+		},
+	},
+	job_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+		references: {
+			model: Job,
+			key: "job_id",
+		},
+	},
+	user_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+	},
+	message: {
+		type: Sequelize.STRING(2048),
+		allowNull: false,
+	},
+});
+
 db.jobs = Job;
 db.job_histories = JobHistory;
 db.doer_trips = DoerTrip;
 db.doer_trip_location_updates = DoerTripLocationUpdate;
 db.reviews = Review;
 db.invoices = Invoice;
+db.messages = Message;
 
 module.exports = db;
