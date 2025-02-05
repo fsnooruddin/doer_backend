@@ -4,6 +4,7 @@ module.exports = (app) => {
 	const doer_trips = require("../controllers/doer_trip.controller.js");
 	const categories = require("../controllers/category.controller.js");
 	const reviews = require("../controllers/review.controller.js");
+	const messages = require("../controllers/message.controller.js");
 
 	var router = require("express").Router();
 
@@ -33,6 +34,10 @@ module.exports = (app) => {
 	router.get("/getCategoryById", categories.findOneById);
 	router.get("/getCategoryByName", categories.findOneByName);
 	router.get("/getCategoryTree", categories.getCategoryTree);
+
+	router.post("/createMessage", messages.create);
+	router.get("/getMessageById", messages.findById);
+	router.get("/getMessageByJobId", messages.findByJobId);
 
 	app.use("/api/doer", router);
 };
