@@ -61,29 +61,29 @@ function filterByDistance(timeRequested, doers) {
 async function filterByTime(dayRequested, timeRequested, doers) {
 	logger.trace("data in filterByTime= " + dayRequested + "  " + timeRequested);
 
-try {
-	var ret_doers = [];
-	for (let d_entry of doers) {
-		logger.trace("Processing Doer Availability" + "     " + JSON.stringify(d_entry));
+	try {
+		var ret_doers = [];
+		for (let d_entry of doers) {
+			logger.trace("Processing Doer Availability" + "     " + JSON.stringify(d_entry));
 
-		console.log(typeof d_entry.availability);
-		console.log(JSON.parse(d_entry.availability));
+			console.log(typeof d_entry.availability);
+			console.log(JSON.parse(d_entry.availability));
 
-		var objs = JSON.parse(d_entry.availability);
-		//console.log ("availability = " + objs);
-		//console.log ("one slot = " + JSON.stringify(objs.slots[0]));
-		//console.log ("slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
-		//console.log(JSON.parse (objs));
-		var retVal = processTimeMatch(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
-		if (retVal != -1) {
-			ret_doers.push(d_entry);
+			var objs = JSON.parse(d_entry.availability);
+			//console.log ("availability = " + objs);
+			//console.log ("one slot = " + JSON.stringify(objs.slots[0]));
+			//console.log ("slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
+			//console.log(JSON.parse (objs));
+			var retVal = processTimeMatch(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
+			if (retVal != -1) {
+				ret_doers.push(d_entry);
+			}
 		}
-	}
-	logger.trace('returning filterByTime size of return = ' + ret_doers.length)
-	return ret_doers;
+		logger.trace("returning filterByTime size of return = " + ret_doers.length);
+		return ret_doers;
 	} catch (error) {
-	    logger.error('filterByTime caught error  = ' + error.message);
-	    return [];
+		logger.error("filterByTime caught error  = " + error.message);
+		return [];
 	}
 }
 
