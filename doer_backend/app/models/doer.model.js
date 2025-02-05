@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 		},
 		rating: {
-			type: Sequelize.FLOAT,
+			type: Sequelize.STRING,
 			allowNull: false,
 		},
 		minimum_charges: {

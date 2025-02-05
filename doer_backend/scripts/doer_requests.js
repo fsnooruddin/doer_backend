@@ -6,21 +6,25 @@ var {
 	createJobRequest_1,
 	createDoerTrip_1,
 	updateDoerTrip_1,
+	updateDoerTrip_2,
+	updateDoerTrip_3,
 	createDoerReview_1,
 	createDoerReview_2,
 	updateDoerAvailability_1,
 } = require("./other_requests_data.js");
 
-const getDoerByIdRequestUrl = "http://127.0.0.1:8080/api/doer/getDoerById";
-const getDoerByServicesRequestUrl = "http://127.0.0.1:8080/api/doer/getDoerByServices";
-const getDoerByServicesAndDayRequestUrl = "http://127.0.0.1:8080/api/doer/getDoerByServicesAndDay";
-const getReviewsForDoerRequestUrl = "http://127.0.0.1:8080/api/doer/getReviewsForDoer";
-const getReviewByIdRequestUrl = "http://127.0.0.1:8080/api/doer/getReviewById";
-const rateDoerRequestUrl = "http://127.0.0.1:8080/api/doer/rateDoer";
-const createDoerReviewUrl = "http://127.0.0.1:8080/api/doer/reviewDoer";
-const createDoerTripUrl = "http://127.0.0.1:8080/api/doer/createDoerTrip";
-const updateDoerTripUrl = "http://127.0.0.1:8080/api/doer/updateDoerTripLocation";
-const updateDoerAvailabilityUrl = "http://127.0.0.1:8080/api/doer/updateDoerAvailability";
+var {
+	getDoerByIdRequestUrl,
+	getDoerByServicesRequestUrl,
+	getDoerByServicesAndDayRequestUrl,
+	getReviewsForDoerRequestUrl,
+	getReviewByIdRequestUrl,
+	rateDoerRequestUrl,
+	createDoerReviewUrl,
+	createDoerTripUrl,
+	updateDoerTripUrl,
+	updateDoerAvailabilityUrl,
+} = require("./test_urls.js");
 
 async function rget(url) {
 	try {
@@ -69,15 +73,13 @@ async function makePostRequests() {
 	makeCreateCall("updateDoerTrip", updateDoerTripUrl, updateDoerTrip_1);
 	console.log("\n\n\n **************** \n\n\n");
 
-	/*
-  makeCreateCall(
-    "updateDoerAvailability",
-    updateDoerAvailabilityUrl,
-    updateDoerAvailability_1,
-  );
-  */
+    makeCreateCall("updateDoerTrip", updateDoerTripUrl, updateDoerTrip_2);
+	console.log("\n\n\n **************** \n\n\n");
 
-	var response_data = await rpost(rateDoerRequestUrl + "?id=2");
+    makeCreateCall("updateDoerTrip", updateDoerTripUrl, updateDoerTrip_3);
+	console.log("\n\n\n **************** \n\n\n");
+
+	var response_data = await rpost(rateDoerRequestUrl + "?id=2&rating=5");
 	console.log("rateDoerRequestUrl = \n\n\n" + JSON.stringify(response_data));
 
 	response_data = await rpost(updateDoerAvailabilityUrl + "?id=2", updateDoerAvailability_1);
@@ -112,24 +114,8 @@ async function makeGetRequests() {
 }
 
 async function main() {
-	//makePostRequests();
-	// makeGetRequests();
-
-	/*
-    makeCreateCall(
-        "updateDoerAvailability",
-        updateDoerAvailabilityUrl,
-        updateDoerAvailability_1,
-      );
-*/
-
-	var response_data;
-
-	response_data = await rpost(updateDoerAvailabilityUrl + "?id=2", updateDoerAvailability_1);
-	console.log(" updateDoerAvailabilityUrl = \n\n\n" + JSON.stringify(response_data));
-
-	response_data = await rpost(updateDoerAvailabilityUrl + "?id=2", null);
-	console.log(" updateDoerAvailabilityUrl = \n\n\n" + JSON.stringify(response_data));
+	makePostRequests();
+	makeGetRequests();
 }
 
 main();

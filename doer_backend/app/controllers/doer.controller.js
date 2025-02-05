@@ -62,7 +62,6 @@ const opentelemetry = require("@opentelemetry/api");
  * @memberof Doer
  */
 async function create(req, res) {
-
 	if (req.body == null) {
 		logger.error("doer-controller create call missing payload");
 		res.status(500).send({
@@ -74,7 +73,7 @@ async function create(req, res) {
 
 	var data_obj;
 	try {
-	    logger.info("req body in create doer: " + JSON.stringify(req.body));
+		logger.info("req body in create doer: " + JSON.stringify(req.body));
 		data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 	} catch (err) {
 		logger.error("error parsing json + " + err.message);
@@ -83,7 +82,7 @@ async function create(req, res) {
 	}
 
 	data_obj.availability = JSON.stringify(data_obj.availability);
-
+	data_obj.rating = JSON.stringify(data_obj.rating);
 	try {
 		// Save category in the database
 		const response_data = await Doer.create(data_obj);
@@ -344,24 +343,48 @@ async function updateAvailability(req, res) {
  */
 async function rating(req, res) {
 	const id = req.query.id;
-	if (id == null) {
-		logger.error("doer-controller rating missing doerId");
+	if (id == null || isNaN(parseInt(id))) {
+		logger.error("doer-controller rating missing doerId or doerId not integer " + id);
 		res.status(500).send({
-			message: "Error rating Doer Id is missing",
+			message: "Error rating Doer Id is missing or doerId not integer " + id,
 		});
 
 		return;
 	}
-	logger.info("Doer-controller rating id = " + id);
+	if (req.query.rating == null || isNaN(parseInt(req.query.rating))) {
+		logger.error("doer-controller rating missing rating or rating not integer: " + req.query.rating);
+		res.status(500).send({
+			message: "doer-controller rating missing rating or rating not integer: " + req.query.rating,
+		});
+		return;
+	}
+	logger.info("Doer-controller rating doer id = " + id + "   rating = " + req.query.rating);
+	const doer = await findByIdDBCall(id);
 
-	Doer.increment("rating", {
-		by: 1,
-		where: {
-			doer_id: id,
-		},
-	});
+	if (doer == null) {
+		logger.error("doer-controller rate doer couldn't find doer with doerId " + id);
+		res.status(500).send({ message: "doer-controller rate doer Error retrieving Doer with id=" + id });
+	}
 
-	res.status(200).send("successfully rated doer with id = " + id);
+	var rating = JSON.parse(doer.rating);
+	console.log(rating);
+	let total = parseInt(rating.raw.total) + parseInt(req.query.rating);
+	let count = parseInt(rating.raw.count) + 1;
+	rating.rating = total / count;
+	rating.raw.total = total;
+	rating.raw.count = count;
+	console.log(rating);
+
+	try {
+		doer.rating = JSON.stringify(rating);
+		doer.changed("rating", true);
+		const result = await doer.save();
+		logger.info("result of save doer in rate doer = " + JSON.stringify(result));
+		res.status(200).send("successfully rated doer. doer id = " + id);
+	} catch (err) {
+		logger.error("Doer-controller rating id = " + id + " ERROR ... error is: " + err.message);
+		res.status(500).send("failure to rate doer with id = " + id + " ... error is: " + err.message);
+	}
 }
 
 async function getHistory(req, res) {
