@@ -63,7 +63,7 @@ function findById(req, res) {
 	console.log(parseInt(id));
 
 	if (isNaN(parseInt(id))) {
-		logger.error("Error retrieving reviews by ID, review Id is not integer");
+		logger.error("Error retrieving reviews by ID, review Id is not integer, id = " + id);
 		res.status(500).send({
 			message: "Error retrieving reviews by id, review Id is not integer",
 		});

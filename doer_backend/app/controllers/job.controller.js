@@ -237,7 +237,7 @@ async function acceptJob(req, res) {
 	try {
 		await data.update({ doer_id: doerId, status: "accepted" });
 		logger.info("job_request-controller acceptJob SUCCESS, doerId = " + doerId + " job id = " + jobId);
-		updateJobHistory(jobId, "status", "accepted", "doer");
+		updateJobHistory(jobId, "status", "accepted", "doer", data.doer_id);
 		res.status(200).send("accept job success");
 		return;
 	} catch (error) {
@@ -274,7 +274,7 @@ async function startJob(req, res) {
 	try {
 		await data.update({ status: "in-progress" });
 		logger.info("job_request-controller start job SUCCESS,  job id = " + jobId);
-		updateJobHistory(jobId, "status", "started", "doer");
+		updateJobHistory(jobId, "status", "started", "doer", data.doer_id);
 		res.status(200).send("start job success");
 		return;
 	} catch (error) {
@@ -319,8 +319,8 @@ async function completeJob(req, res) {
 
 	try {
 		await data.update({ status: "completed", duration: duration });
-		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId);
-		updateJobHistory(jobId, "status", "completed", "doer");
+		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId + "   " + data.doer_id);
+		updateJobHistory(jobId, "status", "completed", "doer", data.doer_id);
 		res.status(200).send("complete job success");
 		return;
 	} catch (error) {
@@ -409,14 +409,18 @@ async function generateInvoice(req, res) {
 }
 
 /**
- * Called by a Doer to start a job.
- * @param {number} jobId - Job being started
+ * Called by functions to record changes to job .
+ * @param {number} jobId - Job being changed
+ * @param {string} change_field - What field was changed
+ * @param {string} change_value - Value of change
+ * @param {string} changed_by - doer, user or admin
+ * @param {number} changed_by_id - ID (doer_id, user_id, admin_id) of who made the change
  * @return {string|null} error string - null if success, error details if failure
  * @memberof Job
  */
-async function updateJobHistory(jobId, change_field, change_value, changed_by) {
+async function updateJobHistory(jobId, change_field, change_value, changed_by, changed_by_id) {
 	logger.info("job-controller updateJobHistory");
-
+	logger.warn(jobId + "   " + change_field + "   " + change_value + "   " + changed_by + "   " + changed_by_id);
 	if (jobId == null || isNaN(parseInt(jobId))) {
 		logger.error("job_request-controller updateJobHistory, missing job Id or job Id not integer: " + jobId);
 		return false;
@@ -427,6 +431,7 @@ async function updateJobHistory(jobId, change_field, change_value, changed_by) {
 		change_field: change_field,
 		change_value: change_value,
 		changed_by: changed_by,
+		changed_by_id: changed_by_id,
 	};
 
 	try {
