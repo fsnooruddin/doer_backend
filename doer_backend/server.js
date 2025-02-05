@@ -1,12 +1,13 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
 const ku = require("./app/utils/KafkaUtil.js");
 const logger = require("./app/utils/Logger.js");
 
 var corsOptions = {
     origin: ['http://127.0.0.1:8080', 'http://localhost:8080']
 };
+
+const app = express();
 
 app.use(cors(corsOptions));
 
@@ -29,10 +30,11 @@ if (customIndex > -1) {
 
 db.sequelize.sync({ force: forceFlag })
     .then(() => {
-        console.log("Synced db.");
+        logger.info("Synced db.");
     })
     .catch((err) => {
-        console.log("Failed to sync db: " + err.message);
+        logger.fatal("Failed to sync db: " + err.message);
+        return;
     });
 
 //ku.init();
@@ -50,7 +52,7 @@ require("./app/routes/doer.routes")(app);
 // set port, listen for requests
 const PORT = 8080;
 app.listen(PORT, () => {
-    logger.info("Server is running on port + " +  PORT) ;
+    logger.info("Server is running on port: " +  PORT) ;
 });
 
 module.exports = app;
