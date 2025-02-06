@@ -22,10 +22,17 @@ app.use(express.urlencoded({
 const db = require("./app/models");
 
 let forceFlag = false;
-const customIndex = process.argv.indexOf('--force_sync');
+let customIndex = process.argv.indexOf('--force_sync');
 if (customIndex > -1) {
   // Retrieve the value after --custom
   forceFlag = process.argv[customIndex + 1];
+}
+
+let kafkaFlag = false;
+customIndex = process.argv.indexOf('--use_kafka');
+if (customIndex > -1) {
+  // Retrieve the value after --custom
+  kafkaFlag = process.argv[customIndex + 1];
 }
 
 db.sequelize.sync({ force: forceFlag })
@@ -37,15 +44,9 @@ db.sequelize.sync({ force: forceFlag })
         return;
     });
 
-//ku.init();
-
-
-// simple route
-app.get("/doer", (req, res) => {
-    res.json({
-        message: "Welcome to doer application."
-    });
-});
+if(kafkaFlag) {
+    ku.init();
+}
 
 require("./app/routes/doer.routes")(app);
 

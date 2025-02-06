@@ -52,7 +52,7 @@ async function create(req, res) {
 		// Save category in the database
 		const response_data = await Job.create(data_obj);
 		logger.info("job-controller create SUCCESS ... ");
-		KU.sendMessage("doer_messages", "new job request");
+		KU.sendJobRequestedMessage(response_data.job_id, response_data.user_id, response_data.time, response_data.location, response_data.services);
 		res.status(200).send(response_data);
 	} catch (err) {
 		logger.error("job-controller create call failed. error = " + err.message);
@@ -321,6 +321,7 @@ async function completeJob(req, res) {
 		await data.update({ status: "completed", duration: duration });
 		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId + "   " + data.doer_id);
 		updateJobHistory(jobId, "status", "completed", "doer", data.doer_id);
+		KU.sendJobCompletedMessage(data.job_id, data.doer_id, data.user_id, data.time, data.location, data.services, duration);
 		res.status(200).send("complete job success");
 		return;
 	} catch (error) {
