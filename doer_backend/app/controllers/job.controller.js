@@ -228,7 +228,7 @@ async function acceptJob(req, res) {
 	logger.info("job_request-controller acceptJob, doerId = " + doerId + " job id = " + jobId);
 
 	try {
-		await Job.update({ doer_id: doerId, status: "accepted" },  { where: {job_id: jobId} });
+		await Job.update({ doer_id: doerId, status: "accepted" }, { where: { job_id: jobId } });
 		logger.info("job_request-controller acceptJob SUCCESS, doerId = " + doerId + " job id = " + jobId);
 		updateJobHistory(jobId, "status", "accepted", "doer", doerId);
 		res.status(200).send("accept job success");
@@ -257,9 +257,14 @@ async function startJob(req, res) {
 	}
 
 	try {
-		await Job.update({ status: "in-progress" }, { where: {job_id: jobId} });
+		await Job.update({ status: "in-progress" }, { where: { job_id: jobId } });
 		logger.info("job_request-controller start job SUCCESS,  job id = " + jobId);
-		//updateJobHistory(jobId, "status", "started", "doer", data.doer_id);
+		const data = await findByIdDBCall(jobId);
+		if (data == null) {
+			logger.warn("job-controller findById returing null, id = " + jobId);
+			return;
+		}
+		updateJobHistory(jobId, "status", "started", "doer", data.doer_id);
 		res.status(200).send("start job success");
 		return;
 	} catch (error) {
@@ -297,10 +302,15 @@ async function completeJob(req, res) {
 	logger.info("job-controller completeJob, job id = " + jobId + " job complete duration is " + duration);
 
 	try {
-		await Job.update({ status: "completed", duration: duration }, { where: {job_id: jobId} });
+		await Job.update({ status: "completed", duration: duration }, { where: { job_id: jobId } });
 		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId);
-		//updateJobHistory(jobId, "status", "completed", "doer", data.doer_id);
-		//KU.sendJobCompletedMessage(data.job_id, data.doer_id, data.user_id, data.time, data.location, data.services, duration);
+		const data = await findByIdDBCall(jobId);
+		if (data == null) {
+			logger.warn("job-controller findById returing null, id = " + jobId);
+			return;
+		}
+		updateJobHistory(jobId, "status", "completed", "doer", data.doer_id);
+		KU.sendJobCompletedMessage(data.job_id, data.doer_id, data.user_id, data.time, data.location, data.services, duration);
 		res.status(200).send("complete job success");
 		return;
 	} catch (error) {
