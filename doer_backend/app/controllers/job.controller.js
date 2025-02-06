@@ -226,18 +226,11 @@ async function acceptJob(req, res) {
 	}
 
 	logger.info("job_request-controller acceptJob, doerId = " + doerId + " job id = " + jobId);
-	const data = await findByIdDBCall(jobId);
-
-	if (data == null) {
-		logger.warn("job_request-controller accept job -- couldn't find job with jobId = " + jobId);
-		res.status(500).send("job accept failed   " + "couldn't find job " + jobId);
-		return;
-	}
 
 	try {
-		await data.update({ doer_id: doerId, status: "accepted" });
+		await Job.update({ doer_id: doerId, status: "accepted" },  { where: {job_id: jobId} });
 		logger.info("job_request-controller acceptJob SUCCESS, doerId = " + doerId + " job id = " + jobId);
-		updateJobHistory(jobId, "status", "accepted", "doer", data.doer_id);
+		updateJobHistory(jobId, "status", "accepted", "doer", doerId);
 		res.status(200).send("accept job success");
 		return;
 	} catch (error) {
@@ -263,18 +256,10 @@ async function startJob(req, res) {
 		return;
 	}
 
-	const data = await findByIdDBCall(jobId);
-
-	if (data == null) {
-		logger.warn("job_request-controller start job -- couldn't find job with jobId " + jobId);
-		res.status(500).send("job start failed   " + "couldn't find job");
-		return;
-	}
-
 	try {
-		await data.update({ status: "in-progress" });
+		await Job.update({ status: "in-progress" }, { where: {job_id: jobId} });
 		logger.info("job_request-controller start job SUCCESS,  job id = " + jobId);
-		updateJobHistory(jobId, "status", "started", "doer", data.doer_id);
+		//updateJobHistory(jobId, "status", "started", "doer", data.doer_id);
 		res.status(200).send("start job success");
 		return;
 	} catch (error) {
@@ -310,18 +295,12 @@ async function completeJob(req, res) {
 		return;
 	}
 	logger.info("job-controller completeJob, job id = " + jobId + " job complete duration is " + duration);
-	const data = await findByIdDBCall(jobId);
-	if (data == null) {
-		logger.error("job_request-controller complete job -- couldn't find job with jobId " + jobId);
-		res.status(200).send("job complete failed   " + "couldn't find job");
-		return;
-	}
 
 	try {
-		await data.update({ status: "completed", duration: duration });
-		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId + "   " + data.doer_id);
-		updateJobHistory(jobId, "status", "completed", "doer", data.doer_id);
-		KU.sendJobCompletedMessage(data.job_id, data.doer_id, data.user_id, data.time, data.location, data.services, duration);
+		await Job.update({ status: "completed", duration: duration }, { where: {job_id: jobId} });
+		logger.info("job_request-controller complete job SUCCESS --  jobId " + jobId);
+		//updateJobHistory(jobId, "status", "completed", "doer", data.doer_id);
+		//KU.sendJobCompletedMessage(data.job_id, data.doer_id, data.user_id, data.time, data.location, data.services, duration);
 		res.status(200).send("complete job success");
 		return;
 	} catch (error) {

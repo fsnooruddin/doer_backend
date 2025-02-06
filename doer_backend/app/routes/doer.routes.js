@@ -27,8 +27,10 @@ module.exports = (app) => {
 	router.post("/completeJob", jobs.completeJob);
 	router.post("/generateInvoice", jobs.generateInvoice);
 
-	router.post("/createDoerTrip", doer_trips.create);
+	router.post("/createDoerTrip", doer_trips.startDoerTrip);
+	router.post("/completeDoerTrip", doer_trips.completeDoerTrip);
 	router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);
+	router.get("/getDoerTripByJobId", doer_trips.getDoerTripByJobId);
 
 	router.post("/createCategory", categories.create);
 	router.get("/getCategoryById", categories.findOneById);

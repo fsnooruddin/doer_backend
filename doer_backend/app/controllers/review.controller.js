@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * @namespace Review
+ */
+
+
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Review = db.reviews;
@@ -8,7 +13,21 @@ const Op = db.Sequelize.Op;
 const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
-// Create and Save a new Review
+/**
+ * Create a Review
+ * @param {object} review - JSON representing Review
+ * @param {number} review.doer_id - Doer Id being reviewed
+ * @param {string} review.text - Text of review
+ * @return {string|null} error string - null if success, error details if failure
+ *
+ * @example
+ * Sample payload:
+ *  {
+     doer_id: "2",
+     text: "Best Doer Ever"
+   }
+ * @memberof Review
+ */
 function create(req, res) {
 	console.log("req body in create review: ");
 	console.log(req.body);
@@ -47,7 +66,13 @@ function create(req, res) {
 		});
 }
 
-// Find a single review with an id
+
+/**
+ * Find a single review with an id
+ * @param {number} id - Id of review to retreive
+ * @return {string|null} Review - null if failure, JSON object representing Review if success
+ * @memberof Review
+ */
 function findById(req, res) {
 	const id = req.query.id;
 	if (id == null) {
@@ -91,7 +116,12 @@ function findById(req, res) {
 		});
 }
 
-// Find  reviews for a doer
+/**
+ * Get all reviews for a doer
+ * @param {number} doerId - Id of Doer for whom to fetch reviews
+ * @return {string|null} Review - null if failure, JSON object representing Review if success
+ * @memberof Review
+ */
 function findByDoerId(req, res) {
 	const id = req.query.doerId;
 
