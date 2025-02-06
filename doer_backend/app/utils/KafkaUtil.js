@@ -1,6 +1,11 @@
 const kafka = require("kafka-node");
 const logger = require("./Logger.js");
 
+/**
+ * @namespace KafkaUtil
+ */
+
+
 var topicsToCreate = [
 	{
 		topic: "job-messages",
@@ -16,6 +21,15 @@ var topicsToCreate = [
 
 const KafkaUtils = {};
 
+/**
+ * Send a message to the kafka topic job-messages when a new job is requested
+ * @param {number} job_id - Job id
+ * @param {number} user_id - User requesting job
+ * @param {string} time - Time that the job is requested for
+ * @param {string} location - Location of job
+ * @param {string} services - Services requested
+ * @memberof KafkaUtil
+ */
 function sendJobRequestedMessage(job_id, user_id, time, location, services) {
 	var jobMessage = {
 		type: "jobRequested",
@@ -29,6 +43,16 @@ function sendJobRequestedMessage(job_id, user_id, time, location, services) {
 	sendMessage("job-messages", JSON.stringify(jobMessage));
 }
 
+/**
+ * Send a message to the kafka topic job-messages when a job is completed
+ * @param {number} job_id - Job id
+ * @param {number} user_id - User requesting job
+ * @param {string} time - Time that the job is requested for
+ * @param {string} location - Location of job
+ * @param {string} services - Services requested
+ * @param {string} duration - How long did it take to complete the job?
+ * @memberof KafkaUtil
+ */
 function sendJobCompletedMessage(job_id, doer_id, user_id, time, location, services, duration) {
 
 	var jobMessage = {
