@@ -95,10 +95,10 @@ const DoerTrip = sequelize.define("doer_trip", {
 		allowNull: false,
 	},
 	status: {
-    		type: Sequelize.ENUM("started", "completed"),
-    		allowNull: false,
-    		defaultValue: "started",
-    	},
+		type: Sequelize.ENUM("started", "completed"),
+		allowNull: false,
+		defaultValue: "started",
+	},
 });
 
 const DoerTripLocationUpdate = sequelize.define("doer_trip_location_update", {
