@@ -9,8 +9,10 @@ const getReviewsForDoerRequestUrl = "http://127.0.0.1:8080/api/doer/getReviewsFo
 const getReviewByIdRequestUrl = "http://127.0.0.1:8080/api/doer/getReviewById";
 const rateDoerRequestUrl = "http://127.0.0.1:8080/api/doer/rateDoer";
 const createDoerReviewUrl = "http://127.0.0.1:8080/api/doer/reviewDoer";
-const createDoerTripUrl = "http://127.0.0.1:8080/api/doer/createDoerTrip";
+const createDoerTripUrl = "http://127.0.0.1:8080/api/doer/startDoerTrip";
+const completeDoerTripUrl = "http://127.0.0.1:8080/api/doer/completeDoerTrip";
 const updateDoerTripUrl = "http://127.0.0.1:8080/api/doer/updateDoerTripLocation";
+const getDoerTripByJobIdUrl = "http://127.0.0.1:8080/api/doer/getDoerTripByJobId";
 const updateDoerAvailabilityUrl = "http://127.0.0.1:8080/api/doer/updateDoerAvailability";
 
 const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/createJob";
@@ -35,7 +37,9 @@ module.exports = {
 	rateDoerRequestUrl,
 	createDoerReviewUrl,
 	createDoerTripUrl,
+	completeDoerTripUrl,
 	updateDoerTripUrl,
+	getDoerTripByJobIdUrl,
 	updateDoerAvailabilityUrl,
 	createJobRequestUrl,
 	createDoerTripUrl,

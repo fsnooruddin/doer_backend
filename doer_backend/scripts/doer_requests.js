@@ -23,6 +23,7 @@ var {
 	createDoerReviewUrl,
 	createDoerTripUrl,
 	updateDoerTripUrl,
+	completeDoerTripUrl,
 	updateDoerAvailabilityUrl,
 } = require("./test_urls.js");
 
@@ -78,6 +79,9 @@ async function makePostRequests() {
 
     makeCreateCall("updateDoerTrip", updateDoerTripUrl, updateDoerTrip_3);
 	console.log("\n\n\n **************** \n\n\n");
+
+	var response_data = await rpost( completeDoerTripUrl + "?id=1");
+    	console.log("\n\n\n completeDoerTrip **************** \n\n\n");
 
 	var response_data = await rpost(rateDoerRequestUrl + "?id=2&rating=5");
 	console.log("rateDoerRequestUrl = \n\n\n" + JSON.stringify(response_data));
