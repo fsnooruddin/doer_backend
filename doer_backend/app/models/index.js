@@ -104,6 +104,7 @@ const DoerTrip = sequelize.define("doer_trip", {
 const DoerTripLocationUpdate = sequelize.define("doer_trip_location_update", {
 	doer_trip_id: {
 		type: Sequelize.DataTypes.INTEGER,
+		allowNull: false,
 	},
 	location_update: {
 		type: Sequelize.DataTypes.JSONB,
