@@ -147,7 +147,7 @@ async function findByIdDBCall(id) {
 
 		return data;
 	} catch (err) {
-		logger.error("doer-controller findByIdDBCall couldn't find doer with doerId " + id + "with error " + error.message);
+		logger.error("doer-controller findByIdDBCall couldn't find doer with doerId " + id + "with error " + err.message);
 		return null;
 	}
 }
