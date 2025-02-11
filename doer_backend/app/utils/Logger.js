@@ -30,7 +30,7 @@ const logger = winston.createLogger({
 	levels: myCustomLevels.logLevels,
 	level: process.env.LOG_LEVEL || "trace",
 	format: combine(timestamp({ format: "YYYY-MM-DD hh:mm:ss.SSS A" }), myFormat),
-	transports: [new winston.transports.Console({ eol: "\n" }), new winston.transports.File({ filename: "/var/log/doer/combined.log" })],
+	transports: [new winston.transports.Console({ eol: "\n" }), new winston.transports.File({ filename: "/var/log/doer/doer.log" })],
 });
 
 module.exports = logger;
