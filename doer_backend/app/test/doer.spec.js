@@ -28,7 +28,6 @@ async function getData(url) {
 
 describe("DOER API Tests -- Successful calls", () => {
 	test("Create a new doer", async () => {
-		console.log("URL = " + createDoerUri);
 		const res = await request.post(createDoerUri).send(reqCreateDoer_1).set("Accept", "application/json");
 		//   console.log(res.body);
 		expect(res.status).toBe(200);
@@ -36,10 +35,9 @@ describe("DOER API Tests -- Successful calls", () => {
 	});
 
 	test("Search Doers by Service", async () => {
-		console.log("URL = " + getDoerByServicesRequestUri + "?services=electric");
 		//	const res = await getData(getDoerByServicesRequestUrl + "?services=electric");
 		const res = await getData("/getDoerByServices" + "?services=electric");
-		console.log(res.body);
+	//	console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 	});

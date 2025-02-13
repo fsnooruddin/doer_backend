@@ -1,39 +1,35 @@
 const reqCreateDoer_1 = {
-  "name": "BCP Concrete",
-  "phone_number": "(925) 462-6456",
-  "address": "415 Boulder Ct, Ste 200, Pleasanton, CA 94566",
-  "availability": "Wed: 7-21, Fri: 8-12",
-  "services": "Masonry/Concrete",
-  "availability": "Mon: 10-18, Mon: 8-14",
-  "rating": "4.5",
-  "rate": "65",
-  "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/uBghgJyotD86qHrICm9SuA/o.jpg"
-}
+  "name": "Electric Chen",
+         "phone_number": "(510) 606-8626",
+         "location": "{city: Pleasanton,state: CA,zip_code: 94566,address: ['Pleasanton, CA 94566'],coordinates: {'latitude': 37.66389, 'longitude': -121.87383}}",
+         "services": "[{'alias': 'electricians', 'title': 'Electricians'}, {'alias': 'lighting', 'title': 'Lighting Fixtures & Equipment'}]",
+         "availability": "{\"slots\":[{\"slot\":{\"day\":\"Fri\",\"time\":\"10-18\"},\"rate\":61,\"location\":{\"coordinates\":{\"latitude\":22.222,\"longitude\":333.333},\"radius\":45}},{\"slot\":{\"day\":\"Wed\",\"time\":\"9-12\"},\"rate\":65,\"location\":{\"coordinates\":{\"latitude\":22.222,\"longitude\":333.333},\"radius\":43}}],\"instant_book\":{\"on\":false,\"hourly_rate\":61}}",
+         "rating": "{\"rating\":5,\"raw\":{\"total\":500,\"count\":100}}",
+         "minimum_charges": 80,
+         "img_url": "https://s3-media1.fl.yelpcdn.com/bphoto/HMW0_wa9XI9pOMGsn_9h2g/o.jpg"
+     }
 
 const reqCreateDoer_2 = {
-  "name": "New Moon Landscape",
-  "services": "Landscaping , Masonry/Concrete , Irrigation",
-  "phone_number": "(510) 332-5822",
-  "availability": "Tue: 8-16, Fri: 9-19",
-  "address": "1117 Brookside Ave, Richmond, CA 94805",
-  "availability": "Sat: 10-16, Sun: 11-18",
-  "rating": "4.5",
-  "rate": "75",
-  "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/uBghgJyotD86qHrICm9SuA/o.jpg"
-}
+  "name": "Better Electric",
+         "phone_number": "(925) 413-4215",
+         "location": "{city: Livermore,state: CA,zip_code: 94550,address: ['12200 Tesla Rd', 'Livermore, CA 94550'],coordinates: {'latitude': 37.643502, 'longitude': -121.641089}}",
+         "services": "[{'alias': 'electricians', 'title': 'Electricians'}, {'alias': 'lighting', 'title': 'Lighting Fixtures & Equipment'}]",
+         "availability": "{\"slots\":[{\"slot\":{\"day\":\"Wed\",\"time\":\"10-23\"},\"rate\":77,\"location\":{\"coordinates\":{\"latitude\":22.222,\"longitude\":333.333},\"radius\":30}},{\"slot\":{\"day\":\"Tue\",\"time\":\"11-15\"},\"rate\":58,\"location\":{\"coordinates\":{\"latitude\":22.222,\"longitude\":333.333},\"radius\":46}}],\"instant_book\":{\"on\":false,\"hourly_rate\":87}}",
+         "rating": "{\"rating\":4.8,\"raw\":{\"total\":480,\"count\":100}}",
+         "minimum_charges": 89,
+         "img_url": "https://s3-media4.fl.yelpcdn.com/bphoto/RI9DpJk52cjclkVhiXridQ/o.jpg"
+     }
 
 const reqCreateDoer_3 = {
-    "name": "Swansons Landscaping",
-    "services": "Landscaping , Masonry/Concrete , Patio Coverings",
-    "review_count": "104",
-    "phone_number": "(925) 449-8169",
-    "rating": "5.0",
-    "availability": "Wed: 7-19, Thu: 8-23",
-    "location": "521 Cinnabar Dr, Livermore, California, 94550",
-    "rating": "4.5",
-    "rate": "45",
-    "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/uBghgJyotD86qHrICm9SuA/o.jpg"
-}
+"name": "Shamrockin Electric",
+        "phone_number": "(925) 273-0750",
+        "location": "{city: Livermore,state: CA,zip_code: 94550,address: ['Livermore, CA 94550'],coordinates: {'latitude': 37.67893, 'longitude': -121.76677}}",
+        "services": "[{'alias': 'electricians', 'title': 'Electricians'}]",
+        "availability": "{\"slots\":[{\"slot\":{\"day\":\"Sat\",\"time\":\"8-20\"},\"rate\":76,\"location\":{\"coordinates\":{\"latitude\":22.222,\"longitude\":333.333},\"radius\":31}},{\"slot\":{\"day\":\"Mon\",\"time\":\"9-18\"},\"rate\":65,\"location\":{\"coordinates\":{\"latitude\":22.222,\"longitude\":333.333},\"radius\":12}}],\"instant_book\":{\"on\":false,\"hourly_rate\":98}}",
+        "rating": "{\"rating\":5,\"raw\":{\"total\":500,\"count\":100}}",
+        "minimum_charges": 95,
+        "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/K3kGXflZXEudtsQ7PvcwUQ/o.jpg"
+    }
 
 module.exports = {
   reqCreateDoer_1,

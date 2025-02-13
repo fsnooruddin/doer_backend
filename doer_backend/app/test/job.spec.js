@@ -70,13 +70,13 @@ async function completeJobFailureMissingDuration() {
 	expect(JSON.stringify(res.body)).toContain("message");
 }
 
-describe("Job API Tests -- Successful calls", () => {
+describe("JOB API Tests -- Successful calls", () => {
 	test("Successfully create a new Job Request", createJobSuccess);
 	test("Successfully accept a Job ", acceptJobSuccess);
 	test("Successfully complete Job ", completeJobSuccess);
 });
 
-describe("Job API Tests -- Failure calls", () => {
+describe("JOB API Tests -- Failure calls", () => {
     test("Fail to create a new Job Request, malformed json body", createJobFailure);
     test("Fail to create a new Job Request, missing json body", createJobFailure);
 	test("Fail to complete Job, missing JobId ", completeJobFailureMissingJobId);

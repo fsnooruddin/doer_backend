@@ -20,7 +20,7 @@ async function createDoerTripSuccess() {
 	expect(JSON.stringify(res.body)).toContain("doer_trip_id");
 }
 
-describe("Doer Trip API Tests -- Successful calls", () => {
+describe("DOER TRIP API Tests -- Successful calls", () => {
 
   it('should create a new doer trip', async () => {
     const res = await request
@@ -47,7 +47,7 @@ describe("Doer Trip API Tests -- Successful calls", () => {
 
 });
 
-describe('Doer Trip API -- Failure Calls', function() {
+describe('DOER TRIP API -- Failure Calls', function() {
 
 it('send malformed location update', async() => {
           const res = await request
