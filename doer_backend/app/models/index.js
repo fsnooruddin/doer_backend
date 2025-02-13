@@ -16,6 +16,7 @@ db.sequelize = sequelize;
 
 db.doers = require("./doer.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
+db.otps = require("./otp.model.js")(sequelize, Sequelize);
 
 const Job = sequelize.define("job", {
 	job_id: {

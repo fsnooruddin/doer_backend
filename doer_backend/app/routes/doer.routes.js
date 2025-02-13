@@ -5,6 +5,7 @@ module.exports = (app) => {
 	const categories = require("../controllers/category.controller.js");
 	const reviews = require("../controllers/review.controller.js");
 	const messages = require("../controllers/message.controller.js");
+	const otps = require("../controllers/otp.controller.js");
 
 	var router = require("express").Router();
 
@@ -15,10 +16,12 @@ module.exports = (app) => {
 	router.get("/getDoerHistory", doers.getHistory);
 	router.post("/rateDoer", doers.rating);
 	router.post("/updateDoerAvailability", doers.updateAvailability);
+    router.get("/doer/getDoerById", doers.findById);
 
 	router.post("/reviewDoer", reviews.create);
 	router.get("/getReviewById", reviews.findById);
 	router.get("/getReviewsForDoer", reviews.findByDoerId);
+    router.get("/review/getReviewById", reviews.findById);
 
 	router.post("/createJob", jobs.create);
 	router.get("/findEligibleDoers", jobs.findEligibleDoers);
@@ -26,6 +29,7 @@ module.exports = (app) => {
 	router.post("/startJob", jobs.startJob);
 	router.post("/completeJob", jobs.completeJob);
 	router.post("/generateInvoice", jobs.generateInvoice);
+    router.post("/job/startJob", jobs.startJob);
 
 	router.post("/createDoerTrip", doer_trips.startDoerTrip);
 	router.post("/completeDoerTrip", doer_trips.completeDoerTrip);
@@ -40,6 +44,9 @@ module.exports = (app) => {
 	router.post("/createMessage", messages.create);
 	router.get("/getMessageById", messages.findById);
 	router.get("/getMessageByJobId", messages.findByJobId);
+
+	router.post("/otp/create", otps.create);
+	router.post("/otp/validate", otps.validate);
 
 	app.use("/api/doer", router);
 };
