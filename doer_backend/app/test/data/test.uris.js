@@ -26,6 +26,9 @@ const getMessageByIdUri = "/getMessageById";
 const getMessageByJobIdUri = "/getMessageByJobId";
 const createDoerUri = "/createDoer";
 
+const createOTPUri = "/otp/create";
+const validateOTPUri = "/otp/validate";
+
 module.exports = {
 	getCategoryByIdRequestUri,
 	getCategoryByNameRequestUri,
@@ -54,5 +57,7 @@ module.exports = {
 	createMessageUri,
 	getMessageByIdUri,
 	getMessageByJobIdUri,
-	createDoerUri
+	createDoerUri,
+	createOTPUri,
+	validateOTPUri,
 };
