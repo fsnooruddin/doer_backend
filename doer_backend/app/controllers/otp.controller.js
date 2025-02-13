@@ -1,21 +1,35 @@
 "use strict";
+/**
+ * @namespace OTP
+ */
+
 
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const OTP = db.otps;
 const Op = db.Sequelize.Op;
-//const { job_requestCreateSchema } = require('../schemas/job_request.js');
+//const { OTP_requestCreateSchema } = require('../schemas/OTP_request.js');
 const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 const otpGenerator = require("otp-generator");
 
-// Create and Save a new OTP
+/**
+ * Create a OTP
+ * @param {object} OTP - JSON representing OTP
+ * @param {number} OTP.phone_number - Phone number requesting the OTP
+ * @example
+ * Sample payload:
+ * {
+ *    phone_number: "3032221234"
+ *  }
+ * @memberof OTP
+ */
 async function create(req, res) {
 	console.log("req body in create OTP: ");
 	console.log(req.body);
 
 	// Generate a 6-digit OTP
-	const otp = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
+	const otp = otpGenerator.generate(6, { digits: true, alphabets: true, upperCase: false, specialChars: false });
 
 	const otp_row = {
 		phone_number: req.body.phone_number,
@@ -54,7 +68,19 @@ async function create(req, res) {
 		});
 }
 
-// Find a single OTP with an id
+/**
+ * Validate a OTP
+ * @param {object} OTP - JSON representing OTP
+ * @param {number} OTP.phone_number - Phone number requesting the OTP
+ * @param {string} OTP.otp - OTP to validate
+ * @example
+ * Sample payload:
+ * {
+ *    phone_number: "3032221234",
+ *    otp: "de8jw2"
+ *  }
+ * @memberof OTP
+ */
 async function validate(req, res) {
 	logger.info(req.body);
 	const phone_number = req.body.phone_number;
