@@ -29,6 +29,9 @@ const createDoerUri = "/createDoer";
 const createOTPUri = "/otp/create";
 const validateOTPUri = "/otp/validate";
 
+const createUserUri = "/user/create";
+const getUserByIdUri = "/user/findById";
+
 module.exports = {
 	getCategoryByIdRequestUri,
 	getCategoryByNameRequestUri,
@@ -60,4 +63,6 @@ module.exports = {
 	createDoerUri,
 	createOTPUri,
 	validateOTPUri,
+	createUserUri,
+	getUserByIdUri
 };

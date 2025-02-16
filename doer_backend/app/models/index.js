@@ -15,8 +15,66 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.doers = require("./doer.model.js")(sequelize, Sequelize);
+db.users = require("./user.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
 db.otps = require("./otp.model.js")(sequelize, Sequelize);
+db.badges = require("./badge.model.js")(sequelize, Sequelize);
+
+const UserBadge = sequelize.define("UserBadge", {
+	user_id: {
+		type: Sequelize.INTEGER,
+		references: {
+			model: db.users,
+			key: "user_id",
+		},
+	},
+	badge_id: {
+		type: Sequelize.INTEGER,
+		references: {
+			model: db.badges,
+			key: "badge_id",
+		},
+	},
+});
+
+// Address Model
+const Address = sequelize.define("address", {
+	id: {
+		type: Sequelize.UUID,
+		defaultValue: Sequelize.UUIDV4,
+		primaryKey: true,
+	},
+	user_id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+		references: { model: db.users, key: "user_id" },
+		onDelete: "CASCADE",
+	},
+	type: {
+		type: Sequelize.ENUM("home", "office", "lake_house", "other"),
+		allowNull: false,
+	},
+	street: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	city: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	state: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	country: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	zipCode: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+});
 
 const Job = sequelize.define("job", {
 	job_id: {
@@ -31,6 +89,10 @@ const Job = sequelize.define("job", {
 	user_id: {
 		type: Sequelize.INTEGER,
 		allowNull: false,
+		references: {
+			model: db.users,
+			key: "user_id",
+		},
 	},
 	doer_id: {
 		type: Sequelize.INTEGER,
@@ -61,13 +123,13 @@ const Job = sequelize.define("job", {
 
 const DoerTrip = sequelize.define("doer_trip", {
 	doer_trip_id: {
-		type: Sequelize.DataTypes.INTEGER,
+		type: Sequelize.Sequelize.INTEGER,
 		primaryKey: true,
 		autoIncrement: true,
 		allowNull: false,
 	},
 	doer_id: {
-		type: Sequelize.DataTypes.INTEGER,
+		type: Sequelize.Sequelize.INTEGER,
 		allowNull: false,
 		references: {
 			model: db.doers,
@@ -75,8 +137,7 @@ const DoerTrip = sequelize.define("doer_trip", {
 		},
 	},
 	job_id: {
-		type: Sequelize.DataTypes.INTEGER,
-
+		type: Sequelize.Sequelize.INTEGER,
 		allowNull: false,
 		references: {
 			model: Job,
@@ -84,15 +145,15 @@ const DoerTrip = sequelize.define("doer_trip", {
 		},
 	},
 	description: {
-		type: Sequelize.DataTypes.STRING,
+		type: Sequelize.Sequelize.STRING,
 		allowNull: true,
 	},
 	address: {
-		type: Sequelize.DataTypes.STRING,
+		type: Sequelize.Sequelize.STRING,
 		allowNull: false,
 	},
 	eta: {
-		type: Sequelize.DataTypes.STRING,
+		type: Sequelize.Sequelize.STRING,
 		allowNull: false,
 	},
 	status: {
@@ -104,11 +165,11 @@ const DoerTrip = sequelize.define("doer_trip", {
 
 const DoerTripLocationUpdate = sequelize.define("doer_trip_location_update", {
 	doer_trip_id: {
-		type: Sequelize.DataTypes.INTEGER,
+		type: Sequelize.Sequelize.INTEGER,
 		allowNull: false,
 	},
 	location_update: {
-		type: Sequelize.DataTypes.JSONB,
+		type: Sequelize.Sequelize.JSONB,
 		allowNull: false,
 	},
 });
@@ -249,6 +310,9 @@ const Message = sequelize.define("message", {
 	},
 });
 
+db.users.hasMany(Address, { foreignKey: "user_id", as: "addresses" });
+Address.belongsTo(db.users, { foreignKey: "user_id", as: "user" });
+
 db.jobs = Job;
 db.job_histories = JobHistory;
 db.doer_trips = DoerTrip;
@@ -256,5 +320,6 @@ db.doer_trip_location_updates = DoerTripLocationUpdate;
 db.reviews = Review;
 db.invoices = Invoice;
 db.messages = Message;
+db.addresses = Address;
 
 module.exports = db;

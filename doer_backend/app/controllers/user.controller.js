@@ -8,11 +8,11 @@ const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const User = db.users;
 const Job = db.job_requests;
+const Address = db.addresses;
 const Op = db.Sequelize.Op;
-const { userCreateSchema, userGetSchema } = require("../schemas/user.js");
 const Joi = require("joi");
 const logger = require("../utils/Logger.js");
-const opentelemetry = require("@opentelemetry/api");
+
 
 /**
  * Create a User
@@ -43,34 +43,18 @@ const opentelemetry = require("@opentelemetry/api");
 async function create(req, res) {
 	if (req.body == null) {
 		logger.error("user-controller create call missing payload");
-		res.status(500).send({
-			message: "Error creating User, data is missing",
-		});
-
+		res.status(500).send({message: "Error creating User, data is missing"});
 		return;
 	}
 
-	var data_obj;
 	try {
-		logger.info("req body in create user: " + JSON.stringify(req.body));
-		data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
-	} catch (err) {
-		logger.error("error parsing json + " + err.message);
-		res.status(500).send("Error parsing json body. error = " + err.message);
-		return;
-	}
-
-	data_obj.availability = JSON.stringify(data_obj.availability);
-	data_obj.rating = JSON.stringify(data_obj.rating);
-	try {
-		// Save category in the database
-		const response_data = await User.create(data_obj);
+		// Save user in the database
+		const response_data = await User.create(req.body,  {include: ['addresses']});
 		res.status(200).send(response_data);
+		return;
 	} catch (err) {
 		logger.error("user-controller create call failed. error = " + err.message);
-		res.status(500).send({
-			message: err.message || "Some error occurred while creating the User.",
-		});
+		res.status(500).send({message: "user-controller create call failed. error = " + err.message});
 		return;
 	}
 }
@@ -94,7 +78,10 @@ async function findById(req, res) {
 	}
 
 	logger.info("User-controller findOne id = " + id);
-	const data = await findByIdDBCall(id);
+	const data = await User.findByPk(id,
+	                        {include: [
+                                           {association: 'addresses',}]
+                                           });
 
 	if (data == null) {
 		logger.error("user-controller findById couldn't find user with userId " + id);
@@ -102,11 +89,11 @@ async function findById(req, res) {
 			message: "Error retrieving User with id=" + id,
 		});
 	} else {
+	    logger.info("user-controller findById,  userId " + id + " returning " + JSON.stringify(data));
 		res.status(200).send(data);
 		return;
 	}
 }
-
 
 module.exports = {
 	create,

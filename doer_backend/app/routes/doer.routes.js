@@ -6,6 +6,9 @@ module.exports = (app) => {
 	const reviews = require("../controllers/review.controller.js");
 	const messages = require("../controllers/message.controller.js");
 	const otps = require("../controllers/otp.controller.js");
+	const badges = require("../controllers/badge.controller.js");
+	const image_uploads = require("../controllers/image_upload.controller.js");
+	const users =  require("../controllers/user.controller.js");
 
 	var router = require("express").Router();
 
@@ -47,6 +50,14 @@ module.exports = (app) => {
 
 	router.post("/otp/create", otps.create);
 	router.post("/otp/validate", otps.validate);
+
+    router.post("/badge/create", badges.create);
+	router.post("/badge/get", badges.get);
+
+	router.post("/image/upload", image_uploads.create);
+
+	router.post("/user/create", users.create);
+	router.get("/user/findById", users.findById);
 
 	app.use("/api/doer", router);
 };
