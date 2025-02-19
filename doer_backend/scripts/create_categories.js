@@ -26,7 +26,7 @@ async function rpost(url, dataString) {
 
 // Find a single Doer by services
 async function getParentId(parents) {
-  var uri = "http://127.0.0.1:8080/api/doer/getCategoryByName?name=";
+  var uri = "http://127.0.0.1:8080/api/doer/category/getByName?name=";
   for (let i = 0; i < parents.length; i++) {
     uri = uri + parents[i];
     try {
@@ -51,7 +51,7 @@ async function getParentId(parents) {
 
 // Find a single Doer by services
 async function createCategory(entry) {
-  var uri = "http://127.0.0.1:8080/api/doer/createCategory";
+  var uri = "http://127.0.0.1:8080/api/doer/category/create";
 
   try {
     console.log("create category entry = " + JSON.stringify(entry));

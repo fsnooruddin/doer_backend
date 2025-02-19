@@ -22,7 +22,7 @@ const getDoerTripByJobIdUri = "/trip/getByJobId";
 
 const updateDoerAvailabilityUri = "/updateDoerAvailability";
 
-const createJobRequestUri = "/job/create";
+const createJobUri = "/job/create";
 const acceptJobUri = "/job/accept";
 const startJobUri = "/job/start";
 const completeJobUri = "/job/complete";
@@ -61,7 +61,7 @@ module.exports = {
 	updateDoerTripUri,
 	getDoerTripByJobIdUri,
 	updateDoerAvailabilityUri,
-	createJobRequestUri,
+	createJobUri,
 	createDoerReviewUri,
 	acceptJobUri,
 	startJobUri,

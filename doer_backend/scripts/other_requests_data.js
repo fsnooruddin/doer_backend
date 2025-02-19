@@ -1,19 +1,19 @@
 const createJobRequest_1 = {
-  user_id: "11",
+  user_id: "1",
   location: "[77.6879689, 27.4072289]",
   time: "Sun, 12-5",
   services: "Electrician",
 }
 
 const createJobRequest_2 = {
-  user_id: "21",
+  user_id: "1",
   location: "[37.863516, -122.034904]",
   time: "Sat, 10-11",
   services: "Plumbing",
 }
 
 const createJobRequest_3 = {
-  user_id: "31",
+  user_id: "1",
   location: "[37.863516, -122.034904]",
   time: "Thu, 8-9",
   services: "Flooring",
@@ -25,6 +25,7 @@ const createDoerTrip_1 = {
   description: "Trip to fix sink",
   address: "Flat NO 121 MG road ",
   eta: "22:22",
+  status: "started"
 }
 
 const updateDoerTrip_1 = {
@@ -79,17 +80,47 @@ const updateDoerAvailability_1 = {
                                  }
 
 const createMessage_1 = {
-  "user_id": "11",
+  "user_id": "1",
   "doer_id": "2",
   "job_id": "2",
   "message": "job is going well, no complaints"
 }
 
 const createMessage_2 = {
-  "user_id": "11",
+  "user_id": "1",
   "doer_id": "2",
   "job_id": "1",
   "message": "job sux, never again"
+}
+
+const createUser_1 = {
+  "name": "Bob User",
+  "phone_number": "2029801234",
+  "img_url": "profile.pic",
+  addresses: [
+  		{ type: "home", street: "123 Main St", city: "New York", state: "NY", country: "USA", zipCode: "10001" },
+  		{ type: "office", street: "456 Office Rd", city: "San Francisco", state: "CA", country: "USA", zipCode: "94105" },
+  	],
+}
+
+const createUser_2 = {
+  "name": "Jack User",
+    "phone_number": "7071329077",
+    "img_url": "profile.pic",
+    addresses: [
+    		{ type: "home", street: "123 Main St", city: "New York", state: "NY", country: "USA", zipCode: "10001" },
+    		{ type: "gym", street: "456 Office Rd", city: "San Francisco", state: "CA", country: "USA", zipCode: "94105" },
+    	],
+}
+
+const createUser_3 = {
+  "name": "Susie User",
+    "phone_number": "5101329077",
+    "img_url": "profile.pic",
+    addresses: [
+    		{ type: "home", street: "123 Main St", city: "New York", state: "NY", country: "USA", zipCode: "10001" },
+    		{ type: "office", street: "456 Office Rd", city: "San Francisco", state: "CA", country: "USA", zipCode: "94105" },
+    	],
 }
 
 module.exports = {
@@ -102,5 +133,8 @@ module.exports = {
   createDoerReview_2,
   updateDoerAvailability_1,
   createMessage_1,
-  createMessage_2
+  createMessage_2,
+  createUser_1,
+  createUser_2,
+  createUser_3
 };

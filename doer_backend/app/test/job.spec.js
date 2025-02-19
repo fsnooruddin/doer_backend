@@ -3,6 +3,43 @@ var { expect, jest, test } = require("@jest/globals");
 
 const { reqCreateJobRequest_1, reqCreateJobRequest_2, reqCreateJobRequest_Malformed } = require("./data/job_request.test.data.js");
 
+var {
+getCategoryByIdRequestUri,
+	getCategoryByNameRequestUri,
+	getCategoryTreeRequestUri,
+	getDoerByIdRequestUri,
+	getDoerByServicesRequestUri,
+	getDoerByServicesAndDayRequestUri,
+	getReviewsForDoerRequestUri,
+	getReviewByIdRequestUri,
+	rateDoerRequestUri,
+	createDoerReviewUri,
+	createDoerTripUri,
+	completeDoerTripUri,
+	updateDoerTripUri,
+	getDoerTripByJobIdUri,
+	updateDoerAvailabilityUri,
+	createJobUri,
+	createDoerReviewUri,
+	acceptJobUri,
+	startJobUri,
+	completeJobUri,
+	updateDoerAvailabilityUri,
+	findEligibleDoersUri,
+	createMessageUri,
+	getMessageByIdUri,
+	getMessageByJobIdUri,
+	createDoerUri,
+	createOTPUri,
+	validateOTPUri,
+	createUserUri,
+	getUserByIdUri,
+	createBadgeUri,
+    getBadgeByIdUri,
+    createAddressUri,
+    removeAddressByIdUri
+} = require("./data/test.uris.js");
+
 async function postData(url, data) {
 	try {
 		const response = await request.post(url).send(data).set("Accept", "application/json");
@@ -13,59 +50,59 @@ async function postData(url, data) {
 }
 
 async function createJobSuccess() {
-	const res = await postData("/createJob", reqCreateJobRequest_1);
+	const res = await postData(createJobUri, reqCreateJobRequest_1);
 	expect(res.status).toBe(200);
 	expect(JSON.stringify(res.body)).toContain("job_id");
 }
 
 async function createJobFailure() {
-	const res = await postData("/createJob", reqCreateJobRequest_Malformed);
+	const res = await postData(createJobUri, reqCreateJobRequest_Malformed);
 	expect(res.status).toBe(500);
 	expect(JSON.stringify(res.body)).toContain("message");
 }
 
 async function acceptJobSuccess() {
-	const res = await postData("/acceptJob?doerId=1&jobId=1", "");
+	const res = await postData(acceptJobUri + "?doerId=1&jobId=1", "");
 	expect(res.status).toBe(200);
 }
 
 async function completeJobSuccess() {
-	const res = await postData("/completeJob?doerId=1&jobId=1&duration=120", "");
+	const res = await postData(completeJobUri + "?doerId=1&jobId=1&duration=120", "");
 	expect(res.status).toBe(200);
 }
 
 async function acceptJobFailureMissingDoerId() {
-	const res = await postData("/acceptJob?jobId=1", "");
+	const res = await postData(acceptJobUri + "?jobId=1", "");
 	expect(res.status).toBe(500);
 	expect(JSON.stringify(res.body)).toContain("message");
 }
 
 async function acceptJobFailureMissingJobId() {
-	const res = await postData("/acceptJob?doerId=1", "");
+	const res = await postData(acceptJobUri + "?doerId=1", "");
 	expect(res.status).toBe(500);
 	expect(JSON.stringify(res.body)).toContain("message");
 }
 
 async function acceptJobFailureJobIdNotInteger() {
-	const res = await postData("/acceptJob?doerId=1&jobId=ssjjjss", "");
+	const res = await postData(acceptJobUri + "doerId=1&jobId=ssjjjss", "");
 	expect(res.status).toBe(500);
 	expect(JSON.stringify(res.body)).toContain("message");
 }
 
 async function acceptJobFailureDoerIdNotInteger() {
-	const res = await postData("/acceptJob?doerId=ssjksks&jobId=1", "");
+	const res = await postData(acceptJobUri + "?doerId=ssjksks&jobId=1", "");
 	expect(res.status).toBe(500);
 	expect(JSON.stringify(res.body)).toContain("message");
 }
 
 async function completeJobFailureMissingJobId() {
-	const res = await postData("/completeJob?duration=120", "");
+	const res = await postData(completeJobUri + "?duration=120", "");
 	expect(res.status).toBe(500);
 	expect(JSON.stringify(res.body)).toContain("message");
 }
 
 async function completeJobFailureMissingDuration() {
-	const res = await postData("/completeJob?doerId=1&jobId=1", "");
+	const res = await postData(completeJobUri + "?doerId=1&jobId=1", "");
 	expect(res.status).toBe(500);
 	expect(JSON.stringify(res.body)).toContain("message");
 }

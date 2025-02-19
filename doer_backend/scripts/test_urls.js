@@ -19,7 +19,7 @@ const getDoerTripByJobIdUrl = "http://127.0.0.1:8080/api/doer/trip/getByJobId";
 
 const updateDoerAvailabilityUrl = "http://127.0.0.1:8080/api/doer/updateDoerAvailability";
 
-const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/job/create";
+const createJobUrl = "http://127.0.0.1:8080/api/doer/job/create";
 const acceptJobUrl = "http://127.0.0.1:8080/api/doer/job/accept";
 const startJobUrl = "http://127.0.0.1:8080/api/doer/job/start";
 const completeJobUrl = "http://127.0.0.1:8080/api/doer/job/complete";

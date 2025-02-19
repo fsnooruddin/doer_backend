@@ -48,6 +48,7 @@ async function main() {
 		entry.minimum_charges = entry.min_charges;
 		createDoer(entry);
 	}
+
 }
 
 main();
