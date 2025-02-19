@@ -22,32 +22,31 @@ module.exports = (app) => {
 	router.post("/updateDoerAvailability", doers.updateAvailability);
     router.get("/doer/getDoerById", doers.findById);
 
-	router.post("/reviewDoer", reviews.create);
-	router.get("/getReviewById", reviews.findById);
-	router.get("/getReviewsForDoer", reviews.findByDoerId);
-    router.get("/review/getReviewById", reviews.findById);
+	router.post("/review/create", reviews.create);
+	router.get("/review/getById", reviews.findById);
+	router.get("/review/getByDoerId", reviews.findByDoerId);
 
-	router.post("/createJob", jobs.create);
-	router.get("/findEligibleDoers", jobs.findEligibleDoers);
-	router.post("/acceptJob", jobs.acceptJob);
-	router.post("/startJob", jobs.startJob);
-	router.post("/completeJob", jobs.completeJob);
-	router.post("/generateInvoice", jobs.generateInvoice);
-    router.post("/job/startJob", jobs.startJob);
+	router.post("/job/create", jobs.create);
+	router.get("/job/findEligibleDoers", jobs.findEligibleDoers);
+	router.post("/job/accept", jobs.acceptJob);
+	router.post("/job/start", jobs.startJob);
+	router.post("/job/complete", jobs.completeJob);
+	router.post("/job/generateInvoice", jobs.generateInvoice);
+
 
 	router.post("/trip/create", doer_trips.startDoerTrip);
 	router.post("/completeDoerTrip", doer_trips.completeDoerTrip);
 	router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);
 	router.get("/getDoerTripByJobId", doer_trips.getDoerTripByJobId);
 
-	router.post("/createCategory", categories.create);
-	router.get("/getCategoryById", categories.findOneById);
-	router.get("/getCategoryByName", categories.findOneByName);
-	router.get("/getCategoryTree", categories.getCategoryTree);
+	router.post("/category/create", categories.create);
+	router.get("/category/getById", categories.findOneById);
+	router.get("/category/getByName", categories.findOneByName);
+	router.get("/category/getTree", categories.getCategoryTree);
 
-	router.post("/createMessage", messages.create);
-	router.get("/getMessageById", messages.findById);
-	router.get("/getMessageByJobId", messages.findByJobId);
+	router.post("/message/create", messages.create);
+	router.get("/message/getById", messages.findById);
+	router.get("/message/getMessagesForJob", messages.findByJobId);
 
 	router.post("/otp/create", otps.create);
 	router.post("/otp/validate", otps.validate);

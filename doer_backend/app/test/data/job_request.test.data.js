@@ -1,5 +1,5 @@
 const reqCreateJobRequest_1 = {
-  "user_id": "11",
+  "user_id": "3",
   "location": "94588",
   "time": "M, 12-5",
    "services": "Electrician"
