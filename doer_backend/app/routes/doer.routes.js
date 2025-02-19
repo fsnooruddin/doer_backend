@@ -34,7 +34,7 @@ module.exports = (app) => {
 	router.post("/generateInvoice", jobs.generateInvoice);
     router.post("/job/startJob", jobs.startJob);
 
-	router.post("/createDoerTrip", doer_trips.startDoerTrip);
+	router.post("/trip/create", doer_trips.startDoerTrip);
 	router.post("/completeDoerTrip", doer_trips.completeDoerTrip);
 	router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);
 	router.get("/getDoerTripByJobId", doer_trips.getDoerTripByJobId);
@@ -52,7 +52,7 @@ module.exports = (app) => {
 	router.post("/otp/validate", otps.validate);
 
     router.post("/badge/create", badges.create);
-	router.post("/badge/get", badges.get);
+	router.get("/badge/findById", badges.get);
 
 	router.post("/image/upload", image_uploads.create);
 
