@@ -77,10 +77,9 @@ describe("JOB API Tests -- Successful calls", () => {
 });
 
 describe("JOB API Tests -- Failure calls", () => {
-    test("Fail to create a new Job Request, malformed json body", createJobFailure);
-    test("Fail to create a new Job Request, missing json body", createJobFailure);
+	test("Fail to create a new Job Request, malformed json body", createJobFailure);
+	test("Fail to create a new Job Request, missing json body", createJobFailure);
 	test("Fail to complete Job, missing JobId ", completeJobFailureMissingJobId);
 	test("Fail to complete Job, missing Duration ", completeJobFailureMissingDuration);
 	test("Fail to accept a Job ", acceptJobSuccess);
-
 });

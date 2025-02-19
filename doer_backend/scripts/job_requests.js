@@ -75,7 +75,7 @@ async function makePostRequests() {
     	console.log("\n\n\n **************** \n\n\n");
 
     	var response_data;
-    	response_data = await rpost(acceptJobUrl  + "?doerId=17&jobId=2", null);
+    	response_data = await rpost(acceptJobUrl  + "?doerId=1&jobId=2", null);
     	console.log("acceptJob " + " response = " + JSON.stringify(response_data));
     	console.log("\n\n\n **************** \n\n\n");
 

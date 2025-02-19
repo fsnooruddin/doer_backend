@@ -8,6 +8,7 @@ const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Doer = db.doers;
 const Job = db.job_requests;
+const Invoice = db.invoices;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
 const Joi = require("joi");
@@ -360,7 +361,7 @@ async function rating(req, res) {
 	}
 	logger.info("Doer-controller rating doer id = " + id + "   rating = " + req.query.rating);
 	const doer = await findByIdDBCall(id);
-
+    logger.info("Doer-controller doer id = " + id + "   returning = " + JSON.stringify(data));
 	if (doer == null) {
 		logger.error("doer-controller rate doer couldn't find doer with doerId " + id);
 		res.status(500).send({ message: "doer-controller rate doer Error retrieving Doer with id=" + id });
@@ -389,18 +390,20 @@ async function rating(req, res) {
 
 async function getHistory(req, res) {
 	const id = req.query.id;
-	logger.info("User-controller getHistory id = " + id);
+	logger.info("Doer-controller getHistory id = " + id);
 
 	const doer = await Doer.findOne({
 		where: { doer_id: id },
 		attributes: { exclude: ["updatedAt"] },
 	})
 		.then((data) => {
-			return data;
+		    const invoices =  Invoice.findAll({where: { doer_id: id }});
+		    logger.info("Doer-controller getHistory invoices =  = " + JSON.stringify(invoices));
+			return res.status(500).send(data);
 		})
 		.catch((err) => {
 			res.status(500).send({
-				message: "Error retrieving doer for rate with doer id=" + doerId + " error: " + err.message,
+				message: "Error retrieving doer for rate with doer id=" + id + " error: " + err.message,
 			});
 		});
 
@@ -441,6 +444,11 @@ async function getHistory(req, res) {
 	*/
 }
 
+async function getUpcomingJobs(req, res) {
+	const id = req.query.id;
+	logger.info("Doer-controller getHistory id = " + id);
+}
+
 module.exports = {
 	create,
 	findById,
@@ -451,4 +459,5 @@ module.exports = {
 	getHistory,
 	rating,
 	updateAvailability,
+	getUpcomingJobs
 };

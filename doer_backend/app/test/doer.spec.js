@@ -35,8 +35,8 @@ describe("DOER API Tests -- Successful calls", () => {
 	});
 
 	test("Search Doers by Service", async () => {
-		//	const res = await getData(getDoerByServicesRequestUrl + "?services=electric");
-		const res = await getData("/getDoerByServices" + "?services=electric");
+			const res = await getData(getDoerByServicesRequestUri + "?services=electric");
+
 	//	console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");

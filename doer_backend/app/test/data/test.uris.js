@@ -2,21 +2,24 @@ const getCategoryByIdRequestUri = "/category/getById";
 const getCategoryByNameRequestUri = "/category/getByName";
 const getCategoryTreeRequestUri = "/category/getTree";
 
-const getDoerByIdRequestUri = "/getDoerById";
-const getDoerByServicesRequestUri = "/getDoerByServices";
-const getDoerByServicesAndDayRequestUri = "/getDoerByServicesAndDay";
+const createDoerUri = "/doer/create";
+const getDoerByIdRequestUri = "/doer/getById";
+const getDoerByServicesRequestUri = "/doer/getByServices";
+const getDoerByServicesAndDayRequestUri = "/doer/getByServicesAndDay";
+const rateDoerRequestUri = "/doer/rate";
 
 const createDoerReviewUri = "/review/create";
 const getReviewsForDoerRequestUri = "/review/getByDoerId";
 const getReviewByIdRequestUri = "/review/getById";
 
 
-const rateDoerRequestUri = "/rateDoer";
+
 
 const createDoerTripUri = "/trip/create";
-const completeDoerTripUri = "/completeDoerTrip";
-const updateDoerTripUri = "/updateDoerTripLocation";
-const getDoerTripByJobIdUri = "/getDoerTripByJobId";
+const completeDoerTripUri = "/trip/complete";
+const updateDoerTripUri = "/trip/updateLocation";
+const getDoerTripByJobIdUri = "/trip/getByJobId";
+
 const updateDoerAvailabilityUri = "/updateDoerAvailability";
 
 const createJobRequestUri = "/job/create";
@@ -28,7 +31,7 @@ const findEligibleDoersUri = "/job/findEligibleDoers";
 const createMessageUri = "/message/create";
 const getMessageByIdUri = "/message/getById";
 const getMessageByJobIdUri = "/message/getMessagesForJob";
-const createDoerUri = "/createDoer";
+
 
 const createOTPUri = "/otp/create";
 const validateOTPUri = "/otp/validate";

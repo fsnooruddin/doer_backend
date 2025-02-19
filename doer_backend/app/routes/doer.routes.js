@@ -13,14 +13,13 @@ module.exports = (app) => {
 
 	var router = require("express").Router();
 
-	router.post("/createDoer", doers.create);
-	router.get("/getDoerById", doers.findById);
-	router.get("/getDoerByServices", doers.findByServices);
-	router.get("/getDoerByServicesAndDay", doers.findByServicesAndDay);
-	router.get("/getDoerHistory", doers.getHistory);
-	router.post("/rateDoer", doers.rating);
-	router.post("/updateDoerAvailability", doers.updateAvailability);
-    router.get("/doer/getDoerById", doers.findById);
+	router.post("/doer/create", doers.create);
+	router.get("/doer/getById", doers.findById);
+	router.get("/doer/getByServices", doers.findByServices);
+	router.get("/doer/getByServicesAndDay", doers.findByServicesAndDay);
+	router.get("/doer/getHistory", doers.getHistory);
+	router.post("/doer/rate", doers.rating);
+	router.post("/doer/updateAvailability", doers.updateAvailability);
 
 	router.post("/review/create", reviews.create);
 	router.get("/review/getById", reviews.findById);
@@ -35,9 +34,9 @@ module.exports = (app) => {
 
 
 	router.post("/trip/create", doer_trips.startDoerTrip);
-	router.post("/completeDoerTrip", doer_trips.completeDoerTrip);
-	router.post("/updateDoerTripLocation", doer_trips.updateDoerTripLocation);
-	router.get("/getDoerTripByJobId", doer_trips.getDoerTripByJobId);
+	router.post("/trip/complete", doer_trips.completeDoerTrip);
+	router.post("/trip/updateLocation", doer_trips.updateDoerTripLocation);
+	router.get("/trip/getByJobId", doer_trips.getDoerTripByJobId);
 
 	router.post("/category/create", categories.create);
 	router.get("/category/getById", categories.findOneById);
