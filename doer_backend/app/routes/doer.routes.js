@@ -9,6 +9,7 @@ module.exports = (app) => {
 	const badges = require("../controllers/badge.controller.js");
 	const image_uploads = require("../controllers/image_upload.controller.js");
 	const users =  require("../controllers/user.controller.js");
+    const addresses =  require("../controllers/address.controller.js");
 
 	var router = require("express").Router();
 
@@ -58,6 +59,9 @@ module.exports = (app) => {
 
 	router.post("/user/create", users.create);
 	router.get("/user/findById", users.findById);
+
+    router.post("/address/create", addresses.create);
+	router.post("/address/remove", addresses.remove);
 
 	app.use("/api/doer", router);
 };
