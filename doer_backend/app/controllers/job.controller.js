@@ -356,10 +356,10 @@ async function generateInvoice(req, res) {
 	console.log(timeRequested);
 
 	var objs = JSON.parse(doer.availability);
-	console.log("availability = " + objs);
-	console.log("availability = " + JSON.stringify(objs));
-	console.log("one slot = " + JSON.stringify(objs.slots[0]));
-	console.log("slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
+	logger.info("Job-controlleravailability = " + objs);
+	logger.info("Job-controller availability = " + JSON.stringify(objs));
+	logger.info("Job-controller one slot = " + JSON.stringify(objs.slots[0]));
+	logger.info("Job-controller slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
 	//console.log(JSON.parse (objs));
 	var hourly_rate = Utils.getRateFromAvailabilitySlot(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
 	if (hourly_rate == -1) {
@@ -371,7 +371,7 @@ async function generateInvoice(req, res) {
 
 	// Create a completed_job
 	const cost = job.duration * hourly_rate;
-	console.log("Doer-controller completeJob total cost is duration * rate: " + job.duration + " * " + hourly_rate);
+	logger.info("Job-controller Job-controller completeJob total cost is duration * rate: " + job.duration + " * " + hourly_rate);
 
 	const job_invoice = {
 		doer_id: job.doer_id,
@@ -382,20 +382,22 @@ async function generateInvoice(req, res) {
 		location: job.location,
 	};
 
-	console.log("invoive object is = " + JSON.stringify(job_invoice));
+	logger.info("Job-controller Job-controller completeJob total cost is duration * rate: " + job.duration + " * " + hourly_rate);
 
-	// Save completed_job] in the database
-	JobInvoices.create(job_invoice)
-		.then((data) => {
-			res.send(data);
-			return;
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: err.message || "Some error occurred while generating the job invoice.",
-			});
-			return;
+	try {
+		// Save completed_job] in the database
+
+		const data = JobInvoices.create(job_invoice);
+		logger.info("Job-controller Job-controller completeJob invoice create success: " + JSON.stringify(data));
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Job-controller Job-controller completeJob creating invoice failed. error =  " + err.message);
+		res.status(500).send({
+			message: err.message || "Some error occurred while generating the job invoice.",
 		});
+		return;
+	}
 }
 
 /**

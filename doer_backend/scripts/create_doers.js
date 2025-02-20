@@ -4,14 +4,14 @@ const fs = require("fs");
 const axios = require("axios");
 
 async function rpost(url, dataString) {
-	const response = await axios.post("http://127.0.0.1:8080/api/doer/createDoer", dataString);
+	const response = await axios.post("http://127.0.0.1:8080/api/doer/doer/create", dataString);
 
 	return response.data;
 }
 
 // Find a single Doer by services
 async function createDoer(entry) {
-	var uri = "http://127.0.0.1:8080/api/doer/createDoer";
+	var uri = "http://127.0.0.1:8080/api/doer/doer/create";
 
 	try {
 		//  console.log("create Doer entry = " + JSON.stringify(entry));

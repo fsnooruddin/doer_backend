@@ -163,3 +163,22 @@ function getRateFromAvailabilitySlot(reqSlotDay, reqSlotTime, avail) {
 	logger.warn("getRateFromAvailabilitySlot -- reqSlot: " + reqSlotDay + " , " + reqSlotTime + " returning rate = " + rate);
 	return rate;
 }
+
+function validateStringParam(paramName, paramValue) {
+	if (paramValue == null || typeof paramValue === "string") {
+		logger.error(paramName + " not an STRING " + paramValue);
+		return false;
+	} else {
+	    return true;
+	}
+}
+
+function validateIntegerParam(paramName, paramValue) {
+	if (paramValue == null || !isNaN(value) &&
+                                       parseInt(Number(value)) == value) {
+		logger.error(paramName + " not an INTEGER " + paramValue);
+		return false;
+	} else {
+	    return true;
+	}
+}

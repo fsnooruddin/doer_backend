@@ -36,21 +36,6 @@ async function create(req, res) {
 		otp: otp,
 	};
 
-	/*
-    const validation = doerCreateSchema.validate(data_obj);
-
-    if(validation.error === undefined) {
-        console.log("doer schema validation succeeded");
-    } else {
-        console.log("\t doer schema validation failed");
-        console.log(validation.error.details[0].OTP);
-        res.status(400).send({
-                    OTP: "input data failed doer scheme validation: " + validation.error.details[0].OTP
-                });
-        return;
-    }
-*/
-
 	console.log("new OTP in create OTP: ");
 	console.log(otp_row);
 
