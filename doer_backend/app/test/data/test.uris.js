@@ -37,10 +37,10 @@ const createOTPUri = "/otp/create";
 const validateOTPUri = "/otp/validate";
 
 const createUserUri = "/user/create";
-const getUserByIdUri = "/user/findById";
+const getUserByIdUri = "/user/getById";
 
 const createBadgeUri = "/badge/create";
-const getBadgeByIdUri = "/badge/findById";
+const getBadgeByIdUri = "/badge/getById";
 
 const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";

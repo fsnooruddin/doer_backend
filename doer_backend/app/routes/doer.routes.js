@@ -1,4 +1,5 @@
 module.exports = (app) => {
+
 	const doers = require("../controllers/doer.controller.js");
 	const jobs = require("../controllers/job.controller.js");
 	const doer_trips = require("../controllers/doer_trip.controller.js");
@@ -51,12 +52,12 @@ module.exports = (app) => {
 	router.post("/otp/validate", otps.validate);
 
     router.post("/badge/create", badges.create);
-	router.get("/badge/findById", badges.get);
+	router.get("/badge/getById", badges.get);
 
 	router.post("/image/upload", image_uploads.create);
 
 	router.post("/user/create", users.create);
-	router.get("/user/findById", users.findById);
+	router.get("/user/getById", users.findById);
 
     router.post("/address/create", addresses.create);
 	router.post("/address/remove", addresses.remove);
