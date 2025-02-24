@@ -46,13 +46,14 @@ module.exports = (app) => {
 
 	router.post("/message/create", messages.create);
 	router.get("/message/getById", messages.findById);
-	router.get("/message/getMessagesForJob", messages.findByJobId);
+	router.get("/message/getByJobId", messages.findByJobId);
 
 	router.post("/otp/create", otps.create);
 	router.post("/otp/validate", otps.validate);
 
     router.post("/badge/create", badges.create);
 	router.get("/badge/getById", badges.get);
+	router.post("/badge/assignBadgeToUser", badges.assignBadgeToUser);
 
 	router.post("/image/upload", image_uploads.create);
 

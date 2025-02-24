@@ -10,7 +10,6 @@ const User = db.users;
 const Job = db.job_requests;
 const Address = db.addresses;
 const Op = db.Sequelize.Op;
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
 
@@ -19,31 +18,30 @@ const logger = require("../utils/Logger.js");
  * @param {object} user - JSON representing User
  * @param {string} user.name - Name of User
  * @param {string} user.phone_number - Phone number of User
- * @param {string} user.location - Address of user, e.g.
+ * @param {string} user.addresses - Address of user, e.g.
  * ```
- * "{'2837 Whipple Rd', 'Ste A', 'Union City , CA 94587'}"
+ * { type: "home", street: "123 Main St", city: "New York", state: "NY", country: "USA", zipCode: "10001" },
  * ```
- * @param {string} doer.img_url - URL for User
+ * @param {string} user.img_url - URL for User
  * @return {string|null} error string - null if success, error details if failure
  * @example
  * Sample Payload:
- *  {
- *      "doer_id": 2,
- *      "name": "TD West Electric",
- *      "phone_number": "(510) 342-2818",
- *      "location": "{city: Union City ,state: CA,zip_code: 94587,address: ['2837 Whipple Rd', 'Ste A', 'Union City , CA 94587'],coordinates: {'latitude': 37.6059449, 'longitude': -122.0708683}}",
- *      "services": "[{'alias': 'electricians', 'title': 'Electricians'}, {'alias': 'lighting', 'title': 'Lighting Fixtures & Equipment'}]",
- *      "availability": "[{\"day\":\"Fri\",\"time\":\"10-13\",\"rate\":99,\"location\":\"94588\"},{\"day\":\"Sat\",\"time\":\"9-17\",\"rate\":80,\"location\":\"94588\"}]",
- *      "rating": 5.8,
- *      "minimum_charges": 97,
- *      "img_url": "https://s3-media2.fl.yelpcdn.com/bphoto/NLxw4Bt_7-clB1mIm0n31Q/o.jpg"
- *  }
+ * {
+ *      "name": "Susie User",
+ *        "phone_number": "5101329077",
+ *        "img_url": "profile.pic",
+ *        addresses: [
+ *       		{ type: "home", street: "123 Main St", city: "New York", state: "NY", country: "USA", zipCode: "10001" },
+ *        		{ type: "office", street: "456 Office Rd", city: "San Francisco", state: "CA", country: "USA", zipCode: "94105" },
+ *       	],
+ *    }
  * @memberof User
  */
 async function create(req, res) {
-	if (req.body == null) {
-		logger.error("user-controller create call missing payload");
-		res.status(500).send({message: "Error creating User, data is missing"});
+
+        if (Object.keys(req.body).length === 0) {
+		logger.error("user-controller create call missing payload: " + JSON.stringify(req.body));
+		res.status(400).send({message: "Error creating User, data is missing"});
 		return;
 	}
 
@@ -80,7 +78,7 @@ async function findById(req, res) {
 	logger.info("User-controller findOne id = " + id);
 	const data = await User.findByPk(id,
 	                        {include: [
-                                           {association: 'addresses',}]
+                                           {association: 'addresses',},  {association: 'badges',}]
                                            });
 
 	if (data == null) {

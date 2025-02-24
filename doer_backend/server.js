@@ -45,6 +45,7 @@ db.ratings = require("./app/models/rating.model.js")(db.sequelize, db.Sequelize)
 db.invoices = require("./app/models/invoice.model.js")(db.sequelize, db.Sequelize);
 db.messages = require("./app/models/message.model.js")(db.sequelize, db.Sequelize);
 db.addresses = require("./app/models/address.model.js")(db.sequelize, db.Sequelize);
+db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
 
 db.users.hasMany(db.addresses, { foreignKey: "user_id", as: "addresses" });
 db.addresses.belongsTo(db.users, { foreignKey: "user_id", as: "users" });
@@ -61,9 +62,15 @@ db.ratings.hasOne(db.doers,  { foreignKey: "doer_id", as: "doers" });
 db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
 db.reviews.hasOne(db.doers,  { foreignKey: "doer_id", as: "doers" });
 
+//db.users.hasMany(db.badges,  { through: db.user_badge_associations});
+db.badges.belongsToMany(db.users,  { through: db.user_badge_associations, foreignKey: 'badge_id', as: "badges", otherKey: 'user_id'});
+db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: 'badge_id', otherKey: 'user_id'});
+//db.user_badge_associations.belongsTo(db.users);
+//db.badges.belongsToMany(db.user_badge_associations);
+//db.user_badge_associations.belongsTo(db.badges);
 
 	db.sequelize
-		.sync({ force: true })
+		.sync({ force: forceFlag })
 		.then(() => {
 			logger.info("Synced db.");
 		})
