@@ -30,7 +30,7 @@ var {
 	getUserByJobIdUri,
 	createDoerUri,
 	createUserUri,
-	getUserByIdUri
+	getUserByIdUri,
 } = require("./data/test.uris.js");
 
 async function getData(url) {
@@ -50,11 +50,11 @@ describe("USER API Tests -- Successful calls", () => {
 	});
 
 	test("Get User by ID", async () => {
-    		const res = await request.get(getUserByIdUri + "?id=1");
-    		//  console.log(res.body);
-    		expect(res.status).toBe(200);
-    		expect(JSON.stringify(res.body)).toContain("user_id");
-    	});
+		const res = await request.get(getUserByIdUri + "?id=1");
+		//  console.log(res.body);
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("user_id");
+	});
 });
 
 describe("USER API Tests -- UnSuccessful calls", function () {});

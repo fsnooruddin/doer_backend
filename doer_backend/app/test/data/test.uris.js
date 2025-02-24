@@ -30,7 +30,7 @@ const findEligibleDoersUri = "/job/findEligibleDoers";
 
 const createMessageUri = "/message/create";
 const getMessageByIdUri = "/message/getById";
-const getMessageByJobIdUri = "/message/getMessagesForJob";
+const getMessageByJobIdUri = "/message/getByJobId";
 
 
 const createOTPUri = "/otp/create";
@@ -41,6 +41,7 @@ const getUserByIdUri = "/user/getById";
 
 const createBadgeUri = "/badge/create";
 const getBadgeByIdUri = "/badge/getById";
+const assignBadgeUri = "/badge/assignBadgeToUser";
 
 const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";
@@ -78,6 +79,7 @@ module.exports = {
 	getUserByIdUri,
 	createBadgeUri,
     getBadgeByIdUri,
+    assignBadgeUri,
     createAddressUri,
     removeAddressByIdUri
 };

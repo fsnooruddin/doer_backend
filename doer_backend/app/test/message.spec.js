@@ -68,27 +68,26 @@ describe("MESSAGE API Tests -- UnSuccessful calls", function () {
 	test("Get Message by ID, missing ID", async () => {
 		const res = await request.get(getMessageByIdUri);
 
-		expect(res.status).toBe(500);
+		expect(res.status).toBe(400);
 	});
 
 	test("Get Message by ID,Message ID not INTEGER", async () => {
 		const res = await request.get(getMessageByIdUri + "?id=shshhs");
 		//  console.log(res.body);
-		expect(res.status).toBe(500);
+		expect(res.status).toBe(400);
 		expect(JSON.stringify(res.body)).toContain("message");
 	});
 
 	test("Get Message by JOB ID, missing JOB ID", async () => {
 		const res = await request.get(getMessageByJobIdUri);
 		//  console.log(res.body);
-		expect(res.status).toBe(500);
+		expect(res.status).toBe(400);
 		expect(JSON.stringify(res.body)).toContain("message");
 	});
 
 	test("Get Message by JOB ID, JOB ID not INTEGER", async () => {
 		const res = await request.get(getMessageByJobIdUri + "?jobId=1ssweeds");
-		//  console.log(res.body);
-		expect(res.status).toBe(500);
+		expect(res.status).toBe(400);
 		expect(JSON.stringify(res.body)).toContain("message");
 	});
 });

@@ -46,16 +46,19 @@ async function getData(url) {
 	}
 }
 
+let globalAddressId = "";
+
 describe("ADDRESS API Tests -- Successful calls", () => {
 	test("Create a new address", async () => {
 		const res = await request.post(createAddressUri).send(reqCreateAddress_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("address_id");
+		globalAddressId = res.body.address_id;
 	});
 
 	test("Remove a new address", async () => {
 		const res = await request
-			.post(removeAddressByIdUri + "?id=ac969bd3-0741-4f75-9fc2-72a132361ea0")
+			.post(removeAddressByIdUri + "?id=" + globalAddressId)
 			.send()
 			.set("Accept", "application/json");
 		expect(res.status).toBe(200);
@@ -63,13 +66,13 @@ describe("ADDRESS API Tests -- Successful calls", () => {
 });
 
 describe("ADDRESS API Tests -- UnSuccessful calls", function () {
-	/*
-	test("Get Address by ID, missing ID", async () => {
-		const res = await request.get(getAddressByIdUri);
+	test("Create Address, missing req body", async () => {
+		const res = await request.post(createAddressUri);
 
-		expect(res.status).toBe(500);
+		expect(res.status).toBe(400);
 	});
 
+	/*
 	test("Get Address by ID,Address ID not INTEGER", async () => {
 		const res = await request.get(getAddressByIdUri + "?id=shshhs");
 		//  console.log(res.body);
