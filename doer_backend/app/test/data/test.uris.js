@@ -27,6 +27,7 @@ const acceptJobUri = "/job/accept";
 const startJobUri = "/job/start";
 const completeJobUri = "/job/complete";
 const findEligibleDoersUri = "/job/findEligibleDoers";
+const addCostToJobUri = "/job/addCost";
 
 const createMessageUri = "/message/create";
 const getMessageByIdUri = "/message/getById";
@@ -67,6 +68,7 @@ module.exports = {
 	acceptJobUri,
 	startJobUri,
 	completeJobUri,
+	addCostToJobUri,
 	updateDoerAvailabilityUri,
 	findEligibleDoersUri,
 	createMessageUri,

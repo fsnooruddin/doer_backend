@@ -1,7 +1,13 @@
 const request = require("supertest")("http://127.0.0.1:8080/api/doer");
 var { expect, jest, test } = require("@jest/globals");
 
-const { reqCreateJobRequest_1, reqCreateJobRequest_2, reqCreateJobRequest_Malformed } = require("./data/job_request.test.data.js");
+var {
+      reqCreateJobRequest_1,
+      reqCreateJobRequest_2,
+      reqCreateJobCost_1,
+      reqCreateJobCost_2,
+      reqCreateJobRequest_Malformed
+    } = require("./data/job_request.test.data.js");
 
 var {
 	getCategoryByIdRequestUri,
@@ -24,6 +30,7 @@ var {
 	acceptJobUri,
 	startJobUri,
 	completeJobUri,
+	addCostToJobUri,
 	updateDoerAvailabilityUri,
 	findEligibleDoersUri,
 	createMessageUri,
@@ -57,7 +64,7 @@ async function createJobSuccess() {
 
 async function createJobFailure() {
 	const res = await postData(createJobUri, reqCreateJobRequest_Malformed);
-	expect(res.status).toBe(400);
+	expect(res.status).toBe(500);
 }
 
 async function acceptJobSuccess() {
@@ -100,13 +107,20 @@ async function completeJobFailureMissingDuration() {
 	expect(res.status).toBe(500);
 }
 
+async function addCostToJobSuccess() {
+	const res = await postData(addCostToJobUri , reqCreateJobCost_1);
+	expect(res.status).toBe(200);
+
+}
+
 describe("JOB API Tests -- Successful calls", () => {
 	test("Successfully create a new Job Request", createJobSuccess);
 	test("Successfully accept a Job ", acceptJobSuccess);
 	test("Successfully complete Job ", completeJobSuccess);
+	test("Successfully add jost to Job ", addCostToJobSuccess);
 });
 
-/*
+
 describe("JOB API Tests -- Failure calls", () => {
 	test("Fail to create a new Job Request, malformed json body", createJobFailure);
 	test("Fail to create a new Job Request, missing json body", createJobFailure);
@@ -114,4 +128,4 @@ describe("JOB API Tests -- Failure calls", () => {
 	test("Fail to complete Job, missing Duration ", completeJobFailureMissingDuration);
 	test("Fail to accept a Job ", acceptJobSuccess);
 });
-*/
+

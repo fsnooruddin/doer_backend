@@ -18,7 +18,22 @@ const reqCreateJobRequest_Malformed = {
   "services": "Landscaping"
 }
 
+const reqCreateJobCost_1 = {
+  "job_id": "2",
+  "cost": "100",
+  "description": "parts fr the sink"
+}
+
+const reqCreateJobCost_2 = {
+  "job_id": "2",
+  "cost": "100",
+  "description": "more parts for the sink"
+}
+
 module.exports = {
   reqCreateJobRequest_1,
-  reqCreateJobRequest_2
+  reqCreateJobRequest_2,
+  reqCreateJobCost_1,
+  reqCreateJobCost_2,
+  reqCreateJobRequest_Malformed
 }
