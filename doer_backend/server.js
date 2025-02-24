@@ -29,45 +29,42 @@ app.listen(PORT, () => {
 module.exports = app;
 
 function init_db() {
+	db.doers = require("./app/models/doer.model.js")(db.sequelize, db.Sequelize);
+	db.users = require("./app/models/user.model.js")(db.sequelize, db.Sequelize);
+	db.categories = require("./app/models/category.model.js")(db.sequelize, db.Sequelize);
+	db.otps = require("./app/models/otp.model.js")(db.sequelize, db.Sequelize);
+	db.badges = require("./app/models/badge.model.js")(db.sequelize, db.Sequelize);
+	db.jobs = require("./app/models/job.model.js")(db.sequelize, db.Sequelize);
+	db.job_histories = require("./app/models/job_history.model.js")(db.sequelize, db.Sequelize);
+	db.doer_trips = require("./app/models/doer_trip.model.js")(db.sequelize, db.Sequelize);
+	db.doer_trip_location_updates = require("./app/models/doer_trip_location_update.model.js")(db.sequelize, db.Sequelize);
+	db.reviews = require("./app/models/review.model.js")(db.sequelize, db.Sequelize);
+	db.ratings = require("./app/models/rating.model.js")(db.sequelize, db.Sequelize);
+	db.invoices = require("./app/models/invoice.model.js")(db.sequelize, db.Sequelize);
+	db.messages = require("./app/models/message.model.js")(db.sequelize, db.Sequelize);
+	db.addresses = require("./app/models/address.model.js")(db.sequelize, db.Sequelize);
+	db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
+	db.job_costs = require("./app/models/job_cost.model.js")(db.sequelize, db.Sequelize);
 
+	db.users.hasMany(db.addresses, { foreignKey: "user_id", as: "addresses" });
+	db.addresses.belongsTo(db.users, { foreignKey: "user_id", as: "users" });
 
-db.doers = require("./app/models/doer.model.js")(db.sequelize, db.Sequelize);
-db.users = require("./app/models/user.model.js")(db.sequelize, db.Sequelize);
-db.categories = require("./app/models/category.model.js")(db.sequelize, db.Sequelize);
-db.otps = require("./app/models/otp.model.js")(db.sequelize, db.Sequelize);
-db.badges = require("./app/models/badge.model.js")(db.sequelize, db.Sequelize);
-db.jobs = require("./app/models/job.model.js")(db.sequelize, db.Sequelize);
-db.job_histories = require("./app/models/job_history.model.js")(db.sequelize, db.Sequelize);
-db.doer_trips = require("./app/models/doer_trip.model.js")(db.sequelize, db.Sequelize);
-db.doer_trip_location_updates = require("./app/models/doer_trip_location_update.model.js")(db.sequelize, db.Sequelize);
-db.reviews = require("./app/models/review.model.js")(db.sequelize, db.Sequelize);
-db.ratings = require("./app/models/rating.model.js")(db.sequelize, db.Sequelize);
-db.invoices = require("./app/models/invoice.model.js")(db.sequelize, db.Sequelize);
-db.messages = require("./app/models/message.model.js")(db.sequelize, db.Sequelize);
-db.addresses = require("./app/models/address.model.js")(db.sequelize, db.Sequelize);
-db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
+	db.users.hasMany(db.jobs, { foreignKey: "user_id", as: "jobs" });
+	db.jobs.hasOne(db.users, { foreignKey: "user_id", as: "users" });
 
-db.users.hasMany(db.addresses, { foreignKey: "user_id", as: "addresses" });
-db.addresses.belongsTo(db.users, { foreignKey: "user_id", as: "users" });
+	db.doers.hasMany(db.jobs, { foreignKey: "doer_id", as: "jobs" });
+	db.jobs.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
-db.users.hasMany(db.jobs, { foreignKey: "user_id", as: "jobs" });
-db.jobs.hasOne(db.users,  { foreignKey: "user_id", as: "users" });
+	db.doers.hasMany(db.ratings, { foreignKey: "doer_id", as: "ratings" });
+	db.ratings.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
-db.doers.hasMany(db.jobs, { foreignKey: "doer_id", as: "jobs" });
-db.jobs.hasOne(db.doers,  { foreignKey: "doer_id", as: "doers" });
+	db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
+	db.reviews.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
-db.doers.hasMany(db.ratings, { foreignKey: "doer_id", as: "ratings" });
-db.ratings.hasOne(db.doers,  { foreignKey: "doer_id", as: "doers" });
+	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id", as: "badges", otherKey: "user_id" });
+	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "badge_id", otherKey: "user_id" });
 
-db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
-db.reviews.hasOne(db.doers,  { foreignKey: "doer_id", as: "doers" });
-
-//db.users.hasMany(db.badges,  { through: db.user_badge_associations});
-db.badges.belongsToMany(db.users,  { through: db.user_badge_associations, foreignKey: 'badge_id', as: "badges", otherKey: 'user_id'});
-db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: 'badge_id', otherKey: 'user_id'});
-//db.user_badge_associations.belongsTo(db.users);
-//db.badges.belongsToMany(db.user_badge_associations);
-//db.user_badge_associations.belongsTo(db.badges);
+	db.jobs.hasMany(db.job_costs, { foreignKey: "job_id", as: "costs" });
 
 	db.sequelize
 		.sync({ force: forceFlag })
