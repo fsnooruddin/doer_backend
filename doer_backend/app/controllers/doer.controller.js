@@ -361,7 +361,7 @@ async function rating(req, res) {
 	}
 	logger.info("Doer-controller rating doer id = " + id + "   rating = " + req.query.rating);
 	const doer = await findByIdDBCall(id);
-    logger.info("Doer-controller doer id = " + id + "   returning = " + JSON.stringify(data));
+	logger.info("Doer-controller doer id = " + id + "   returning = " + JSON.stringify(data));
 	if (doer == null) {
 		logger.error("doer-controller rate doer couldn't find doer with doerId " + id);
 		res.status(500).send({ message: "doer-controller rate doer Error retrieving Doer with id=" + id });
@@ -397,8 +397,8 @@ async function getHistory(req, res) {
 		attributes: { exclude: ["updatedAt"] },
 	})
 		.then((data) => {
-		    const invoices =  Invoice.findAll({where: { doer_id: id }});
-		    logger.info("Doer-controller getHistory invoices =  = " + JSON.stringify(invoices));
+			const invoices = Invoice.findAll({ where: { doer_id: id } });
+			logger.info("Doer-controller getHistory invoices =  = " + JSON.stringify(invoices));
 			return res.status(500).send(data);
 		})
 		.catch((err) => {
@@ -459,5 +459,5 @@ module.exports = {
 	getHistory,
 	rating,
 	updateAvailability,
-	getUpcomingJobs
+	getUpcomingJobs,
 };

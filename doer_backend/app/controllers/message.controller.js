@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../models");
-const utils = require("../utils/Utils.js");
+const Utils = require("../utils/Utils.js");
 const Message = db.messages;
 const Op = db.Sequelize.Op;
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
@@ -10,28 +10,14 @@ const logger = require("../utils/Logger.js");
 
 // Create and Save a new Message
 function create(req, res) {
-	console.log("req body in create message: ");
-	console.log(req.body);
+	if (Object.keys(req.body).length === 0) {
+		logger.error("message-controller create ... body null = " + JSON.stringify(req.body));
+		res.status(400).send("Error creating message, request body is null.");
+		return;
+	}
+	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 
-	const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
-
-	/*
-    const validation = doerCreateSchema.validate(data_obj);
-
-    if(validation.error === undefined) {
-        console.log("doer schema validation succeeded");
-    } else {
-        console.log("\t doer schema validation failed");
-        console.log(validation.error.details[0].message);
-        res.status(400).send({
-                    message: "input data failed doer scheme validation: " + validation.error.details[0].message
-                });
-        return;
-    }
-*/
-
-	console.log("new message in create message: ");
-	console.log(data_obj);
+	logger.info("new message in create message: " + JSON.stringify(req.body));
 
 	// Save message in the database
 	Message.create(data_obj)
@@ -50,26 +36,15 @@ function create(req, res) {
 // Find a single message with an id
 function findById(req, res) {
 	const id = req.query.id;
-	if (id == null) {
+	if (Utils.validateIntegerParam("Message Id", id) == false) {
 		logger.error("Error retrieving messages by ID, message Id is missing");
-		res.status(500).send({
+		res.status(400).send({
 			message: "Error retrieving messages by id, message Id is missing",
 		});
 
 		return;
 	}
 	logger.info("message-controller findById message id = " + id);
-	console.log(typeof id);
-	console.log(parseInt(id));
-
-	if (isNaN(parseInt(id))) {
-		logger.error("Error retrieving messages by ID, message Id is not integer, id = " + id);
-		res.status(500).send({
-			message: "Error retrieving messages by id, message Id is not integer",
-		});
-
-		return;
-	}
 
 	Message.findOne({
 		where: {
@@ -95,24 +70,15 @@ function findById(req, res) {
 function findByJobId(req, res) {
 	const id = req.query.jobId;
 
-	if (id == null) {
-		logger.error("Error retrieving messages by JobId, Job Id is missing");
-		res.status(500).send({
-			message: "Error retrieving messages by JobId, Job Id is missing",
+	if (Utils.validateIntegerParam("Job Id", id) == false) {
+		logger.error("Error retrieving messages by JobId, Job Id is missing or not integer");
+		res.status(400).send({
+			message: "Error retrieving messages by JobId, Job Id is missing or not integer",
 		});
 
 		return;
 	}
 	logger.info("message-controller findByJobId job id = " + id);
-
-	if (isNaN(parseInt(id))) {
-		logger.error("Error retrieving messages by job ID, doer Id is not integer");
-		res.status(500).send({
-			message: "Error retrieving messages by job id, doer Id is not integer",
-		});
-
-		return;
-	}
 
 	Message.findAll({
 		where: {
@@ -123,7 +89,7 @@ function findByJobId(req, res) {
 		},
 	})
 		.then((data) => {
-			logger.info("message-controller findByJobId -- job id is " + id + " returning " + data);
+			logger.info("message-controller findByJobId -- job id is " + id + " returning " + JSON.stringify(data));
 			res.status(200).send(data);
 			return;
 		})

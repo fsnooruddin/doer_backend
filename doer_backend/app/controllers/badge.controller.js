@@ -102,22 +102,20 @@ async function get(req, res) {
  * @memberof Badge
  */
 async function assignBadgeToUser(req, res) {
-
-    // Save Badge in the database
-    	UserBadgeAssociations.create(req.body)
-    		.then((data) => {
-    			logger.info("Success associating badge with user = " + req.body);
-    			res.status(200).send(data);
-    		})
-    		.catch((err) => {
-    			logger.error("Error associating badge with user =  =" + req.body + " error: " + err.message);
-    			res.status(500).send("Some error occurred while associating badge with user = : " + err.message);
-    		});
+	// Save Badge in the database
+	UserBadgeAssociations.create(req.body)
+		.then((data) => {
+			logger.info("Success associating badge with user = " + req.body);
+			res.status(200).send(data);
+		})
+		.catch((err) => {
+			logger.error("Error associating badge with user =  =" + req.body + " error: " + err.message);
+			res.status(500).send("Some error occurred while associating badge with user = : " + err.message);
+		});
 }
-
 
 module.exports = {
 	create,
 	get,
-	assignBadgeToUser
+	assignBadgeToUser,
 };

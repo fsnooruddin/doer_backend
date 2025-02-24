@@ -12,7 +12,6 @@ const Address = db.addresses;
 const Op = db.Sequelize.Op;
 const logger = require("../utils/Logger.js");
 
-
 /**
  * Create a User
  * @param {object} user - JSON representing User
@@ -38,21 +37,20 @@ const logger = require("../utils/Logger.js");
  * @memberof User
  */
 async function create(req, res) {
-
-        if (Object.keys(req.body).length === 0) {
+	if (Object.keys(req.body).length === 0) {
 		logger.error("user-controller create call missing payload: " + JSON.stringify(req.body));
-		res.status(400).send({message: "Error creating User, data is missing"});
+		res.status(400).send({ message: "Error creating User, data is missing" });
 		return;
 	}
 
 	try {
 		// Save user in the database
-		const response_data = await User.create(req.body,  {include: ['addresses']});
+		const response_data = await User.create(req.body, { include: ["addresses"] });
 		res.status(200).send(response_data);
 		return;
 	} catch (err) {
 		logger.error("user-controller create call failed. error = " + err.message);
-		res.status(500).send({message: "user-controller create call failed. error = " + err.message});
+		res.status(500).send({ message: "user-controller create call failed. error = " + err.message });
 		return;
 	}
 }
@@ -76,10 +74,7 @@ async function findById(req, res) {
 	}
 
 	logger.info("User-controller findOne id = " + id);
-	const data = await User.findByPk(id,
-	                        {include: [
-                                           {association: 'addresses',},  {association: 'badges',}]
-                                           });
+	const data = await User.findByPk(id, { include: [{ association: "addresses" }, { association: "badges" }] });
 
 	if (data == null) {
 		logger.error("user-controller findById couldn't find user with userId " + id);
@@ -87,7 +82,7 @@ async function findById(req, res) {
 			message: "Error retrieving User with id=" + id,
 		});
 	} else {
-	    logger.info("user-controller findById,  userId " + id + " returning " + JSON.stringify(data));
+		logger.info("user-controller findById,  userId " + id + " returning " + JSON.stringify(data));
 		res.status(200).send(data);
 		return;
 	}

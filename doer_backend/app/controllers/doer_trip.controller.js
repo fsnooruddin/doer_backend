@@ -22,7 +22,6 @@ const logger = require("../utils/Logger.js");
  * @param {string} DoerTrip.description - Description of doer trip
  * @param {string} DoerTrip.address - Street address of job location
  * @param {number} DoerTrip.eta - ETA of Doer
- * @param {number} DoerTrip.eta - ETA of Doer
  *
  * @example
  * Sample payload:
@@ -39,7 +38,6 @@ async function startDoerTrip(req, res) {
 	logger.info("Doer Trip-controller create, body is: " + req.body);
 
 	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
-
 
 	try {
 		// Save DoerTrip in the database
@@ -90,7 +88,8 @@ async function findByDoerId(req, res) {
 
 /**
  * Update Doer Trip with a new location
- * @param {number} Id - ID of Trip being updated
+ * @param {number} id - ID of Trip being updated
+ * @param {number} location_update - Lat/Long of new position
  * @return {string|null} return - null if success, error message if failure
  * @memberof DoerTrip
  */
@@ -110,7 +109,7 @@ async function updateDoerTripLocation(req, res) {
 		res.status(200).send(data);
 		return;
 	} catch (err) {
-	    logger.error("Doer Trip-controller updated location for DoerTrip id = " + id + " Failed ... error is: " + err.message);
+		logger.error("Doer Trip-controller updated location for DoerTrip id = " + id + " Failed ... error is: " + err.message);
 		res.status(500).send({ message: "Error updating location for trip with id =" + id + " error: " + err.message });
 		return;
 	}

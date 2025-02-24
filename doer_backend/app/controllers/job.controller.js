@@ -5,14 +5,14 @@
  */
 
 const db = require("../models");
-const Utils = require("../utils/Utils.js");
+const Utils = require("../Utils/Utils.js");
 const Doers = require("./doer.controller.js");
 const Job = db.jobs;
 const JobInvoices = db.invoices;
 const JobHistories = db.job_histories;
 const Op = db.Sequelize.Op;
-const KU = require("../utils/KafkaUtil.js");
-const logger = require("../utils/Logger.js");
+const KU = require("../Utils/KafkaUtil.js");
+const logger = require("../Utils/Logger.js");
 //const { job_requestCreateSchema } = require('../schemas/job_request.js');
 const Joi = require("joi");
 // https://www.zipcodeapi.com/rest/QZPX7dSqfyw89CJaAwX37gNO10EoQM2w7Op47UhhyTPB75eMlJPlDc5KkXz2mL0t/distance.json/94588/94104/km
@@ -31,7 +31,7 @@ const Joi = require("joi");
  * Sun, 12-5
  * ```
  * @param {string} job.services - Services requested, e.g. "Electrician". Must correspond to a category in the system.
- * @return {string|null} error string - null if success, error details if failure
+ * @return {string} error string - "success" if success, error details if failure
  *
  * @example
  * Sample payload:
@@ -45,15 +45,19 @@ const Joi = require("joi");
  */
 async function create(req, res) {
 	logger.info("job-controller create ... body = " + JSON.stringify(req.body));
-
+	if (Object.keys(req.body).length === 0) {
+		logger.error("job-controller create ... body null = " + JSON.stringify(req.body));
+		res.status(400).send("Error creating job, request body is null.");
+		return;
+	}
 	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 
 	try {
-		// Save category in the database
 		const response_data = await Job.create(data_obj);
 		logger.info("job-controller create SUCCESS ... ");
 		KU.sendJobRequestedMessage(response_data.job_id, response_data.user_id, response_data.time, response_data.location, response_data.services);
 		res.status(200).send(response_data);
+		return;
 	} catch (err) {
 		logger.error("job-controller create call failed. error = " + err.message);
 		res.status(500).send({
@@ -70,17 +74,17 @@ async function create(req, res) {
  */
 async function findById(req, res) {
 	const id = req.query.JobId;
-	if (id == null || isNaN(parseInt(jobId))) {
-		logger.error("job-controller findById missing jobId or job Id not integer: " + jobId);
-		res.status(500).send({ message: "Error retrieving job Id is missing  or job Id not integer " });
+	if (Utils.validateIntegerParam("Job ID", id) == false) {
+		logger.error("job-controller job id is missing or not an integer");
+		res.status(400).send("Error retrieving job by id, job Id is missing or not an integer");
 		return;
 	}
 
-	logger.info("job_request-controller findOne id = " + id);
+	logger.info("job_request-controller findById, job id = " + id);
 
 	const data = await findByIdDBCall(id);
 	if (data == null) {
-		logger.warn("job-controller findById returing null, id = " + id);
+		logger.warn("job-controller findById returning null, id = " + id);
 		res.status(200).send("job find failed   " + id);
 		return;
 	} else {
@@ -213,15 +217,15 @@ async function acceptJob(req, res) {
 	const doerId = req.query.doerId;
 	const jobId = req.query.jobId;
 
-	if (jobId == null || isNaN(parseInt(jobId))) {
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
 		logger.error("job_request-controller accept job missing job Id or job Id not integer: " + jobId);
-		res.status(500).send({ message: "Error accepting Job - Job Id is missing or job id is not integer" });
+		res.status(400).send({ message: "Error accepting Job - Job Id is missing or job id is not integer" });
 		return;
 	}
 
-	if (doerId == null || isNaN(parseInt(doerId))) {
+	if (Utils.validateIntegerParam("Doer Id", doerId) == false) {
 		logger.error("job_request-controller accept job missing doer Id or doer id is not integer: " + doerId);
-		res.status(500).send({ message: "Error accepting Job - Doer Id is missing or not integer" });
+		res.status(400).send({ message: "Error accepting Job - Doer Id is missing or not integer" });
 		return;
 	}
 
@@ -250,7 +254,7 @@ async function startJob(req, res) {
 	logger.info("job-controller startJob");
 	const jobId = req.query.jobId;
 
-	if (jobId == null || isNaN(parseInt(jobId))) {
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
 		logger.error("job_request-controller start job, missing job Id or job Id not integer: " + jobId);
 		res.status(500).send({ message: "Error starting Job - Job Id is missing or not integer" });
 		return;
@@ -285,14 +289,14 @@ async function completeJob(req, res) {
 	const jobId = req.query.jobId;
 	const duration = req.query.duration;
 
-	if (jobId == null || isNaN(parseInt(jobId))) {
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
 		logger.error("job_request-controller complete job,  missing job Id or job Id not integer: " + jobId);
 		res.status(500).send({
 			message: "Error completing Job - Job Id is missing or job Id not integer: " + jobId,
 		});
 		return;
 	}
-	if (duration == null || isNaN(parseInt(duration))) {
+	if (Utils.validateIntegerParam("Duration", duration) == false) {
 		logger.error("job_request-controller complete job,  missing duration or duration not integer: " + jobId);
 		res.status(500).send({
 			message: "Error completing Job - duration is missing or duration not integer: " + jobId,
@@ -307,6 +311,9 @@ async function completeJob(req, res) {
 		const data = await findByIdDBCall(jobId);
 		if (data == null) {
 			logger.warn("job-controller findById returing null, id = " + jobId);
+			res.status(500).send({
+				message: "Error completing Job - findById returing null, id = " + jobId,
+			});
 			return;
 		}
 		updateJobHistory(jobId, "status", "completed", "doer", data.doer_id);
@@ -322,9 +329,9 @@ async function completeJob(req, res) {
 
 async function generateInvoice(req, res) {
 	const jobId = req.query.jobId;
-	if (jobId == null || isNaN(parseInt(jobId))) {
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
 		logger.error("job_request-controller generateInvoice,  missing job Id or job Id not integer: " + jobId);
-		res.status(500).send({
+		res.status(400).send({
 			message: "Error generateInvoice - Job Id is missing or job Id not integer: " + jobId,
 		});
 		return;
@@ -413,7 +420,7 @@ async function generateInvoice(req, res) {
 async function updateJobHistory(jobId, change_field, change_value, changed_by, changed_by_id) {
 	logger.info("job-controller updateJobHistory");
 	logger.warn(jobId + "   " + change_field + "   " + change_value + "   " + changed_by + "   " + changed_by_id);
-	if (jobId == null || isNaN(parseInt(jobId))) {
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
 		logger.error("job_request-controller updateJobHistory, missing job Id or job Id not integer: " + jobId);
 		return false;
 	}

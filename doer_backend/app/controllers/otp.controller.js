@@ -3,7 +3,6 @@
  * @namespace OTP
  */
 
-
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const OTP = db.otps;
@@ -14,7 +13,10 @@ const logger = require("../utils/Logger.js");
 const otpGenerator = require("otp-generator");
 
 /**
- * Create a OTP
+ * Create a OTP.
+ * <p>
+ * NOTE: OTP is only valid for 5 mins after creation.
+ * </p>
  * @param {object} OTP - JSON representing OTP
  * @param {number} OTP.phone_number - Phone number requesting the OTP
  * @example
@@ -64,6 +66,7 @@ async function create(req, res) {
  *    phone_number: "3032221234",
  *    otp: "de8jw2"
  *  }
+ * @return {string} error string - true/false depending on if validation fails
  * @memberof OTP
  */
 async function validate(req, res) {

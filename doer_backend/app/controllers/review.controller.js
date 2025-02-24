@@ -4,7 +4,6 @@
  * @namespace Review
  */
 
-
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Review = db.reviews;
@@ -29,28 +28,10 @@ const logger = require("../utils/Logger.js");
  * @memberof Review
  */
 function create(req, res) {
-	console.log("req body in create review: ");
-	console.log(req.body);
+	logger.info("req body in create review: ");
+	logger.info(req.body);
 
 	const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
-
-	/*
-    const validation = doerCreateSchema.validate(data_obj);
-
-    if(validation.error === undefined) {
-        console.log("doer schema validation succeeded");
-    } else {
-        console.log("\t doer schema validation failed");
-        console.log(validation.error.details[0].message);
-        res.status(400).send({
-                    message: "input data failed doer scheme validation: " + validation.error.details[0].message
-                });
-        return;
-    }
-*/
-
-	console.log("new review in create review: ");
-	console.log(data_obj);
 
 	// Save review in the database
 	Review.create(data_obj)
@@ -60,12 +41,11 @@ function create(req, res) {
 		})
 		.catch((err) => {
 			logger.error("Error creating review with review data =" + req.body + " error: " + err.message);
-			res.status(500).send({
+			res.status(400).send({
 				message: err.message || "Some error occurred while creating the review.",
 			});
 		});
 }
-
 
 /**
  * Find a single review with an id
@@ -75,26 +55,13 @@ function create(req, res) {
  */
 function findById(req, res) {
 	const id = req.query.id;
-	if (id == null) {
-		logger.error("Error retrieving reviews by ID, review Id is missing");
-		res.status(500).send({
-			message: "Error retrieving reviews by id, review Id is missing",
-		});
-
+	if (utils.validateIntegerParam("review ID", id) == false) {
+		logger.error("review-controller review id is missing or not an integer");
+		res.status(400).send("Error retrieving reviews by id, review Id is missing");
 		return;
 	}
+
 	logger.info("review-controller findById review id = " + id);
-	console.log(typeof id);
-	console.log(parseInt(id));
-
-	if (isNaN(parseInt(id))) {
-		logger.error("Error retrieving reviews by ID, review Id is not integer, id = " + id);
-		res.status(500).send({
-			message: "Error retrieving reviews by id, review Id is not integer",
-		});
-
-		return;
-	}
 
 	Review.findOne({
 		where: {
@@ -125,24 +92,13 @@ function findById(req, res) {
 function findByDoerId(req, res) {
 	const id = req.query.doerId;
 
-	if (id == null) {
-		logger.error("Error retrieving reviews by DoerID, Doer Id is missing");
-		res.status(500).send({
-			message: "Error retrieving reviews by DoerID, Doer Id is missing",
-		});
-
+	if (utils.validateIntegerParam("doer ID", id) == false) {
+		logger.error("review-controller, findByDoerId by doer id is missing or not an integer");
+		res.status(400).send("Error retrieving reviews by doer id, doer Id is missing or not integer");
 		return;
 	}
+
 	logger.info("review-controller findByDoerId doer id = " + id);
-
-	if (isNaN(parseInt(id))) {
-		logger.error("Error retrieving reviews by Doer ID, doer Id is not integer");
-		res.status(500).send({
-			message: "Error retrieving reviews by doer id, doer Id is not integer",
-		});
-
-		return;
-	}
 
 	Review.findAll({
 		where: {

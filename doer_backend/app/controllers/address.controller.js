@@ -3,7 +3,6 @@
  * @namespace Address
  */
 
-
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Address = db.addresses;
@@ -18,17 +17,27 @@ const logger = require("../utils/Logger.js");
  * @param {number} Address.id - Phone number requesting the Address
  * @example
  * Sample payload:
+ *
  * {
- *    id: "3032221234"
- *  }
+ *  user_id: "1",
+ *     	type: "home",
+ *     	street: "123 Main St",
+ *     	city: "New York",
+ *     	state: "NY",
+ *     	country: "USA",
+ *      	zipCode: "10001",
+ *     };
+ *
  * @memberof Address
  */
 async function create(req, res) {
-	console.log("req body in create Address: ");
-	console.log(req.body);
+	logger.info("address-controller req body in create Address: " + req.body);
 
-	console.log("new Address in create Address: ");
-	console.log(req.body);
+	if (Object.keys(req.body).length === 0) {
+		logger.error("address-controller, req body is null");
+		res.status(400).send("address-controller, req body is null");
+		return;
+	}
 
 	// Save Address in the database
 	Address.create(req.body)
@@ -43,16 +52,8 @@ async function create(req, res) {
 }
 
 /**
- * Validate a Address
- * @param {object} Address - JSON representing Address
- * @param {number} Address.id - Phone number requesting the Address
- * @param {string} Address.otp - Address to validate
- * @example
- * Sample payload:
- * {
- *    id: "3032221234",
- *    otp: "de8jw2"
- *  }
+ * Remove  a Address
+ * @param {number} id - If of address being removed
  * @memberof Address
  */
 async function remove(req, res) {
@@ -70,7 +71,7 @@ async function remove(req, res) {
 
 	Address.destroy({
 		where: {
-			address_id: id
+			address_id: id,
 		},
 		attributes: {
 			exclude: ["updatedAt"],
@@ -86,6 +87,25 @@ async function remove(req, res) {
 				Address: "message: Error validating Address with id=" + id + " error: " + err.message,
 			});
 		});
+}
+
+/**
+ * Get address(es) for users
+ * @param {object} Address - JSON representing Address
+ * @param {number} userId - UserId for whom we are fetching addresses
+ * @memberof Address
+ */
+
+async function getAddressesForUser(req, res) {
+	const userId = req.query.userId;
+
+	if (Utils.validateIntegerParam("user Id", userId) == false) {
+		logger.error("address_request-controller accept address missing user Id or user id is not integer: " + userId);
+		res.status(400).send({ message: "Error accepting address - user Id is missing or not integer" });
+		return;
+	}
+
+	logger.info("address_request-controller getAddressesForUser, userId = " + userId);
 }
 
 module.exports = {
