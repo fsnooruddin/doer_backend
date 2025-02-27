@@ -9,18 +9,10 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.INTEGER,
 			allowNull: false,
 		},
-		rating_count: {
-			type: Sequelize.INTEGER,
+		rating: {
+			type: Sequelize.JSON,
 			allowNull: false,
-		},
-		rating_value: {
-			type: Sequelize.INTEGER,
-			allowNull: false,
-		},
-		rating_value: {
-			type: Sequelize.FLOAT,
-			allowNull: false,
-		},
+		}
 	});
 
 	return Rating;

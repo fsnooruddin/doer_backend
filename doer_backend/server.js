@@ -45,9 +45,12 @@ function init_db() {
 	db.addresses = require("./app/models/address.model.js")(db.sequelize, db.Sequelize);
 	db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.job_costs = require("./app/models/job_cost.model.js")(db.sequelize, db.Sequelize);
+	db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
+    db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
+    db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
 
 	db.users.hasMany(db.addresses, { foreignKey: "user_id", as: "addresses" });
-	db.addresses.belongsTo(db.users, { foreignKey: "user_id", as: "users" });
+	//db.addresses.belongsTo(db.users, { foreignKey: "user_id", as: "users" });
 
 	db.users.hasMany(db.jobs, { foreignKey: "user_id", as: "jobs" });
 	db.jobs.hasOne(db.users, { foreignKey: "user_id", as: "users" });
@@ -56,15 +59,17 @@ function init_db() {
 	db.jobs.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
 	db.doers.hasMany(db.ratings, { foreignKey: "doer_id", as: "ratings" });
-	db.ratings.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
 	db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
-	db.reviews.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
 	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id", as: "badges", otherKey: "user_id" });
 	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "badge_id", otherKey: "user_id" });
 
 	db.jobs.hasMany(db.job_costs, { foreignKey: "job_id", as: "costs" });
+
+    db.doers.hasMany(db.certificates , { foreignKey: "doer_id", as: "certificates" });
+
+    db.doers.hasMany(db.availability_slots , { foreignKey: "doer_id"});
 
 	db.sequelize
 		.sync({ force: forceFlag })

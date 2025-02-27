@@ -21,14 +21,6 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING(2048),
 			allowNull: false,
 		},
-		availability: {
-			type: Sequelize.STRING(2048),
-			allowNull: false,
-		},
-		rating: {
-			type: Sequelize.STRING,
-			allowNull: false,
-		},
 		minimum_charges: {
 			type: Sequelize.FLOAT,
 			allowNull: false,
