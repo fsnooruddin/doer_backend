@@ -9,6 +9,7 @@ module.exports = {
 	filterByTime,
 	filterByDistance,
 	getRateFromAvailabilitySlot,
+	validateIntegerParam
 };
 
 function escapeJSONString(server_return_string) {
@@ -165,8 +166,8 @@ function getRateFromAvailabilitySlot(reqSlotDay, reqSlotTime, avail) {
 }
 
 function validateStringParam(paramName, paramValue) {
-	if (paramValue == null || typeof paramValue === "string") {
-		logger.error(paramName + " not an STRING " + paramValue);
+	if (paramValue == null || !(typeof(paramValue) === "string")) {
+		logger.error(paramName + " not an STRING, value is: " + paramValue);
 		return false;
 	} else {
 	    return true;
@@ -174,9 +175,8 @@ function validateStringParam(paramName, paramValue) {
 }
 
 function validateIntegerParam(paramName, paramValue) {
-	if (paramValue == null || !isNaN(value) &&
-                                       parseInt(Number(value)) == value) {
-		logger.error(paramName + " not an INTEGER " + paramValue);
+	if (paramValue == null || isNaN(paramValue) || !Number.isInteger(Number(paramValue))) {
+		logger.error(paramName + " not an INTEGER, value is: " + paramValue + " type = " + typeof(paramValue));
 		return false;
 	} else {
 	    return true;
