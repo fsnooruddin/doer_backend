@@ -88,7 +88,49 @@ async function findById(req, res) {
 	}
 }
 
+async function getAddresses(req, res) {
+	const id = req.query.userId;
+
+	if (Utils.validateIntegerParam("user Id", id) == false) {
+		logger.error("address_request-controller accept address missing user Id or user id is not integer: " + userId);
+		res.status(400).send({ message: "Error accepting address - user Id is missing or not integer" });
+		return;
+	}
+
+	logger.info("address_request-controller getAddressesForUser, userId = " + id);
+
+    const user = await User.findByPk(id); // Retrieve a user
+	const data = await user.getAddresses();
+	logger.info("user-controller getAddresses,  userId " + id + " returning " + JSON.stringify(data));
+	res.status(200).send(data);
+
+}
+
+async function addAddress(req, res) {
+	const id = req.query.userId;
+	const address = req.body;
+
+	if (Utils.validateIntegerParam("user Id", id) == false) {
+		logger.error("address_request-controller add address missing user Id or user id is not integer: " + userId);
+		res.status(400).send({ message: "Error add address - user Id is missing or not integer" });
+		return;
+	}
+
+logger.info("address_request-controller add adder, address = " + JSON.stringify(address));
+	logger.info("address_request-controller add address, userId = " + id);
+
+    const user = await User.findByPk(id); // Retrieve a user
+	//const data = await user.createAddress(JSON.stringify(address));
+	const data = await user.createAddress(address);
+	logger.info("user-controller add address,  userId " + id + " returning " + JSON.stringify(data));
+	res.status(200).send(data);
+
+}
+
 module.exports = {
 	create,
 	findById,
+	getAddresses,
+	addAddress
 };
+

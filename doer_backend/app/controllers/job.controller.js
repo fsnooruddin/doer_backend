@@ -10,6 +10,7 @@ const Doers = require("./doer.controller.js");
 const Job = db.jobs;
 const JobInvoices = db.invoices;
 const JobHistories = db.job_histories;
+const JobCosts = db.job_costs;
 const Op = db.Sequelize.Op;
 const KU = require("../Utils/KafkaUtil.js");
 const logger = require("../Utils/Logger.js");
@@ -443,6 +444,56 @@ async function updateJobHistory(jobId, change_field, change_value, changed_by, c
 	}
 }
 
+/**
+ * Create a Job
+ * @param {object} job - JSON representing job
+ * @param {number} job.user_id - User Id of user requesting the job
+ * @param {string} job.description - Description of job
+ * @param {string} job.location - Location ( coordinates )  of job, e.g.
+ * ```
+ * [77.6879689, 27.4072289]
+ * ```
+ * @param {string} job.time - Time for job request, [ day, startTime-endTime ]. e.g.
+ * ```
+ * Sun, 12-5
+ * ```
+ * @param {string} job.services - Services requested, e.g. "Electrician". Must correspond to a category in the system.
+ * @return {string} error string - "success" if success, error details if failure
+ *
+ * @example
+ * Sample payload:
+ * {
+ *    user_id: "11",
+ *    location: "[77.6879689, 27.4072289]",
+ *    time: "Sun, 12-5",
+ *    services: "Electrician",
+ *  }
+ * @memberof Job
+ */
+async function addJobCost(req, res) {
+	logger.info("job-controller addJobCost ... body = " + JSON.stringify(req.body));
+	if (Object.keys(req.body).length === 0) {
+		logger.error("job-controller addJobCost ... body null = " + JSON.stringify(req.body));
+		res.status(400).send("Error addJobCost job, request body is null.");
+		return;
+	}
+	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
+
+	try {
+		const response_data = await JobCosts.create(data_obj);
+		logger.info("job-controller addJobCost SUCCESS ... ");
+		//KU.sendJobRequestedMessage(response_data.job_id, response_data.user_id, response_data.time, response_data.location, response_data.services);
+		res.status(200).send(response_data);
+		return;
+	} catch (err) {
+		logger.error("job-controller addJobCost call failed. error = " + err.message);
+		res.status(500).send({
+			message: err.message || "Some error occurred while addJobCost the Job.",
+		});
+		return;
+	}
+}
+
 module.exports = {
 	create,
 	findEligibleDoers,
@@ -453,4 +504,5 @@ module.exports = {
 	startJob,
 	completeJob,
 	generateInvoice,
+	addJobCost
 };

@@ -14,6 +14,9 @@ const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
 const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 const opentelemetry = require("@opentelemetry/api");
+const Availability = db.availability_slots;
+const Rating = db.ratings;
+const { sql } = require("@sequelize/core");
 
 /**
  * Create a Doer
@@ -72,23 +75,44 @@ async function create(req, res) {
 		return;
 	}
 
+	// First, we start a transaction and save it into a variable
+	const transaction = await db.sequelize.transaction();
+
 	var data_obj;
 	try {
 		logger.info("req body in create doer: " + JSON.stringify(req.body));
-		data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
+		//data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
+		data_obj = JSON.parse(JSON.stringify(req.body));
 	} catch (err) {
 		logger.error("error parsing json + " + err.message);
 		res.status(500).send("Error parsing json body. error = " + err.message);
 		return;
 	}
 
-	data_obj.availability = JSON.stringify(data_obj.availability);
-	data_obj.rating = JSON.stringify(data_obj.rating);
 	try {
-		// Save category in the database
-		const response_data = await Doer.create(data_obj);
-		res.status(200).send(response_data);
+		// Save Doer in the database
+		const new_doer = await Doer.create(data_obj, { transaction });
+		let nObj = {};
+		for (let i = 0; i < Object.keys(data_obj.availability.slots).length; i++) {
+			nObj.doer_id = new_doer.doer_id;
+			nObj.slot = data_obj.availability.slots[i];
+			console.log(JSON.stringify(nObj));
+			// create availability windows.
+			let avail_obj = await Availability.create(nObj, { transaction });
+			logger.info("Create Doer ... add availability success ... " + JSON.stringify(avail_obj));
+		}
+		nObj = {};
+		nObj.doer_id = new_doer.doer_id;
+		nObj.rating = data_obj.rating;
+		console.log(JSON.stringify(nObj));
+		let rating_obj = await Rating.create(nObj, { transaction });
+		logger.info("Create Doer ... add rating success ... " + JSON.stringify(rating_obj));
+
+		// all done, commit transaction, return success
+		res.status(200).send(new_doer);
+		return;
 	} catch (err) {
+		await transaction.rollback();
 		logger.error("doer-controller create call failed. error = " + err.message);
 		res.status(500).send({
 			message: err.message || "Some error occurred while creating the Doer.",
@@ -139,6 +163,7 @@ async function findByIdDBCall(id) {
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
 			},
+			include: db.availability_slots,
 		});
 
 		if (data == null) {
@@ -172,26 +197,24 @@ function findByServices(req, res) {
 	services = "%" + services + "%";
 	logger.info("Doer-controller findOne services = " + services);
 
-	Doer.findAll({
-		where: {
-			services: {
-				[Op.iLike]: services,
+	try {
+		const response_data = Doer.findAll({
+			where: { services: { [Op.iLike]: services } },
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
 			},
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("doer-controller findByServices -- services is " + services + " returning " + data);
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("doer-controller findByServices -- services is " + services + " error is " + err.message);
-			res.status(500).send({
-				message: "Error retrieving Doer with services =" + services + " error: " + err.message,
-			});
+			include: db.availability_slots,
 		});
+
+		logger.info("doer-controller findByServices -- services is " + services + " returning " + JSON.stringify(response_data));
+		res.status(200).send(response_data);
+		return;
+	} catch (err) {
+		logger.error("doer-controller findByServices -- services is " + services + " error is " + err.message);
+		res.status(500).send({
+			message: "Error retrieving Doer with services =" + services + " error: " + err.message,
+		});
+	}
 }
 
 /**
@@ -216,27 +239,39 @@ async function findByServicesAndDay(req, res) {
 	day = "%" + day + "%";
 	logger.info("Doer-controller findByServicesAndDay services = " + services + ", day = " + day);
 
-	Doer.findAll({
-		where: {
-			services: {
-				[Op.iLike]: services,
-			},
-			availability: {
-				[Op.iLike]: day,
-			},
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			res.send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: "Error retrieving Doer with services =" + services + " error: " + err.message,
-			});
+	try {
+		let doers_found = await db.sequelize.query(
+			`SELECT  "doer"."doer_id",
+                     "doer"."name",
+                     "doer"."phone_number",
+                     "doer"."location",
+                     "doer"."services",
+                     "doer"."minimum_charges",
+                     "doer"."img_url",
+                     "availability_slots"."availability_slot_id",
+                     "availability_slots"."slot"
+                     FROM "doers" AS "doer"
+                     INNER JOIN
+                     "availability_slots" ON "doer"."doer_id" = "availability_slots"."doer_id"
+                     AND
+                     "doer"."services" ILIKE :svcs
+                     AND
+                     "availability_slots"."slot"::text ILIKE :day`,
+			{
+				replacements: { svcs: services, day: day },
+			}
+		);
+		logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0]));
+		res.status(200).send(doers_found[0]);
+	} catch (err) {
+		logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
+		res.status(500).send({
+			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
 		});
+	}
+
+	console.log("FOUND DOERS >>>>>");
+	console.log(doers_found[0]);
 }
 
 async function findByServicesAndDayDBCall(services, day) {
@@ -342,6 +377,7 @@ async function updateAvailability(req, res) {
  *
  * @memberof Doer
  */
+// TODO
 async function rating(req, res) {
 	const id = req.query.id;
 	if (id == null || isNaN(parseInt(id))) {
@@ -388,6 +424,7 @@ async function rating(req, res) {
 	}
 }
 
+// TODO
 async function getHistory(req, res) {
 	const id = req.query.id;
 	logger.info("Doer-controller getHistory id = " + id);
@@ -444,6 +481,7 @@ async function getHistory(req, res) {
 	*/
 }
 
+// TODO
 async function getUpcomingJobs(req, res) {
 	const id = req.query.id;
 	logger.info("Doer-controller getHistory id = " + id);

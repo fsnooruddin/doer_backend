@@ -41,18 +41,19 @@ async function create(req, res) {
 	console.log("new OTP in create OTP: ");
 	console.log(otp_row);
 
-	// Save OTP in the database
-	OTP.create(otp_row)
-		.then((data) => {
-			logger.info("Success creating OTP with OTP data =" + req.body);
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error creating OTP with OTP data =" + req.body + " error: " + err.OTP);
-			res.status(500).send({
-				OTP: err.OTP || "Some error occurred while creating the OTP.",
-			});
+	try {
+		// Save OTP in the database
+		var new_otp = OTP.create(otp_row);
+		logger.info("Success creating OTP with OTP data =" + req.body);
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error creating OTP with OTP data =" + req.body + " error: " + err.OTP);
+		res.status(500).send({
+			OTP: err.OTP || "Some error occurred while creating the OTP.",
 		});
+		return;
+	}
 }
 
 /**

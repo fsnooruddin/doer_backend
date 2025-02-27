@@ -6,6 +6,7 @@
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Address = db.addresses;
+const Testing = db.tests;
 const Op = db.Sequelize.Op;
 //const { Address_requestCreateSchema } = require('../schemas/Address_request.js');
 const Joi = require("joi");
@@ -39,16 +40,17 @@ async function create(req, res) {
 		return;
 	}
 
-	// Save Address in the database
-	Address.create(req.body)
-		.then((data) => {
-			logger.info("Success creating Address with Address data =" + JSON.stringify(data));
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error creating Address with Address data =" + req.body + " error: " + err.message);
-			res.status(500).send("Some error occurred while creating the Address.");
-		});
+	try {
+		// Save Address in the database
+		let new_address = Address.create(req.body);
+		logger.info("Success creating Address with Address data =" + JSON.stringify(new_address));
+		res.status(200).send(new_address);
+		return;
+	} catch (err) {
+		logger.error("Error creating Address with Address data =" + req.body + " error: " + err.message);
+		res.status(500).send("Some error occurred while creating the Address.");
+		return;
+	}
 }
 
 /**
@@ -108,7 +110,51 @@ async function getAddressesForUser(req, res) {
 	logger.info("address_request-controller getAddressesForUser, userId = " + userId);
 }
 
+async function testings(req, res) {
+	const data = req.body;
+
+	try {
+		logger.info("testings-controller create SUCCESS ... " + JSON.stringify(data));
+		const response_data = await Testing.create(data);
+		logger.info("testings-controller create SUCCESS ... ");
+		//t	KU.sendTestingsRequestedMessage(response_data.testings_id, response_data.user_id, response_data.time, response_data.location, response_data.services);
+		res.status(200).send(response_data);
+		return;
+	} catch (err) {
+		logger.error("testings-controller create call failed. error = " + err.message);
+		res.status(500).send({
+			message: err.message || "Some error occurred while creating the Testings.",
+		});
+		return;
+	}
+}
+
+async function find_testings(req, res) {
+	const data = req.body;
+
+	try {
+		logger.info("testings-controller create SUCCESS ... " + JSON.stringify(data));
+		const response_data = await Testing.findAll({
+			where: {
+				"availability.slot.day": "ZZ",
+			},
+		});
+		logger.info("testings-controller find_testings SUCCESS ... " + JSON.stringify(response_data));
+		//t	KU.sendTestingsRequestedMessage(response_data.testings_id, response_data.user_id, response_data.time, response_data.location, response_data.services);
+		res.status(200).send(response_data);
+		return;
+	} catch (err) {
+		logger.error("testings-controller create call failed. error = " + err.message);
+		res.status(500).send({
+			message: err.message || "Some error occurred while creating the Testings.",
+		});
+		return;
+	}
+}
+
 module.exports = {
 	create,
 	remove,
+	testings,
+	find_testings,
 };

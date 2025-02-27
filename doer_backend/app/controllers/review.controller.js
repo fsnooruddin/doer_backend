@@ -33,18 +33,19 @@ function create(req, res) {
 
 	const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
 
-	// Save review in the database
-	Review.create(data_obj)
-		.then((data) => {
-			logger.info("Success creating review with review data =" + req.body);
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error creating review with review data =" + req.body + " error: " + err.message);
-			res.status(400).send({
-				message: err.message || "Some error occurred while creating the review.",
-			});
+	try {
+		// Save review in the database
+		var new_review = Review.create(data_obj);
+		logger.info("Success creating review with review data =" + req.body);
+		res.status(200).send(new_review);
+		return;
+	} catch (err) {
+		logger.error("Error creating review with review data =" + req.body + " error: " + err.message);
+		res.status(400).send({
+			message: err.message || "Some error occurred while creating the review.",
 		});
+		return;
+	}
 }
 
 /**

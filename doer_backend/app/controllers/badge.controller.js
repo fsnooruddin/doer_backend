@@ -30,16 +30,17 @@ async function create(req, res) {
 	logger.info("req body in create Badge: ");
 	logger.info(req.body);
 
-	// Save Badge in the database
-	Badge.create(req.body)
-		.then((data) => {
-			logger.info("Success creating Badge with Badge data =" + req.body);
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error creating Badge with Badge data =" + req.body + " error: " + err.message);
-			res.status(500).send("Some error occurred while creating the Badge: " + err.message);
-		});
+	try {
+		// Save Badge in the database
+		let new_badge = Badge.create(req.body);
+		logger.info("Success creating Badge with Badge data =" + req.body);
+		res.status(200).send(new_badge);
+		return;
+	} catch (err) {
+		logger.error("Error creating Badge with Badge data =" + req.body + " error: " + err.message);
+		res.status(500).send("Some error occurred while creating the Badge: " + err.message);
+		return;
+	}
 }
 
 /**
