@@ -9,10 +9,14 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.INTEGER,
 			allowNull: false,
 		},
-		rating: {
-			type: Sequelize.JSON,
+		total: {
+			type: Sequelize.INTEGER,
 			allowNull: false,
-		}
+		},
+		count: {
+        			type: Sequelize.INTEGER,
+        			allowNull: false,
+        		}
 	});
 
 	return Rating;

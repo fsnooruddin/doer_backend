@@ -94,21 +94,22 @@ async function create(req, res) {
 		const new_doer = await Doer.create(data_obj, { transaction });
 		let nObj = {};
 		for (let i = 0; i < Object.keys(data_obj.availability.slots).length; i++) {
+			nObj = data_obj.availability.slots[i].slot;
 			nObj.doer_id = new_doer.doer_id;
-			nObj.slot = data_obj.availability.slots[i];
 			console.log(JSON.stringify(nObj));
 			// create availability windows.
 			let avail_obj = await Availability.create(nObj, { transaction });
 			logger.info("Create Doer ... add availability success ... " + JSON.stringify(avail_obj));
 		}
 		nObj = {};
+		nObj = data_obj.rating;
 		nObj.doer_id = new_doer.doer_id;
-		nObj.rating = data_obj.rating;
 		console.log(JSON.stringify(nObj));
 		let rating_obj = await Rating.create(nObj, { transaction });
 		logger.info("Create Doer ... add rating success ... " + JSON.stringify(rating_obj));
 
 		// all done, commit transaction, return success
+		transaction.commit();
 		res.status(200).send(new_doer);
 		return;
 	} catch (err) {
@@ -224,7 +225,82 @@ function findByServices(req, res) {
  * @return {string|null} Doer - null if failure, JSON array object representing Doers offering services if success
  * @memberof Doer
  */
+
 async function findByServicesAndDay(req, res) {
+	var services = req.query.services;
+	var day = req.query.day;
+	if (services == null || services.trim() === "" || day == null || day.trim() === "") {
+		logger.error("doer-controller findByServicesAndDay -- services or day is null!");
+		res.status(500).send({
+			message: "Error retrieving Doer with services =" + services + ", day: " + day + " malformed input params.",
+		});
+		return;
+	}
+
+	services = "%" + services + "%";
+	day = "%" + day + "%";
+	logger.info("Doer-controller findByServicesAndDay services = " + services + ", day = " + day);
+
+    let doers_found = {};
+	try {
+		  doers_found = await db.sequelize.query(
+			`SELECT  "doer"."doer_id",
+                     "doer"."name",
+                     "doer"."phone_number",
+                     "doer"."location",
+                     "doer"."services",
+                     "doer"."minimum_charges",
+                     "doer"."img_url",
+                     "availability_slots"."availability_slot_id",
+                     "availability_slots"."day",
+                     "availability_slots"."start_time",
+                     "availability_slots"."end_time",
+                     "availability_slots"."latitude",
+                     "availability_slots"."longitude",
+                     "availability_slots"."radius",
+                     "availability_slots"."rate"
+                     FROM "doers" AS "doer"
+                     INNER JOIN
+                     "availability_slots" ON "doer"."doer_id" = "availability_slots"."doer_id"
+                     AND
+                     "doer"."services" ILIKE :svcs
+                     AND
+                     "availability_slots"."day" ILIKE :day`,
+			{
+				replacements: { svcs: services, day: day },
+			}
+		);
+		console.log(JSON.stringify(doers_found[0][0]));
+		console.log(JSON.stringify(doers_found[0][1]));
+		console.log(JSON.stringify(doers_found[1][0]));
+		let doer_slots = {};
+		for(let i = 0; i < doers_found.length;i++) {
+
+		console.log("FOUND DOERS >>>>>");
+		logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+
+		    doer_slots = await Availability.findOne({
+            		where: {
+            			doer_id: doers_found[0][i].doer_id
+            		},
+            		attributes: {
+            			exclude: ["updatedAt", "createdAt"],
+            		},
+            	})
+		    doers_found[0][i].availability = doer_slots;
+		    logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+		}
+		res.status(200).send(doers_found[0]);
+		return;
+	} catch (err) {
+		logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
+		res.status(500).send({
+			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
+		});
+	}
+}
+
+async function findByServicesAndDay_notused(req, res) {
 	var services = req.query.services;
 	var day = req.query.day;
 	if (services == null || services.trim() === "" || day == null || day.trim() === "") {
@@ -273,6 +349,7 @@ async function findByServicesAndDay(req, res) {
 	console.log("FOUND DOERS >>>>>");
 	console.log(doers_found[0]);
 }
+
 
 async function findByServicesAndDayDBCall(services, day) {
 	logger.info("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
@@ -402,6 +479,9 @@ async function rating(req, res) {
 		logger.error("doer-controller rate doer couldn't find doer with doerId " + id);
 		res.status(500).send({ message: "doer-controller rate doer Error retrieving Doer with id=" + id });
 	}
+
+    var currentRating = doer.getRatings();
+    console.log(JSON.stringify(currentRating));
 
 	var rating = JSON.parse(doer.rating);
 	console.log(rating);
