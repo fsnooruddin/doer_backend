@@ -21,6 +21,7 @@ module.exports = (app) => {
 	router.get("/doer/getHistory", doers.getHistory);
 	router.post("/doer/rate", doers.rating);
 	router.post("/doer/updateAvailability", doers.updateAvailability);
+    router.get("/doer/rating", doers.getRating);
 
 	router.post("/review/create", reviews.create);
 	router.get("/review/getById", reviews.findById);
@@ -60,9 +61,19 @@ module.exports = (app) => {
 
 	router.post("/user/create", users.create);
 	router.get("/user/getById", users.findById);
+	router.get("/user/getAddresses", users.getAddresses);
+	router.post("/user/addAddress", users.addAddress);
 
     router.post("/address/create", addresses.create);
 	router.post("/address/remove", addresses.remove);
 
+    router.post("/address/testings", addresses.testings);
+    router.post("/address/find_testings", addresses.find_testings);
+
 	app.use("/api/doer", router);
 };
+
+
+
+
+

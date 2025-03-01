@@ -11,9 +11,7 @@ const Job = db.job_requests;
 const Invoice = db.invoices;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
-const opentelemetry = require("@opentelemetry/api");
 const Availability = db.availability_slots;
 const Rating = db.ratings;
 const { sql } = require("@sequelize/core");
@@ -473,37 +471,67 @@ async function rating(req, res) {
 		return;
 	}
 	logger.info("Doer-controller rating doer id = " + id + "   rating = " + req.query.rating);
-	const doer = await findByIdDBCall(id);
-	logger.info("Doer-controller doer id = " + id + "   returning = " + JSON.stringify(data));
-	if (doer == null) {
-		logger.error("doer-controller rate doer couldn't find doer with doerId " + id);
-		res.status(500).send({ message: "doer-controller rate doer Error retrieving Doer with id=" + id });
-	}
 
-    var currentRating = doer.getRatings();
-    console.log(JSON.stringify(currentRating));
-
-	var rating = JSON.parse(doer.rating);
-	console.log(rating);
-	let total = parseInt(rating.raw.total) + parseInt(req.query.rating);
-	let count = parseInt(rating.raw.count) + 1;
-	rating.rating = total / count;
-	rating.raw.total = total;
-	rating.raw.count = count;
-	console.log(rating);
-
-	try {
-		doer.rating = JSON.stringify(rating);
-		doer.changed("rating", true);
-		const result = await doer.save();
-		logger.info("result of save doer in rate doer = " + JSON.stringify(result));
-		res.status(200).send("successfully rated doer. doer id = " + id);
-	} catch (err) {
-		logger.error("Doer-controller rating id = " + id + " ERROR ... error is: " + err.message);
-		res.status(500).send("failure to rate doer with id = " + id + " ... error is: " + err.message);
+    try {
+         var currentRating = await Rating.findOne({
+                                    			where: {
+                                    				doer_id: id,
+                                    			},
+                                    			attributes: {
+                                    				exclude: ["updatedAt", "createdAt"],
+                                    			},
+                                    		});
+        console.log(JSON.stringify("current rating = " + currentRating));
+        let new_rating = {};
+        if(currentRating == null || Object.keys(currentRating).length === 0) {
+             new_rating = await Rating.create({"doer_id": id, "total": req.query.rating, "count":1});
+        } else {
+            let new_total = parseInt(currentRating.total) + parseInt(req.query.rating);
+            let new_count = parseInt(currentRating.count) + 1;
+             new_rating = await currentRating.update({"total": new_total, "count":new_count});
+        }
+        logger.error("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(new_rating));
+        res.status(200).send(new_rating);
+    } catch (err) {
+        logger.error("doer-controller rate doer error rating doer with doerId: " + id + " error: " + err.message);
+	    res.status(500).send("failure to rate doer with id = " + id + " ... error is: " + err.message);
+	    return;
 	}
 }
 
+async function getRating(req, res) {
+	const id = req.query.id;
+	if (id == null || isNaN(parseInt(id))) {
+		logger.error("doer-controller getRating missing doerId or doerId not integer " + id);
+		res.status(500).send({
+			message: "Error getRating Doer Id is missing or doerId not integer " + id,
+		});
+
+		return;
+	}
+
+    try {
+        var currentRating = await Rating.findOne({
+                            			where: {
+                            				doer_id: id,
+                            			},
+                            			attributes: {
+                            				exclude: ["updatedAt", "createdAt"],
+                            			},
+                            		});
+        console.log(JSON.stringify("current rating = " + currentRating));
+        if(currentRating == null || Object.keys(currentRating).length === 0) {
+           res.status(500).send({ message: "doer-controller getRating for doer Error retrieving rating doer id=" + id});
+           		return;
+           		}
+        logger.error("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(currentRating));
+        res.status(200).send(currentRating);
+    } catch (err) {
+        logger.error("doer-controller get rating for doer error rating doer with doerId: " + id + " error: " + err.message);
+	    res.status(500).send("failure to get rating doer with id = " + id + " ... error is: " + err.message);
+	    return;
+	}
+}
 // TODO
 async function getHistory(req, res) {
 	const id = req.query.id;
@@ -578,4 +606,5 @@ module.exports = {
 	rating,
 	updateAvailability,
 	getUpcomingJobs,
+	getRating
 };
