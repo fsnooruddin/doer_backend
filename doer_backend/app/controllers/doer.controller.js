@@ -163,7 +163,11 @@ async function findByIdDBCall(id) {
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
 			},
-			include: db.availability_slots,
+			include: [{model:db.availability_slots, attributes: {
+                                                                                                                                         				exclude: ["updatedAt", "createdAt"],
+                                                                                                                                         			}}, {model:db.ratings, as: "ratings", attributes: {
+                                                                                       				exclude: ["updatedAt", "createdAt"],
+                                                                                       			},}]
 		});
 
 		if (data == null) {
@@ -296,56 +300,6 @@ async function findByServicesAndDay(req, res) {
 			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
 		});
 	}
-}
-
-async function findByServicesAndDay_notused(req, res) {
-	var services = req.query.services;
-	var day = req.query.day;
-	if (services == null || services.trim() === "" || day == null || day.trim() === "") {
-		logger.error("doer-controller findByServicesAndDay -- services or day is null!");
-		res.status(500).send({
-			message: "Error retrieving Doer with services =" + services + ", day: " + day + " malformed input params.",
-		});
-		return;
-	}
-
-	services = "%" + services + "%";
-	day = "%" + day + "%";
-	logger.info("Doer-controller findByServicesAndDay services = " + services + ", day = " + day);
-
-	try {
-		let doers_found = await db.sequelize.query(
-			`SELECT  "doer"."doer_id",
-                     "doer"."name",
-                     "doer"."phone_number",
-                     "doer"."location",
-                     "doer"."services",
-                     "doer"."minimum_charges",
-                     "doer"."img_url",
-                     "availability_slots"."availability_slot_id",
-                     "availability_slots"."slot"
-                     FROM "doers" AS "doer"
-                     INNER JOIN
-                     "availability_slots" ON "doer"."doer_id" = "availability_slots"."doer_id"
-                     AND
-                     "doer"."services" ILIKE :svcs
-                     AND
-                     "availability_slots"."slot"::text ILIKE :day`,
-			{
-				replacements: { svcs: services, day: day },
-			}
-		);
-		logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0]));
-		res.status(200).send(doers_found[0]);
-	} catch (err) {
-		logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
-		res.status(500).send({
-			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
-		});
-	}
-
-	console.log("FOUND DOERS >>>>>");
-	console.log(doers_found[0]);
 }
 
 async function findByServicesAndDayDBCall(services, day) {
