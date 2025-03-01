@@ -90,9 +90,10 @@ async function create(req, res) {
 	try {
 		// Save Doer in the database
 		const new_doer = await Doer.create(data_obj, { transaction });
+		console.log(JSON.stringify(new_doer));
 		let nObj = {};
 		for (let i = 0; i < Object.keys(data_obj.availability.slots).length; i++) {
-			nObj = data_obj.availability.slots[i].slot;
+			nObj = data_obj.availability.slots[i];
 			nObj.doer_id = new_doer.doer_id;
 			console.log(JSON.stringify(nObj));
 			// create availability windows.
@@ -239,9 +240,9 @@ async function findByServicesAndDay(req, res) {
 	day = "%" + day + "%";
 	logger.info("Doer-controller findByServicesAndDay services = " + services + ", day = " + day);
 
-    let doers_found = {};
+	let doers_found = {};
 	try {
-		  doers_found = await db.sequelize.query(
+		doers_found = await db.sequelize.query(
 			`SELECT  "doer"."doer_id",
                      "doer"."name",
                      "doer"."phone_number",
@@ -272,21 +273,20 @@ async function findByServicesAndDay(req, res) {
 		console.log(JSON.stringify(doers_found[0][1]));
 		console.log(JSON.stringify(doers_found[1][0]));
 		let doer_slots = {};
-		for(let i = 0; i < doers_found.length;i++) {
+		for (let i = 0; i < doers_found.length; i++) {
+			console.log("FOUND DOERS >>>>>");
+			logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 
-		console.log("FOUND DOERS >>>>>");
-		logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-
-		    doer_slots = await Availability.findOne({
-            		where: {
-            			doer_id: doers_found[0][i].doer_id
-            		},
-            		attributes: {
-            			exclude: ["updatedAt", "createdAt"],
-            		},
-            	})
-		    doers_found[0][i].availability = doer_slots;
-		    logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			doer_slots = await Availability.findOne({
+				where: {
+					doer_id: doers_found[0][i].doer_id,
+				},
+				attributes: {
+					exclude: ["updatedAt", "createdAt"],
+				},
+			});
+			doers_found[0][i].availability = doer_slots;
+			logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 		}
 		res.status(200).send(doers_found[0]);
 		return;
@@ -347,7 +347,6 @@ async function findByServicesAndDay_notused(req, res) {
 	console.log("FOUND DOERS >>>>>");
 	console.log(doers_found[0]);
 }
-
 
 async function findByServicesAndDayDBCall(services, day) {
 	logger.info("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
@@ -472,30 +471,30 @@ async function rating(req, res) {
 	}
 	logger.info("Doer-controller rating doer id = " + id + "   rating = " + req.query.rating);
 
-    try {
-         var currentRating = await Rating.findOne({
-                                    			where: {
-                                    				doer_id: id,
-                                    			},
-                                    			attributes: {
-                                    				exclude: ["updatedAt", "createdAt"],
-                                    			},
-                                    		});
-        console.log(JSON.stringify("current rating = " + currentRating));
-        let new_rating = {};
-        if(currentRating == null || Object.keys(currentRating).length === 0) {
-             new_rating = await Rating.create({"doer_id": id, "total": req.query.rating, "count":1});
-        } else {
-            let new_total = parseInt(currentRating.total) + parseInt(req.query.rating);
-            let new_count = parseInt(currentRating.count) + 1;
-             new_rating = await currentRating.update({"total": new_total, "count":new_count});
-        }
-        logger.error("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(new_rating));
-        res.status(200).send(new_rating);
-    } catch (err) {
-        logger.error("doer-controller rate doer error rating doer with doerId: " + id + " error: " + err.message);
-	    res.status(500).send("failure to rate doer with id = " + id + " ... error is: " + err.message);
-	    return;
+	try {
+		var currentRating = await Rating.findOne({
+			where: {
+				doer_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		console.log(JSON.stringify("current rating = " + currentRating));
+		let new_rating = {};
+		if (currentRating == null || Object.keys(currentRating).length === 0) {
+			new_rating = await Rating.create({ doer_id: id, total: req.query.rating, count: 1 });
+		} else {
+			let new_total = parseInt(currentRating.total) + parseInt(req.query.rating);
+			let new_count = parseInt(currentRating.count) + 1;
+			new_rating = await currentRating.update({ total: new_total, count: new_count });
+		}
+		logger.error("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(new_rating));
+		res.status(200).send(new_rating);
+	} catch (err) {
+		logger.error("doer-controller rate doer error rating doer with doerId: " + id + " error: " + err.message);
+		res.status(500).send("failure to rate doer with id = " + id + " ... error is: " + err.message);
+		return;
 	}
 }
 
@@ -510,26 +509,26 @@ async function getRating(req, res) {
 		return;
 	}
 
-    try {
-        var currentRating = await Rating.findOne({
-                            			where: {
-                            				doer_id: id,
-                            			},
-                            			attributes: {
-                            				exclude: ["updatedAt", "createdAt"],
-                            			},
-                            		});
-        console.log(JSON.stringify("current rating = " + currentRating));
-        if(currentRating == null || Object.keys(currentRating).length === 0) {
-           res.status(500).send({ message: "doer-controller getRating for doer Error retrieving rating doer id=" + id});
-           		return;
-           		}
-        logger.error("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(currentRating));
-        res.status(200).send(currentRating);
-    } catch (err) {
-        logger.error("doer-controller get rating for doer error rating doer with doerId: " + id + " error: " + err.message);
-	    res.status(500).send("failure to get rating doer with id = " + id + " ... error is: " + err.message);
-	    return;
+	try {
+		var currentRating = await Rating.findOne({
+			where: {
+				doer_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		console.log(JSON.stringify("current rating = " + currentRating));
+		if (currentRating == null || Object.keys(currentRating).length === 0) {
+			res.status(500).send({ message: "doer-controller getRating for doer Error retrieving rating doer id=" + id });
+			return;
+		}
+		logger.error("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(currentRating));
+		res.status(200).send(currentRating);
+	} catch (err) {
+		logger.error("doer-controller get rating for doer error rating doer with doerId: " + id + " error: " + err.message);
+		res.status(500).send("failure to get rating doer with id = " + id + " ... error is: " + err.message);
+		return;
 	}
 }
 // TODO
@@ -606,5 +605,5 @@ module.exports = {
 	rating,
 	updateAvailability,
 	getUpcomingJobs,
-	getRating
+	getRating,
 };

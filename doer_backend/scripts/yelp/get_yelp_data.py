@@ -38,7 +38,7 @@ except ImportError:
     from urllib2 import HTTPError
     from urllib import quote
     from urllib import urlencode
-
+import math
 
 # Yelp Fusion no longer uses OAuth as of December 7, 2017.
 # You no longer need to provide Client ID to fetch Data
@@ -244,10 +244,10 @@ def getOpeningSchedule(zip_code_data):
         close_time = random.randrange(12, 24)
 
         out = ""
-        out = "{ \"slot\": {\"day\": " + "\"" + day + "\"" + "," + "\"time\": " + "\"" + str(open_time) + "-" + str(close_time) + "\"" + "}"
-        out = out + ", \"rate\": " + str(random.randrange(50,100)) + ","
-        out = out + "\"location\": " + "{ \"coordinates\": " + "{ \"latitude\": 22.222 " + "," + "\"longitude\":  333.333" + "}"
-        out = out + ", \"radius\": " + str(random.randrange(10,50)) + "}}"
+        out = "{ \"day\": " + "\"" + day + "\"" + "," + "\"start_time\": " + "\"" + str(open_time) + "\"," + "\"end_time\": " + "\"" + str(close_time) + "\""
+        out = out + ", \"rate\": " + "\"" + str(random.randrange(50,100))+ "\""  + ","
+        out = out +  "\"latitude\": \"22.222\"" + "," + "\"longitude\":  \"333.333\""
+        out = out + ", \"radius\": " + "\"" + str(random.randrange(10,50)) + "\"}"
 
         if( x == 0 ):
             tout = tout + out
@@ -288,17 +288,13 @@ def write_html_business(fh, tfh, response, zip_code_data):
 
 
     rating = '{'
-    rating = rating + '"rating": {0}'.format(response['rating'])
-    rating = rating + ','
-    rating = rating + '"raw": {'
-    rating = rating + '"total": {0}'.format(response['rating']*100)
+    rating = rating + '"total": {0}'.format(math.floor(response['rating']*100))
     rating = rating + ','
     rating = rating + '"count": {0}'.format(100)
     rating = rating + '}'
-    rating = rating + '}'
     print(rating)
 
-    cats = response['categories'];
+    cats = response['categories']
     first = 0
     ocats = ""
     for cat in cats:
