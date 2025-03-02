@@ -50,7 +50,7 @@ describe("MESSAGE API Tests -- Successful calls", () => {
 	});
 
 	test("Get Message by ID", async () => {
-		const res = await request.get(getMessageByIdUri + "?id=3");
+		const res = await request.get(getMessageByIdUri + "?id=1");
 		//  console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("message_id");
