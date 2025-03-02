@@ -27,7 +27,7 @@ const logger = require("../utils/Logger.js");
    }
  * @memberof Review
  */
-function create(req, res) {
+async function create(req, res) {
 	logger.info("req body in create review: ");
 	logger.info(req.body);
 
@@ -35,7 +35,7 @@ function create(req, res) {
 
 	try {
 		// Save review in the database
-		var new_review = Review.create(data_obj);
+		var new_review = await Review.create(data_obj);
 		logger.info("Success creating review with review data =" + req.body);
 		res.status(200).send(new_review);
 		return;

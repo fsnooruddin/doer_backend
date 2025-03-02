@@ -15,6 +15,8 @@ const logger = require("../utils/Logger.js");
 const Availability = db.availability_slots;
 const Rating = db.ratings;
 const { sql } = require("@sequelize/core");
+	const jobs = require("./job.controller.js");
+
 
 /**
  * Create a Doer
@@ -246,6 +248,25 @@ async function findByServicesAndDay(req, res) {
 
 	let doers_found = {};
 	try {
+	    doers_found = await findByServicesAndDayDBCall(services, day);
+        logger.info("doer-controller findByServicesAndDay -- services is " + services + " returning " + JSON.stringify(doers_found));
+        res.status(200).send(doers_found);
+        return;
+	} catch (err) {
+	logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
+    		res.status(500).send({
+    			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
+    		});
+    		return;
+	}
+}
+
+async function findByServicesAndDayDBCall(services, day) {
+	logger.info("Doer-controller findByServicesAndDayDBCall services = " + services + " day = " + day);
+
+
+var doers_found = {};
+	try {
 		doers_found = await db.sequelize.query(
 			`SELECT  "doer"."doer_id",
                      "doer"."name",
@@ -273,13 +294,11 @@ async function findByServicesAndDay(req, res) {
 				replacements: { svcs: services, day: day },
 			}
 		);
-		console.log(JSON.stringify(doers_found[0][0]));
-		console.log(JSON.stringify(doers_found[0][1]));
-		console.log(JSON.stringify(doers_found[1][0]));
+
 		let doer_slots = {};
-		for (let i = 0; i < doers_found.length; i++) {
+		for (let i = 0; i < doers_found[0].length; i++) {
 			console.log("FOUND DOERS >>>>>");
-			logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 
 			doer_slots = await Availability.findOne({
 				where: {
@@ -290,9 +309,39 @@ async function findByServicesAndDay(req, res) {
 				},
 			});
 			doers_found[0][i].availability = doer_slots;
-			logger.info("doer-controller findByServicesAndDay -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			return doers_found[0];
 		}
-		res.status(200).send(doers_found[0]);
+		} catch (err) {
+			logger.error("doer-controller findByServicesAndDayDBCall -- services is " + services + " error is " + err.message);
+        	return null;
+		}
+
+	logger.error("findByServicesAndDayDBCall fall through!!!!  ");
+
+}
+
+async function findForJob(req, res) {
+	var id = req.query.jobId;
+
+    var job_to_fill = await jobs.findByIdDBCall(id);
+    if(job_to_fill == null) {
+         logger.error("doer-controller findForJob -- can't find job with id = " + id);
+    		res.status(500).send({
+    			message: "Error retrieving Job findForJob -- can't find job with id = " + id,
+    		});
+    		return;
+    }
+    console.log(JSON.stringify(job_to_fill));
+    var services = "%" + job_to_fill.services + "%";
+    var day = "%Fri%"; //job_to_fill.day;
+	var doers_found = await findByServicesAndDayDBCall(services, day);
+
+    // filter by distance
+    // filter by distance
+	try {
+
+		res.status(200).send(doers_found);
 		return;
 	} catch (err) {
 		logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
@@ -301,32 +350,6 @@ async function findByServicesAndDay(req, res) {
 		});
 	}
 }
-
-async function findByServicesAndDayDBCall(services, day) {
-	logger.info("Doer-controller findByServicesAndDay services = " + services + " day = " + day);
-	let data = null;
-	try {
-		data = await Doer.findAll({
-			where: {
-				services: {
-					[Op.iLike]: services,
-				},
-				availability: {
-					[Op.iLike]: day,
-				},
-			},
-			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
-		});
-	} catch (err) {
-		logger.info("Error retrieving Doer with services =" + services + " error: " + err.message);
-		return null;
-	}
-	logger.info("findByServicesAndDayDirect returning  " + data);
-	return data;
-}
-
 /**
  * Update Availability of a Doer
  * @param {number} id - ID of Doer to update
@@ -560,4 +583,5 @@ module.exports = {
 	updateAvailability,
 	getUpcomingJobs,
 	getRating,
+	findForJob
 };

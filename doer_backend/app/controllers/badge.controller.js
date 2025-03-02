@@ -32,7 +32,7 @@ async function create(req, res) {
 
 	try {
 		// Save Badge in the database
-		let new_badge = Badge.create(req.body);
+		let new_badge = await Badge.create(req.body);
 		logger.info("Success creating Badge with Badge data =" + req.body);
 		res.status(200).send(new_badge);
 		return;

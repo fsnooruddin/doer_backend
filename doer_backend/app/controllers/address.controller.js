@@ -42,7 +42,7 @@ async function create(req, res) {
 
 	try {
 		// Save Address in the database
-		let new_address = Address.create(req.body);
+		let new_address = await Address.create(req.body);
 		logger.info("Success creating Address with Address data =" + JSON.stringify(new_address));
 		res.status(200).send(new_address);
 		return;
