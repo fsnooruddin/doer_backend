@@ -18,6 +18,7 @@ module.exports = (app) => {
 	router.get("/doer/getById", doers.findById);
 	router.get("/doer/getByServices", doers.findByServices);
 	router.get("/doer/getByServicesAndDay", doers.findByServicesAndDay);
+	router.get("/doer/getForJob", doers.findForJob);
 	router.get("/doer/getHistory", doers.getHistory);
 	router.post("/doer/rate", doers.rating);
 	router.post("/doer/updateAvailability", doers.updateAvailability);
@@ -40,6 +41,7 @@ module.exports = (app) => {
 	router.post("/trip/complete", doer_trips.completeDoerTrip);
 	router.post("/trip/updateLocation", doer_trips.updateDoerTripLocation);
 	router.get("/trip/getByJobId", doer_trips.getDoerTripByJobId);
+	router.get("/trip/getByDoerId", doer_trips.getDoerTripByDoerId);
 
 	router.post("/category/create", categories.create);
 	router.get("/category/getById", categories.findOneById);
