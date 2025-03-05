@@ -504,5 +504,5 @@ module.exports = {
 	startJob,
 	completeJob,
 	generateInvoice,
-	addJobCost
+	addJobCost,
 };

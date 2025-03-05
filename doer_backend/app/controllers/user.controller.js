@@ -99,11 +99,10 @@ async function getAddresses(req, res) {
 
 	logger.info("address_request-controller getAddressesForUser, userId = " + id);
 
-    const user = await User.findByPk(id); // Retrieve a user
+	const user = await User.findByPk(id); // Retrieve a user
 	const data = await user.getAddresses();
 	logger.info("user-controller getAddresses,  userId " + id + " returning " + JSON.stringify(data));
 	res.status(200).send(data);
-
 }
 
 async function addAddress(req, res) {
@@ -116,21 +115,19 @@ async function addAddress(req, res) {
 		return;
 	}
 
-logger.info("address_request-controller add adder, address = " + JSON.stringify(address));
+	logger.info("address_request-controller add adder, address = " + JSON.stringify(address));
 	logger.info("address_request-controller add address, userId = " + id);
 
-    const user = await User.findByPk(id); // Retrieve a user
+	const user = await User.findByPk(id); // Retrieve a user
 	//const data = await user.createAddress(JSON.stringify(address));
 	const data = await user.createAddress(address);
 	logger.info("user-controller add address,  userId " + id + " returning " + JSON.stringify(data));
 	res.status(200).send(data);
-
 }
 
 module.exports = {
 	create,
 	findById,
 	getAddresses,
-	addAddress
+	addAddress,
 };
-

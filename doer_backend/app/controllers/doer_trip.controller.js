@@ -158,16 +158,16 @@ async function getDoerTripByJobId(req, res) {
 				job_id: id,
 			},
 			attributes: {
-            				exclude: ["updatedAt", "createdAt"],
-            			},
-            			include: [
-            				{
-            					model: DoerTripLocationUpdate,
-            					attributes: {
-            						exclude: ["updatedAt", "createdAt"],
-            					},
-            				},
-            			],
+				exclude: ["updatedAt", "createdAt"],
+			},
+			include: [
+				{
+					model: DoerTripLocationUpdate,
+					attributes: {
+						exclude: ["updatedAt", "createdAt"],
+					},
+				},
+			],
 		});
 
 		logger.info("doer-trip-controller findByJobId -- job id is " + id + " returning " + JSON.stringify(data));

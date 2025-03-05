@@ -15,8 +15,7 @@ const logger = require("../utils/Logger.js");
 const Availability = db.availability_slots;
 const Rating = db.ratings;
 const { sql } = require("@sequelize/core");
-	const jobs = require("./job.controller.js");
-
+const jobs = require("./job.controller.js");
 
 /**
  * Create a Doer
@@ -165,11 +164,21 @@ async function findByIdDBCall(id) {
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
 			},
-			include: [{model:db.availability_slots, attributes: {
-                                                                                                                                         				exclude: ["updatedAt", "createdAt"],
-                                                                                                                                         			}}, {model:db.ratings, as: "ratings", attributes: {
-                                                                                       				exclude: ["updatedAt", "createdAt"],
-                                                                                       			},}]
+			include: [
+				{
+					model: db.availability_slots,
+					attributes: {
+						exclude: ["updatedAt", "createdAt"],
+					},
+				},
+				{
+					model: db.ratings,
+					as: "ratings",
+					attributes: {
+						exclude: ["updatedAt", "createdAt"],
+					},
+				},
+			],
 		});
 
 		if (data == null) {
@@ -248,24 +257,23 @@ async function findByServicesAndDay(req, res) {
 
 	let doers_found = {};
 	try {
-	    doers_found = await findByServicesAndDayDBCall(services, day);
-        logger.info("doer-controller findByServicesAndDay -- services is " + services + " returning " + JSON.stringify(doers_found));
-        res.status(200).send(doers_found);
-        return;
+		doers_found = await findByServicesAndDayDBCall(services, day);
+		logger.info("doer-controller findByServicesAndDay -- services is " + services + " returning " + JSON.stringify(doers_found));
+		res.status(200).send(doers_found);
+		return;
 	} catch (err) {
-	logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
-    		res.status(500).send({
-    			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
-    		});
-    		return;
+		logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
+		res.status(500).send({
+			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
+		});
+		return;
 	}
 }
 
 async function findByServicesAndDayDBCall(services, day) {
 	logger.info("Doer-controller findByServicesAndDayDBCall services = " + services + " day = " + day);
 
-
-/*
+	/*
 SELECT  "doer_trip"."doer_trip_id",
                   "doer_trip"."description"
                   FROM "doer_trips" AS "trips"
@@ -275,9 +283,7 @@ SELECT  "doer_trip"."doer_trip_id",
 
 */
 
-
-
-var doers_found = {};
+	var doers_found = {};
 	try {
 		doers_found = await db.sequelize.query(
 			`SELECT  "doer"."doer_id",
@@ -300,11 +306,10 @@ var doers_found = {};
 			}
 		);
 
-
 		for (let i = 0; i < doers_found[0].length; i++) {
-		    var doer_slots = {};
+			var doer_slots = {};
 			console.log("FOUND DOERS >>>>>");
-	//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 
 			doer_slots = await Availability.findAll({
 				where: {
@@ -314,25 +319,23 @@ var doers_found = {};
 					exclude: ["updatedAt", "createdAt"],
 				},
 			});
-		//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
+			//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
 			doers_found[0][i].availability = doer_slots;
 			logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-
 		}
-		} catch (err) {
-			logger.error("doer-controller findByServicesAndDayDBCall -- services is " + services + " error is " + err.message);
-        	return null;
-		}
+	} catch (err) {
+		logger.error("doer-controller findByServicesAndDayDBCall -- services is " + services + " error is " + err.message);
+		return null;
+	}
 
-		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
-return doers_found[0];
+	logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
+	return doers_found[0];
 }
 
 async function findByServicesDayAndTimeDBCall(services, day, rstart, end) {
 	logger.info("Doer-controller findByServicesDayAndTimeDBCall services = " + services + " day = " + day);
 
-
-var doers_found = {};
+	var doers_found = {};
 	try {
 		doers_found = await db.sequelize.query(
 			`SELECT  "doer"."doer_id",
@@ -358,11 +361,10 @@ var doers_found = {};
 			}
 		);
 
-
 		for (let i = 0; i < doers_found[0].length; i++) {
-		    var doer_slots = {};
+			var doer_slots = {};
 			console.log("FOUND DOERS >>>>>");
-	//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 
 			doer_slots = await Availability.findAll({
 				where: {
@@ -372,62 +374,63 @@ var doers_found = {};
 					exclude: ["updatedAt", "createdAt"],
 				},
 			});
-		//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
+			//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
 			doers_found[0][i].availability = doer_slots;
 			logger.info("doer-controller findByServicesDayAndTimeDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-
 		}
-		} catch (err) {
-			logger.error("doer-controller findByServicesDayAndTimeDBCall -- services is " + services + " error is " + err.message);
-        	return null;
-		}
+	} catch (err) {
+		logger.error("doer-controller findByServicesDayAndTimeDBCall -- services is " + services + " error is " + err.message);
+		return null;
+	}
 
-		logger.info("doer-controller findByServicesDayAndTimeDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
-return doers_found[0];
+	logger.info("doer-controller findByServicesDayAndTimeDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
+	return doers_found[0];
 }
 
 async function findForJob(req, res) {
 	var id = req.query.jobId;
 
-    var job_to_fill = await jobs.findByIdDBCall(id);
-    if(job_to_fill == null) {
-         logger.error("doer-controller findForJob -- can't find job with id = " + id);
-    		res.status(500).send({
-    			message: "Error retrieving Job findForJob -- can't find job with id = " + id,
-    		});
-    		return;
-    }
-    console.log(JSON.stringify(job_to_fill));
-    var services = "%" + job_to_fill.services + "%";
-    var day = job_to_fill.day;
+	var job_to_fill = await jobs.findByIdDBCall(id);
+	if (job_to_fill == null) {
+		logger.error("doer-controller findForJob -- can't find job with id = " + id);
+		res.status(500).send({
+			message: "Error retrieving Job findForJob -- can't find job with id = " + id,
+		});
+		return;
+	}
+	console.log(JSON.stringify(job_to_fill));
+	var services = "%" + job_to_fill.services + "%";
+	var day = job_to_fill.day;
 	var doers_found = await findByServicesDayAndTimeDBCall(services, day, job_to_fill.req_time);
 
-    // filter by distance
-    var ret_arry = [];
+	// filter by distance
+	var ret_arry = [];
 	try {
-        for(var i = 0;i<doers_found.length;i++) {
-            var doer = doers_found[i];
-             console.log("doer 0 = " + JSON.stringify(doer));
-            console.log("doer 1 = " + JSON.stringify(doer.availability));
+		for (var i = 0; i < doers_found.length; i++) {
+			var doer = doers_found[i];
+			console.log("doer 0 = " + JSON.stringify(doer));
+			console.log("doer 1 = " + JSON.stringify(doer.availability));
 
-            for(var j = 0;j<doer.availability.length;j++) {
-                console.log("doer 2 = " + JSON.stringify(doer.availability[j]));
-                var d_radius = doer.availability[j].radius;
+			for (var j = 0; j < doer.availability.length; j++) {
+				console.log("doer 2 = " + JSON.stringify(doer.availability[j]));
+				var d_radius = doer.availability[j].radius;
 
-                var dist = Utils.getDistanceBetweenTwoPoint(job_to_fill.latitude,
-                job_to_fill.longitude,
-                doer.availability[j].latitude,
-                doer.availability[j].longitude);
-                logger.info("distance between job and doer id = " + doer.doer_id + " is " + dist);
-                if(dist < d_radius) {
-                    ret_arry.push(doer);
-                    logger.info(" doer id = " + doer.doer_id + " is within range");
-                    break;
-                } else {
-                    logger.info(" doer id = " + doer.doer_id + " is out of range");
-                }
-            }
-        }
+				var dist = Utils.getDistanceBetweenTwoPoint(
+					job_to_fill.latitude,
+					job_to_fill.longitude,
+					doer.availability[j].latitude,
+					doer.availability[j].longitude
+				);
+				logger.info("distance between job and doer id = " + doer.doer_id + " is " + dist);
+				if (dist < d_radius) {
+					ret_arry.push(doer);
+					logger.info(" doer id = " + doer.doer_id + " is within range");
+					break;
+				} else {
+					logger.info(" doer id = " + doer.doer_id + " is out of range");
+				}
+			}
+		}
 		res.status(200).send(ret_arry);
 		return;
 	} catch (err) {
@@ -670,5 +673,5 @@ module.exports = {
 	updateAvailability,
 	getUpcomingJobs,
 	getRating,
-	findForJob
+	findForJob,
 };

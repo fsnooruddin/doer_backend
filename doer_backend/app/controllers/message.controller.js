@@ -9,7 +9,7 @@ const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
 // Create and Save a new Message
-function create(req, res) {
+async function create(req, res) {
 	if (Object.keys(req.body).length === 0) {
 		logger.error("message-controller create ... body null = " + JSON.stringify(req.body));
 		res.status(400).send("Error creating message, request body is null.");
@@ -20,17 +20,18 @@ function create(req, res) {
 	logger.info("new message in create message: " + JSON.stringify(req.body));
 
 	// Save message in the database
-	Message.create(data_obj)
-		.then((data) => {
-			logger.info("Success creating message with message data =" + req.body);
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error creating message with message data =" + req.body + " error: " + err.message);
-			res.status(500).send({
-				message: err.message || "Some error occurred while creating the message.",
-			});
+	try {
+		var new_message = await Message.create(data_obj);
+
+		logger.info("Success creating message");
+		res.status(200).send(new_message);
+		return;
+	} catch (err) {
+		logger.error("Error creating message with message data =" + req.body + " error: " + err.message);
+		res.status(500).send({
+			message: err.message || "Some error occurred while creating the message.",
 		});
+	}
 }
 
 // Find a single message with an id
