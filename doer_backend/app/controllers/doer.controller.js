@@ -7,7 +7,7 @@
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Doer = db.doers;
-const Job = db.job_requests;
+const Job = db.jobs;
 const Invoice = db.invoices;
 const Op = db.Sequelize.Op;
 const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
@@ -603,62 +603,77 @@ async function getHistory(req, res) {
 	const id = req.query.id;
 	logger.info("Doer-controller getHistory id = " + id);
 
-	const doer = await Doer.findOne({
-		where: { doer_id: id },
-		attributes: { exclude: ["updatedAt"] },
-	})
-		.then((data) => {
-			const invoices = Invoice.findAll({ where: { doer_id: id } });
-			logger.info("Doer-controller getHistory invoices =  = " + JSON.stringify(invoices));
-			return res.status(500).send(data);
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: "Error retrieving doer for rate with doer id=" + id + " error: " + err.message,
-			});
+	var doer = null;
+	var completed_jobs = null;
+	var accepted_jobs = null;
+	var invoices = null;
+	try {
+		doer = await Doer.findOne({
+			where: { doer_id: id },
+			attributes: { exclude: ["updatedAt"] },
 		});
+	} catch (err) {
+		res.status(500).send({
+			message: "Error retrieving doer for doer getHistory = " + id + " error: " + err.message,
+		});
+	}
 
-	/*
-	const completed_jobs_history = await Job.findAll({
-		where: { doer_id: id, status: 'completed' },
-		attributes: { exclude: ["updatedAt"] },
-	})
-		.then((data) => {
-			return data;
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: "Error retrieving completed_jobs for doer id=" + id + " error: " + err.message,
-			});
+	try {
+		invoices = Invoice.findAll({ where: { doer_id: id } });
+		logger.info("Doer-controller getHistory invoices =  = " + JSON.stringify(invoices));
+	} catch (err) {
+		res.status(500).send({
+			message: "Error retrieving invoices for doer getHistory = " + id + " error: " + err.message,
 		});
+	}
 
-	const accepted_jobs_history = await Job.findAll({
-		where: { doer_id: id, status: 'accepted' },
-		attributes: { exclude: ["updatedAt"] },
-	})
-		.then((data) => {
-			return data;
-		})
-		.catch((err) => {
-			res.status(500).send({
-				message: "Error retrieving accepted_jobs for doer id=" + id + " error: " + err.message,
-			});
+	try {
+		completed_jobs = await Job.findAll({
+			where: { doer_id: id, status: "completed" },
+			attributes: { exclude: ["updatedAt"] },
 		});
+	} catch (err) {
+		res.status(500).send({
+			message: "Error retrieving completed jobs for doer getHistory = " + id + " error: " + err.message,
+		});
+	}
+
+	try {
+		accepted_jobs = await Job.findAll({
+			where: { doer_id: id, status: "accepted" },
+			attributes: { exclude: ["updatedAt"] },
+		});
+	} catch (err) {
+		res.status(500).send({
+			message: "Error retrieving accepted jobs for doer getHistory = " + id + " error: " + err.message,
+		});
+	}
 
 	const history = {
 		doer_profile: doer,
-		completed_jobs: completed_jobs_history,
-		accepted_jobs: accepted_jobs_history,
+		completed_jobs: completed_jobs,
+		accepted_jobs: accepted_jobs,
 	};
 
-	res.send(history);
-	*/
+	res.status(200).send(history);
 }
 
 // TODO
 async function getUpcomingJobs(req, res) {
 	const id = req.query.id;
-	logger.info("Doer-controller getHistory id = " + id);
+	logger.info("Doer-controller getUpcomingJobs id = " + id);
+	try {
+		const accepted_jobs = await Job.findAll({
+			where: { doer_id: id, status: "accepted" },
+			attributes: { exclude: ["updatedAt"] },
+		});
+		logger.info("Doer-controller getUpcomingJobs id = " + id + "  returning " + JSON.stringify(accepted_jobs));
+		res.status(200).send(accepted_jobs);
+	} catch (err) {
+		res.status(500).send({
+			message: "Error retrieving accepted_jobs for doer id=" + id + " error: " + err.message,
+		});
+	}
 }
 
 module.exports = {
