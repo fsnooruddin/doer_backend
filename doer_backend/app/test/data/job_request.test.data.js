@@ -1,21 +1,19 @@
 const reqCreateJobRequest_1 = {
   "user_id": "1",
-  "longitude": "94588",
-  "latitude": "94588",
+  "longitude": "-121.7680088",
+  "latitude": "37.6818745",
   "day": "Fri",
-  "req_start": "12",
-  "req_end": "5",
+  "req_time": "12",
   "services": "Electrician",
   "description": "fix sink"
 }
 
 const reqCreateJobRequest_2 = {
    "user_id": "2",
-   "longitude": "94588",
-   "latitude": "94588",
+   "longitude": "-117.91450359999999",
+   "latitude": "33.8352932",
    "day": "Fri",
-   "req_start": "12",
-   "req_end": "5",
+   "req_time": "12",
    "services": "Landscapring",
    "description": "plant roses"
 }
