@@ -10,9 +10,9 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 		},
 		longitude: {
-        			type: Sequelize.FLOAT,
-        			allowNull: false,
-        		},
+			type: Sequelize.FLOAT,
+			allowNull: false,
+		},
 		user_id: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -25,14 +25,11 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING,
 			allowNull: false,
 		},
-		req_start: {
-        			type: Sequelize.STRING,
-        			allowNull: false,
-        		},
-        		req_end: {
-                			type: Sequelize.STRING,
-                			allowNull: false,
-                		},
+		req_time: {
+			type: Sequelize.STRING,
+			allowNull: false,
+		},
+
 		services: {
 			type: Sequelize.STRING,
 			allowNull: false,

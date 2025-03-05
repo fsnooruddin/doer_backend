@@ -14,9 +14,9 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 		},
 		count: {
-        			type: Sequelize.INTEGER,
-        			allowNull: false,
-        		}
+			type: Sequelize.INTEGER,
+			allowNull: false,
+		},
 	});
 
 	return Rating;
