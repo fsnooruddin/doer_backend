@@ -49,6 +49,12 @@ function init_db() {
     db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
     db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
 
+    db.doer_trips.hasMany(db.doer_trip_location_updates, { foreignKey: "doer_trip_id"});
+    db.doer_trip_location_updates.belongsTo(db.doer_trips, { foreignKey: "doer_trip_id"});
+
+    db.jobs.hasMany(db.doer_trips, { foreignKey: "job_id", as: "doer_trips" });
+    db.doer_trips.belongsTo(db.jobs, { foreignKey: "job_id", as: "doer_trips" });
+
 	db.users.hasMany(db.addresses, { foreignKey: "user_id", as: "addresses" });
 	//db.addresses.belongsTo(db.users, { foreignKey: "user_id", as: "users" });
 
@@ -58,7 +64,7 @@ function init_db() {
 	db.doers.hasMany(db.jobs, { foreignKey: "doer_id", as: "jobs" });
 	db.jobs.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
-	db.doers.hasMany(db.ratings, { foreignKey: "doer_id", as: "ratings" });
+	db.doers.hasOne(db.ratings, { foreignKey: "doer_id", as: "ratings" });
 
 	db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
 

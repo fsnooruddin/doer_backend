@@ -265,6 +265,18 @@ async function findByServicesAndDayDBCall(services, day) {
 	logger.info("Doer-controller findByServicesAndDayDBCall services = " + services + " day = " + day);
 
 
+/*
+SELECT  "doer_trip"."doer_trip_id",
+                  "doer_trip"."description"
+                  FROM "doer_trips" AS "trips"
+                  INNER JOIN
+                  "doer_trip_location_updates" ON "trips"."doer_trip_id" = "doer_trip_location_updates"."doer_trip_id" AND
+"trips"."doer_id" = “1";
+
+*/
+
+
+
 var doers_found = {};
 	try {
 		doers_found = await db.sequelize.query(
@@ -274,15 +286,8 @@ var doers_found = {};
                      "doer"."location",
                      "doer"."services",
                      "doer"."minimum_charges",
-                     "doer"."img_url",
-                     "availability_slots"."availability_slot_id",
-                     "availability_slots"."day",
-                     "availability_slots"."start_time",
-                     "availability_slots"."end_time",
-                     "availability_slots"."latitude",
-                     "availability_slots"."longitude",
-                     "availability_slots"."radius",
-                     "availability_slots"."rate"
+                     "doer"."img_url"
+
                      FROM "doers" AS "doer"
                      INNER JOIN
                      "availability_slots" ON "doer"."doer_id" = "availability_slots"."doer_id"
@@ -295,12 +300,13 @@ var doers_found = {};
 			}
 		);
 
-		let doer_slots = {};
-		for (let i = 0; i < doers_found[0].length; i++) {
-			console.log("FOUND DOERS >>>>>");
-			logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 
-			doer_slots = await Availability.findOne({
+		for (let i = 0; i < doers_found[0].length; i++) {
+		    var doer_slots = {};
+			console.log("FOUND DOERS >>>>>");
+	//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+
+			doer_slots = await Availability.findAll({
 				where: {
 					doer_id: doers_found[0][i].doer_id,
 				},
@@ -308,17 +314,76 @@ var doers_found = {};
 					exclude: ["updatedAt", "createdAt"],
 				},
 			});
+		//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
 			doers_found[0][i].availability = doer_slots;
 			logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-			return doers_found[0];
+
 		}
 		} catch (err) {
 			logger.error("doer-controller findByServicesAndDayDBCall -- services is " + services + " error is " + err.message);
         	return null;
 		}
 
-	logger.error("findByServicesAndDayDBCall fall through!!!!  ");
+		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
+return doers_found[0];
+}
 
+async function findByServicesDayAndTimeDBCall(services, day, rstart, end) {
+	logger.info("Doer-controller findByServicesDayAndTimeDBCall services = " + services + " day = " + day);
+
+
+var doers_found = {};
+	try {
+		doers_found = await db.sequelize.query(
+			`SELECT  "doer"."doer_id",
+                     "doer"."name",
+                     "doer"."phone_number",
+                     "doer"."location",
+                     "doer"."services",
+                     "doer"."minimum_charges",
+                     "doer"."img_url"
+
+                     FROM "doers" AS "doer"
+                     INNER JOIN
+                     "availability_slots" ON "doer"."doer_id" = "availability_slots"."doer_id"
+                     AND
+                     "doer"."services" ILIKE :svcs
+                     AND
+                     "availability_slots"."day" ILIKE :day
+                     AND
+                     "availability_slots"."end_time" > :rstart
+                     `,
+			{
+				replacements: { svcs: services, day: day, rstart: rstart },
+			}
+		);
+
+
+		for (let i = 0; i < doers_found[0].length; i++) {
+		    var doer_slots = {};
+			console.log("FOUND DOERS >>>>>");
+	//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+
+			doer_slots = await Availability.findAll({
+				where: {
+					doer_id: doers_found[0][i].doer_id,
+				},
+				attributes: {
+					exclude: ["updatedAt", "createdAt"],
+				},
+			});
+		//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
+			doers_found[0][i].availability = doer_slots;
+			logger.info("doer-controller findByServicesDayAndTimeDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+
+		}
+		} catch (err) {
+			logger.error("doer-controller findByServicesDayAndTimeDBCall -- services is " + services + " error is " + err.message);
+        	return null;
+		}
+
+		logger.info("doer-controller findByServicesDayAndTimeDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
+return doers_found[0];
 }
 
 async function findForJob(req, res) {
@@ -334,14 +399,36 @@ async function findForJob(req, res) {
     }
     console.log(JSON.stringify(job_to_fill));
     var services = "%" + job_to_fill.services + "%";
-    var day = "%Fri%"; //job_to_fill.day;
-	var doers_found = await findByServicesAndDayDBCall(services, day);
+    var day = job_to_fill.day;
+	var doers_found = await findByServicesDayAndTimeDBCall(services, day, job_to_fill.req_time);
 
     // filter by distance
-    // filter by distance
+    var ret_arry = [];
 	try {
+        for(var i = 0;i<doers_found.length;i++) {
+            var doer = doers_found[i];
+             console.log("doer 0 = " + JSON.stringify(doer));
+            console.log("doer 1 = " + JSON.stringify(doer.availability));
 
-		res.status(200).send(doers_found);
+            for(var j = 0;j<doer.availability.length;j++) {
+                console.log("doer 2 = " + JSON.stringify(doer.availability[j]));
+                var d_radius = doer.availability[j].radius;
+
+                var dist = Utils.getDistanceBetweenTwoPoint(job_to_fill.latitude,
+                job_to_fill.longitude,
+                doer.availability[j].latitude,
+                doer.availability[j].longitude);
+                logger.info("distance between job and doer id = " + doer.doer_id + " is " + dist);
+                if(dist < d_radius) {
+                    ret_arry.push(doer);
+                    logger.info(" doer id = " + doer.doer_id + " is within range");
+                    break;
+                } else {
+                    logger.info(" doer id = " + doer.doer_id + " is out of range");
+                }
+            }
+        }
+		res.status(200).send(ret_arry);
 		return;
 	} catch (err) {
 		logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);

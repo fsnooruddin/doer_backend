@@ -58,17 +58,25 @@ async function startDoerTrip(req, res) {
  * @return {string|null} Review - null if failure, JSON object representing doer trips if success
  * @memberof DoerTrip
  */
-async function findByDoerId(req, res) {
+async function getDoerTripByDoerId(req, res) {
 	const id = req.query.id;
 	logger.info("DoerTrip-controller findOne id = " + id);
 	try {
-		const data = await DoerTrip.findOne({
+		const data = await DoerTrip.findAll({
 			where: {
 				doer_id: id,
 			},
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
 			},
+			include: [
+				{
+					model: DoerTripLocationUpdate,
+					attributes: {
+						exclude: ["updatedAt", "createdAt"],
+					},
+				},
+			],
 		});
 
 		if (data == null) {
@@ -79,9 +87,9 @@ async function findByDoerId(req, res) {
 		res.status(200).send(data);
 		return;
 	} catch (err) {
-		logger.error("Doer Trip-controller create, error from create is " + err.message);
+		logger.error("Doer Trip-controller getDoerTripByDoerId -- error from  is " + err.message);
 		res.status(500).send({
-			message: "Error retrieving Doer with id=" + id + " error: " + err.message,
+			message: "Error retrieving trips with Doer with id=" + id + " error: " + err.message,
 		});
 	}
 }
@@ -150,8 +158,16 @@ async function getDoerTripByJobId(req, res) {
 				job_id: id,
 			},
 			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
+            				exclude: ["updatedAt", "createdAt"],
+            			},
+            			include: [
+            				{
+            					model: DoerTripLocationUpdate,
+            					attributes: {
+            						exclude: ["updatedAt", "createdAt"],
+            					},
+            				},
+            			],
 		});
 
 		logger.info("doer-trip-controller findByJobId -- job id is " + id + " returning " + JSON.stringify(data));
@@ -213,5 +229,6 @@ module.exports = {
 	startDoerTrip,
 	updateDoerTripLocation,
 	getDoerTripByJobId,
+	getDoerTripByDoerId,
 	completeDoerTrip,
 };
