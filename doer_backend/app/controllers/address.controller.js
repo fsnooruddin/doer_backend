@@ -8,8 +8,6 @@ const utils = require("../utils/Utils.js");
 const Address = db.addresses;
 const Testing = db.tests;
 const Op = db.Sequelize.Op;
-//const { Address_requestCreateSchema } = require('../schemas/Address_request.js');
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
 /**
@@ -26,7 +24,7 @@ const logger = require("../utils/Logger.js");
  *     	city: "New York",
  *     	state: "NY",
  *     	country: "USA",
- *      	zipCode: "10001",
+ *      zipCode: "10001",
  *     };
  *
  * @memberof Address
@@ -55,7 +53,8 @@ async function create(req, res) {
 
 /**
  * Remove  a Address
- * @param {number} id - If of address being removed
+ * @param {number} id - Id of address being removed
+ * @return {object} string - null if success, error message if error
  * @memberof Address
  */
 async function remove(req, res) {
@@ -71,43 +70,60 @@ async function remove(req, res) {
 		return;
 	}
 
-	Address.destroy({
-		where: {
-			address_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("Address-controller remove -- Address id is " + id + " success");
-			res.status(200).send("success");
-		})
-		.catch((err) => {
-			logger.error("Error validating Address with Address id=" + id + " error: " + err.message);
-			res.status(500).send({
-				Address: "message: Error validating Address with id=" + id + " error: " + err.message,
-			});
+	try {
+		const ret_str = Address.destroy({
+			where: {
+				address_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt"],
+			},
 		});
+
+		logger.info("Address-controller remove -- Address id is " + id + " success");
+		res.status(200).send("success");
+	} catch (err) {
+		logger.error("Error removing Address with Address id=" + id + " error: " + err.message);
+		res.status(500).send({
+			Address: "message: Error removing Address with id=" + id + " error: " + err.message,
+		});
+	}
 }
 
 /**
- * Get address(es) for users
- * @param {object} Address - JSON representing Address
- * @param {number} userId - UserId for whom we are fetching addresses
+ * Update  an Address
+ * @param {address} address - JSON representing addresss being updated
+ * @return {object} string - null if success, error message if error
  * @memberof Address
  */
+async function update(req, res) {
+	logger.info(JSON.stringify(req.body));
+	const id = req.query.id;
 
-async function getAddressesForUser(req, res) {
-	const userId = req.query.userId;
+	if (id == null) {
+		logger.error("Error retrieving Addresss by ID, Address Id is missing");
+		res.status(500).send({
+			Address: "Error retrieving Addresss by id, Address Id is missing",
+		});
 
-	if (Utils.validateIntegerParam("user Id", userId) == false) {
-		logger.error("address_request-controller accept address missing user Id or user id is not integer: " + userId);
-		res.status(400).send({ message: "Error accepting address - user Id is missing or not integer" });
 		return;
 	}
 
-	logger.info("address_request-controller getAddressesForUser, userId = " + userId);
+	try {
+		var addr = await Address.findOne({
+			where: {
+				address_id: id,
+			},
+		});
+		var new_addr = await addr.set(req.body);
+		logger.info("Address-controller update -- Address id is " + id + " success, new address = " + JSON.stringify(new_addr));
+		res.status(200).send(new_addr);
+	} catch (err) {
+		logger.error("Error updating Address with Address id=" + id + " error: " + err.message);
+		res.status(500).send({
+			Address: "message: Error updating Address with id=" + id + " error: " + err.message,
+		});
+	}
 }
 
 async function testings(req, res) {
@@ -155,6 +171,7 @@ async function find_testings(req, res) {
 module.exports = {
 	create,
 	remove,
+	update,
 	testings,
 	find_testings,
 };
