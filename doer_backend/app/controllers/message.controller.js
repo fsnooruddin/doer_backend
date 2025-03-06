@@ -1,14 +1,26 @@
 "use strict";
 
+/**
+ * @namespace Message
+ */
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Message = db.messages;
 const Op = db.Sequelize.Op;
-//const { job_requestCreateSchema } = require('../schemas/job_request.js');
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
-// Create and Save a new Message
+/**
+ * Create a new message
+ *
+ * {
+ *    job_id: "1",
+ *    doer_id: "1",
+ *    user_id: "1",
+ *    message: "Best job Ever"
+ *  }
+ *
+ * @memberof Message
+ */
 async function create(req, res) {
 	if (Object.keys(req.body).length === 0) {
 		logger.error("message-controller create ... body null = " + JSON.stringify(req.body));
@@ -34,7 +46,13 @@ async function create(req, res) {
 	}
 }
 
-// Find a single message with an id
+/**
+ * Find a single message with an id
+ *
+ * @param {number} id - Id of message to retreive
+ *
+ * @memberof Message
+ */
 function findById(req, res) {
 	const id = req.query.id;
 	if (Utils.validateIntegerParam("Message Id", id) == false) {
@@ -67,7 +85,11 @@ function findById(req, res) {
 		});
 }
 
-// Find  messages for a doer
+/**
+ * Find all messages related to a job
+ * @param {number} jobId - Id of Job for which to get messages
+ * @memberof Message
+ */
 function findByJobId(req, res) {
 	const id = req.query.jobId;
 

@@ -10,8 +10,6 @@ const Doer = db.doers;
 const DoerTrip = db.doer_trips;
 const DoerTripLocationUpdate = db.doer_trip_location_updates;
 const Op = db.Sequelize.Op;
-const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
 /**

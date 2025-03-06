@@ -6,8 +6,6 @@
 const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Op = db.Sequelize.Op;
-//const { Image Upload_requestCreateSchema } = require('../schemas/Image Upload_request.js');
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
 /**

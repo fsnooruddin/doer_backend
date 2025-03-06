@@ -82,6 +82,7 @@ async function create(req, res) {
 		logger.info("req body in create doer: " + JSON.stringify(req.body));
 		//data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 		data_obj = JSON.parse(JSON.stringify(req.body));
+		console.log(JSON.stringify(data_obj));
 	} catch (err) {
 		logger.error("error parsing json + " + err.message);
 		res.status(500).send("Error parsing json body. error = " + err.message);
@@ -387,6 +388,13 @@ async function findByServicesDayAndTimeDBCall(services, day, rstart, end) {
 	return doers_found[0];
 }
 
+/**
+ * Find Doers for job
+ * @param {integer} jobId - Job Id for which we need doers. This will search for doers by services requested for the
+ * job, and then filter by availability and distance.
+ * @return {string|null} Doer - null if failure, JSON array object representing Doers offering services if success
+ * @memberof Doer
+ */
 async function findForJob(req, res) {
 	var id = req.query.jobId;
 
@@ -463,6 +471,7 @@ async function findForJob(req, res) {
  *   ]
  * @memberof Doer
  */
+// TODO
 async function updateAvailability(req, res) {
 	const id = req.query.id;
 	const avail = req.body.availability;
@@ -515,10 +524,10 @@ async function updateAvailability(req, res) {
 /**
  * Rate a Doer
  * @param {number} id - ID of Doer being rated
+ * @param {number} rating - New rating of Doer
  *
  * @memberof Doer
  */
-// TODO
 async function rating(req, res) {
 	const id = req.query.id;
 	if (id == null || isNaN(parseInt(id))) {
@@ -565,6 +574,11 @@ async function rating(req, res) {
 	}
 }
 
+/**
+ * Get Ratings for Doer
+ * @param {number} id - ID of Doer
+ * @memberof Doer
+ */
 async function getRating(req, res) {
 	const id = req.query.id;
 	if (id == null || isNaN(parseInt(id))) {
@@ -598,7 +612,13 @@ async function getRating(req, res) {
 		return;
 	}
 }
-// TODO
+
+/**
+ * Get the history for a doer. Includes completed, accepted jobs as well as invoices received
+ * @param {number} id - ID of Doer for whom we are fetching job history
+ *
+ * @memberof Doer
+ */
 async function getHistory(req, res) {
 	const id = req.query.id;
 	logger.info("Doer-controller getHistory id = " + id);
@@ -658,7 +678,12 @@ async function getHistory(req, res) {
 	res.status(200).send(history);
 }
 
-// TODO
+/**
+ * Get upcoming jobs for a Doer. Returns all accepted jobs by the Doer
+ * @param {number} id - ID of Doer
+ *
+ * @memberof Doer
+ */
 async function getUpcomingJobs(req, res) {
 	const id = req.query.id;
 	logger.info("Doer-controller getUpcomingJobs id = " + id);

@@ -6,10 +6,7 @@ const db = require("../models");
 const Utils = require("../utils/Utils.js");
 const Category = db.categories;
 const logger = require("../utils/Logger.js");
-
 const Op = db.Sequelize.Op;
-const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
-const Joi = require("joi");
 
 /**
  * Create a new Category

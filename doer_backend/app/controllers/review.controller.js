@@ -8,8 +8,6 @@ const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Review = db.reviews;
 const Op = db.Sequelize.Op;
-//const { job_requestCreateSchema } = require('../schemas/job_request.js');
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 
 /**

@@ -7,8 +7,6 @@ const db = require("../models");
 const utils = require("../utils/Utils.js");
 const OTP = db.otps;
 const Op = db.Sequelize.Op;
-//const { OTP_requestCreateSchema } = require('../schemas/OTP_request.js');
-const Joi = require("joi");
 const logger = require("../utils/Logger.js");
 const otpGenerator = require("otp-generator");
 

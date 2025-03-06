@@ -88,6 +88,12 @@ async function findById(req, res) {
 	}
 }
 
+/**
+ * Get all addresses for a user
+ * @param {number} id - User Id of user
+ * @return {string|null} User - null if failure, JSON object representing addresses if success
+ * @memberof User
+ */
 async function getAddresses(req, res) {
 	const id = req.query.userId;
 
@@ -105,29 +111,43 @@ async function getAddresses(req, res) {
 	res.status(200).send(data);
 }
 
-async function addAddress(req, res) {
-	const id = req.query.userId;
-	const address = req.body;
+/**
+ * Get the history for a User. Includes completed, accepted jobs as well as invoices received
+ * @param {number} id - ID of User for which we are fetching history
+ *
+ * @return {string|null} User - null if failure, JSON object representing addresses if success
+ * @memberof User
+ */
+async function getJobHistory(req, res) {
+	const id = req.query.id;
 
-	if (Utils.validateIntegerParam("user Id", id) == false) {
-		logger.error("address_request-controller add address missing user Id or user id is not integer: " + userId);
-		res.status(400).send({ message: "Error add address - user Id is missing or not integer" });
+	if (id == null) {
+		logger.error("user-controller findById missing userId");
+		res.status(500).send({
+			message: "Error retrieving User Id is missing",
+		});
+
 		return;
 	}
 
-	logger.info("address_request-controller add adder, address = " + JSON.stringify(address));
-	logger.info("address_request-controller add address, userId = " + id);
+	logger.info("User-controller findOne id = " + id);
+	const data = await User.findByPk(id, { include: [{ association: "addresses" }, { association: "badges" }] });
 
-	const user = await User.findByPk(id); // Retrieve a user
-	//const data = await user.createAddress(JSON.stringify(address));
-	const data = await user.createAddress(address);
-	logger.info("user-controller add address,  userId " + id + " returning " + JSON.stringify(data));
-	res.status(200).send(data);
+	if (data == null) {
+		logger.error("user-controller findById couldn't find user with userId " + id);
+		res.status(500).send({
+			message: "Error retrieving User with id=" + id,
+		});
+	} else {
+		logger.info("user-controller findById,  userId " + id + " returning " + JSON.stringify(data));
+		res.status(200).send(data);
+		return;
+	}
 }
 
 module.exports = {
 	create,
 	findById,
 	getAddresses,
-	addAddress,
+	getJobHistory,
 };
