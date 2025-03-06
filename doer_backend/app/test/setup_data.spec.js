@@ -51,8 +51,8 @@ var {
 	createAddressUri,
 	removeAddressByIdUri,
 	updateAddressUri,
-	 cancelJobUri,
-        abandonJobUri
+	cancelJobUri,
+    abandonJobUri
 } = require("./data/test.uris.js");
 
 async function getData(url) {
