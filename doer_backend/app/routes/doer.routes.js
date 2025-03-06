@@ -23,6 +23,7 @@ module.exports = (app) => {
 	router.post("/doer/rate", doers.rating);
 	router.post("/doer/updateAvailability", doers.updateAvailability);
     router.get("/doer/rating", doers.getRating);
+    router.get("/doer/getUpcomingJobs", doers.getUpcomingJobs);
 
 	router.post("/review/create", reviews.create);
 	router.get("/review/getById", reviews.findById);
@@ -34,8 +35,9 @@ module.exports = (app) => {
 	router.post("/job/start", jobs.startJob);
 	router.post("/job/complete", jobs.completeJob);
 	router.post("/job/generateInvoice", jobs.generateInvoice);
-	router.post("/job/addCost", jobs.addJobCost)
-
+	router.post("/job/addCost", jobs.addJobCost);
+	router.post("/job/cancel", jobs.cancelJob);
+    router.post("/job/abandon", jobs.abandonJob);
 
 	router.post("/trip/create", doer_trips.startDoerTrip);
 	router.post("/trip/complete", doer_trips.completeDoerTrip);
@@ -64,10 +66,10 @@ module.exports = (app) => {
 	router.post("/user/create", users.create);
 	router.get("/user/getById", users.findById);
 	router.get("/user/getAddresses", users.getAddresses);
-	router.post("/user/addAddress", users.addAddress);
 
     router.post("/address/create", addresses.create);
 	router.post("/address/remove", addresses.remove);
+	router.post("/address/update", addresses.update);
 
     router.post("/address/testings", addresses.testings);
     router.post("/address/find_testings", addresses.find_testings);

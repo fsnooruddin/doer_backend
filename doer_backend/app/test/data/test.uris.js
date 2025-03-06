@@ -13,8 +13,6 @@ const getReviewsForDoerRequestUri = "/review/getByDoerId";
 const getReviewByIdRequestUri = "/review/getById";
 
 
-
-
 const createDoerTripUri = "/trip/create";
 const completeDoerTripUri = "/trip/complete";
 const updateDoerTripUri = "/trip/updateLocation";
@@ -28,6 +26,9 @@ const startJobUri = "/job/start";
 const completeJobUri = "/job/complete";
 const findEligibleDoersUri = "/job/findEligibleDoers";
 const addCostToJobUri = "/job/addCost";
+const cancelJobUri = "/job/cancel";
+const abandonJobUri = "/job/abandon";
+
 
 const createMessageUri = "/message/create";
 const getMessageByIdUri = "/message/getById";
@@ -46,6 +47,7 @@ const assignBadgeUri = "/badge/assignBadgeToUser";
 
 const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";
+const updateAddressUri = "/address/update";
 
 module.exports = {
 	getCategoryByIdRequestUri,
@@ -83,5 +85,8 @@ module.exports = {
     getBadgeByIdUri,
     assignBadgeUri,
     createAddressUri,
-    removeAddressByIdUri
+    removeAddressByIdUri,
+    updateAddressUri,
+    cancelJobUri,
+    abandonJobUri
 };

@@ -14,8 +14,6 @@ const JobCosts = db.job_costs;
 const Op = db.Sequelize.Op;
 const KU = require("../Utils/KafkaUtil.js");
 const logger = require("../Utils/Logger.js");
-//const { job_requestCreateSchema } = require('../schemas/job_request.js');
-const Joi = require("joi");
 // https://www.zipcodeapi.com/rest/QZPX7dSqfyw89CJaAwX37gNO10EoQM2w7Op47UhhyTPB75eMlJPlDc5KkXz2mL0t/distance.json/94588/94104/km
 
 /**
@@ -240,6 +238,82 @@ async function acceptJob(req, res) {
 		return;
 	} catch (error) {
 		logger.error("job_request-controller accept job failed with error " + error);
+		res.status(500).send("job update failed   " + error);
+		return;
+	}
+}
+
+/**
+ * Called by a Doer to abandon a job.
+ * @param {number} doerId - Doer abandonding the job
+ * @param {number} jobId - Job being abandonded
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Job
+ */
+async function abandonJob(req, res) {
+	const doerId = req.query.doerId;
+	const jobId = req.query.jobId;
+    console.log("abandon job = " + doerId + "  job id " + jobId);
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
+		logger.error("job_request-controller abandon job missing job Id or job Id not integer: " + jobId);
+		res.status(400).send({ message: "Error abandoning Job - Job Id is missing or job id is not integer" });
+		return;
+	}
+
+	if (Utils.validateIntegerParam("Doer Id", doerId) == false) {
+		logger.error("job_request-controller abandon job missing doer Id or doer id is not integer: " + doerId);
+		res.status(400).send({ message: "Error abandoning Job - Doer Id is missing or not integer" });
+		return;
+	}
+
+	logger.info("job_request-controller abandonJob, doerId = " + doerId + " job id = " + jobId);
+
+	try {
+		await Job.update({status: "abandoned" }, { where: { job_id: jobId } });
+		logger.info("job_request-controller abandonJob SUCCESS, doerId = " + doerId + " job id = " + jobId);
+		updateJobHistory(jobId, "status", "abandoned", "doer", doerId);
+		res.status(200).send("abandon job success");
+		return;
+	} catch (error) {
+		logger.error("job_request-controller abandon job failed with error " + error);
+		res.status(500).send("job update failed   " + error);
+		return;
+	}
+}
+
+/**
+ * Called by a User to cancel a job.
+ * @param {number} userId - User canceling the job
+ * @param {number} jobId - Job being canceled
+ * @return {string|null} error string - null if success, error details if failure
+ * @memberof Job
+ */
+async function cancelJob(req, res) {
+	const userId = req.query.userId;
+	const jobId = req.query.jobId;
+
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
+		logger.error("job_request-controller cancel job missing job Id or job Id not integer: " + jobId);
+		res.status(400).send({ message: "Error canceling Job - Job Id is missing or job id is not integer" });
+		return;
+	}
+
+	if (Utils.validateIntegerParam("User Id", userId) == false) {
+		logger.error("job_request-controller cancel job missing doer Id or doer id is not integer: " + userId);
+		res.status(400).send({ message: "Error canceling Job - Doer Id is missing or not integer" });
+		return;
+	}
+
+	logger.info("job_request-controller cancelJob, userId = " + userId + " job id = " + jobId);
+
+	try {
+		await Job.update({ status: "cancelled" }, { where: { job_id: jobId } });
+		logger.info("job_request-controller cancelJob SUCCESS, userId = " + userId + " job id = " + jobId);
+		updateJobHistory(jobId, "status", "canceled", "doer", userId);
+		res.status(200).send("cancel job success");
+		return;
+	} catch (error) {
+		logger.error("job_request-controller cancel job failed with error " + error);
 		res.status(500).send("job update failed   " + error);
 		return;
 	}
@@ -505,4 +579,6 @@ module.exports = {
 	completeJob,
 	generateInvoice,
 	addJobCost,
+	cancelJob,
+	abandonJob
 };
