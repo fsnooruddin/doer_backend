@@ -39,7 +39,7 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: true,
 		},
 		status: {
-			type: Sequelize.ENUM("requested", "accepted", "rejected", "in-progress", "completed"),
+			type: Sequelize.ENUM("requested", "accepted", "rejected", "in-progress", "completed", "abandoned", "cancelled"),
 			allowNull: false,
 			defaultValue: "requested",
 		},
