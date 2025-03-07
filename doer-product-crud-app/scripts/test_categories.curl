@@ -1,8 +1,0 @@
-curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Electrician, Plumber & Carpenter", "description": "Home repair services for you!", "image_url": "http://localhost:8081/resources/images/handyman.png", "parent_id": "null", "time_to_complete": "null", "price_range": "null"}' http://localhost:8080/api/doers/addCategory
-curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Plumber",  "description": "Plumbing services", "image_url": "http://localhost:8081/resources/images/plumber.png", "parent_id": "1", "time_to_complete": "3-4 hours", "price_range": "$100-$200"}' http://localhost:8080/api/doers/addCategory
-curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Electrician",  "description": "Electrician services", "image_url": "http://localhost:8081/resources/images/electrician.png", "parent_id": "1", "time_to_complete": "1-2 hours", "price_range": "$100-$200"}' http://localhost:8080/api/doers/addCategory
-curl --header "Content-Type: application/json" \--request POST \--data '{"name": "Home Appliance Repair",  "description": "Repair services for small appliances", "image_url": "http://localhost:8081/resources/images/appliances.png", "parent_id": "1", "time_to_complete": "1-2 hours", "price_range": "$100-$200"}' http://localhost:8080/api/doers/addCategory
-
-
-
-
