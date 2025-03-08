@@ -1,0 +1,34 @@
+services:
+  db:
+    container_name: doer_db
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ./app/config/01_sql.sql:/docker-entrypoint-initdb.d/initdb.sh
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=pg-user
+      - POSTGRES_DB=doerdb
+    restart: always
+    networks:
+      - doer_db_network
+
+  api:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.doer_api
+    container_name: doer_api
+    image: doer_api:0.0.3
+    entrypoint: ./wait-for-it.sh doer_db:5432 --strict -- node server.js --force_sync true
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - doer_db_network
+    restart: on-failure
+
+networks:
+    doer_db_network:
+      name: doer_network
+
