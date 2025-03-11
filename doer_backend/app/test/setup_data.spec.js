@@ -25,7 +25,6 @@ var {
 	reqCreateBadgeAssociation_Malformed,
 } = require("./data/badge.test.data.js");
 
-
 var {
 	getCategoryByIdRequestUri,
 	getCategoryByNameRequestUri,
@@ -64,8 +63,8 @@ var {
 	cancelJobUri,
 	abandonJobUri,
 	createBadgeUri,
-    	getBadgeByIdUri,
-    	assignBadgeUri,
+	getBadgeByIdUri,
+	assignBadgeUri,
 } = require("./data/test.uris.js");
 
 async function getData(url) {
@@ -195,20 +194,14 @@ describe("SETUP API Tests -- Successful calls", () => {
 	});
 
 	test("Create a new badge", async () => {
-    		const res = await request
-    			.post(createBadgeUri)
-    			.send(reqCreateBadge_1)
-    			.set("Accept", "application/json");
-    		expect(res.status).toBe(200);
-    		//expect(JSON.stringify(res.body)).toContain("success");
-    	});
+		const res = await request.post(createBadgeUri).send(reqCreateBadge_1).set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		//expect(JSON.stringify(res.body)).toContain("success");
+	});
 
-    	test("Associate badge with user", async () => {
-        		const res = await request
-        			.post(assignBadgeUri)
-        			.send(reqCreateBadgeAssociation_1)
-        			.set("Accept", "application/json");
-        		expect(res.status).toBe(200);
-        		//expect(JSON.stringify(res.body)).toContain("success");
-        	});
+	test("Associate badge with user", async () => {
+		const res = await request.post(assignBadgeUri).send(reqCreateBadgeAssociation_1).set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		//expect(JSON.stringify(res.body)).toContain("success");
+	});
 });
