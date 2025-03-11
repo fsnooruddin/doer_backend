@@ -115,6 +115,13 @@ async function update(req, res) {
 				address_id: id,
 			},
 		});
+		if (addr == null) {
+			logger.error("Error updating Address with Address id=" + id + " address not found");
+			res.status(400).send({
+				Address: "message: Error updating Address with id=" + id + " address not found",
+			});
+			return;
+		}
 		var new_addr = await addr.set(req.body);
 		logger.info("Address-controller update -- Address id is " + id + " success, new address = " + JSON.stringify(new_addr));
 		res.status(200).send(new_addr);

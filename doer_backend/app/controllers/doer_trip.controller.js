@@ -97,6 +97,15 @@ async function getDoerTripByDoerId(req, res) {
  * @param {number} id - ID of Trip being updated
  * @param {number} location_update - Lat/Long of new position
  * @return {string|null} return - null if success, error message if failure
+ * @example
+ * Sample payload:
+ * {
+ *	"id": "1",
+ *	"location_update": {
+ * 		"type": "Point",
+ *		"coordinates": [77.6879689, 27.4072289],
+ *	}
+ * }
  * @memberof DoerTrip
  */
 async function updateDoerTripLocation(req, res) {

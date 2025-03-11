@@ -5,16 +5,15 @@
  */
 
 const db = require("../models");
-const Utils = require("../Utils/Utils.js");
+const Utils = require("../utils/Utils.js");
 const Doers = require("./doer.controller.js");
+const KU = require("../utils/KafkaUtil.js");
+const logger = require("../utils/Logger.js");
 const Job = db.jobs;
 const JobInvoices = db.invoices;
 const JobHistories = db.job_histories;
 const JobCosts = db.job_costs;
 const Op = db.Sequelize.Op;
-const KU = require("../Utils/KafkaUtil.js");
-const logger = require("../Utils/Logger.js");
-// https://www.zipcodeapi.com/rest/QZPX7dSqfyw89CJaAwX37gNO10EoQM2w7Op47UhhyTPB75eMlJPlDc5KkXz2mL0t/distance.json/94588/94104/km
 
 /**
  * Create a Job
@@ -253,7 +252,7 @@ async function acceptJob(req, res) {
 async function abandonJob(req, res) {
 	const doerId = req.query.doerId;
 	const jobId = req.query.jobId;
-    console.log("abandon job = " + doerId + "  job id " + jobId);
+	console.log("abandon job = " + doerId + "  job id " + jobId);
 	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
 		logger.error("job_request-controller abandon job missing job Id or job Id not integer: " + jobId);
 		res.status(400).send({ message: "Error abandoning Job - Job Id is missing or job id is not integer" });
@@ -269,7 +268,7 @@ async function abandonJob(req, res) {
 	logger.info("job_request-controller abandonJob, doerId = " + doerId + " job id = " + jobId);
 
 	try {
-		await Job.update({status: "abandoned" }, { where: { job_id: jobId } });
+		await Job.update({ status: "abandoned" }, { where: { job_id: jobId } });
 		logger.info("job_request-controller abandonJob SUCCESS, doerId = " + doerId + " job id = " + jobId);
 		updateJobHistory(jobId, "status", "abandoned", "doer", doerId);
 		res.status(200).send("abandon job success");
@@ -493,8 +492,7 @@ async function generateInvoice(req, res) {
  * @memberof Job
  */
 async function updateJobHistory(jobId, change_field, change_value, changed_by, changed_by_id) {
-	logger.info("job-controller updateJobHistory");
-	logger.warn(jobId + "   " + change_field + "   " + change_value + "   " + changed_by + "   " + changed_by_id);
+	logger.info("job-controller updateJobHistory: " + jobId + "   " + change_field + "   " + change_value + "   " + changed_by + "   " + changed_by_id);
 	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
 		logger.error("job_request-controller updateJobHistory, missing job Id or job Id not integer: " + jobId);
 		return false;
@@ -580,5 +578,5 @@ module.exports = {
 	generateInvoice,
 	addJobCost,
 	cancelJob,
-	abandonJob
+	abandonJob,
 };

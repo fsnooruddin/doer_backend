@@ -6,15 +6,14 @@
 
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
+const logger = require("../utils/Logger.js");
 const Doer = db.doers;
 const Job = db.jobs;
 const Invoice = db.invoices;
 const Op = db.Sequelize.Op;
-const { doerCreateSchema, doerGetSchema } = require("../schemas/doer.js");
-const logger = require("../utils/Logger.js");
+
 const Availability = db.availability_slots;
-const Rating = db.ratings;
-const { sql } = require("@sequelize/core");
+const Rating = db.doer_ratings;
 const jobs = require("./job.controller.js");
 
 /**
@@ -176,7 +175,14 @@ async function findByIdDBCall(id) {
 					model: db.ratings,
 					as: "ratings",
 					attributes: {
-						exclude: ["updatedAt", "createdAt"],
+						exclude: ["updatedAt", "createdAt", "rating_id", "doer_id"],
+					},
+				},
+				{
+					model: db.reviews,
+					as: "reviews",
+					attributes: {
+						exclude: ["updatedAt", "createdAt", "review_id", "doer_id"],
 					},
 				},
 			],
@@ -565,7 +571,7 @@ async function rating(req, res) {
 			let new_count = parseInt(currentRating.count) + 1;
 			new_rating = await currentRating.update({ total: new_total, count: new_count });
 		}
-		logger.error("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(new_rating));
+		logger.info("doer-controller rate doer success rating doer with doerId: " + id + " rating: " + JSON.stringify(new_rating));
 		res.status(200).send(new_rating);
 	} catch (err) {
 		logger.error("doer-controller rate doer error rating doer with doerId: " + id + " error: " + err.message);

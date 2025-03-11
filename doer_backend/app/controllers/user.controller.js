@@ -10,6 +10,7 @@ const User = db.users;
 const Job = db.job_requests;
 const Address = db.addresses;
 const Op = db.Sequelize.Op;
+const Rating = db.user_ratings;
 const logger = require("../utils/Logger.js");
 
 /**
@@ -145,9 +146,103 @@ async function getJobHistory(req, res) {
 	}
 }
 
+/**
+ * Rate a User
+ * @param {number} id - ID of User being rated
+ * @param {number} rating - New rating of User
+ *
+ * @memberof User
+ */
+async function rate(req, res) {
+	const id = req.query.id;
+	if (id == null || isNaN(parseInt(id))) {
+		logger.error("user-controller rating missing userId or userId not integer " + id);
+		res.status(500).send({
+			message: "Error rating User Id is missing or userId not integer " + id,
+		});
+
+		return;
+	}
+	if (req.query.rating == null || isNaN(parseInt(req.query.rating))) {
+		logger.error("user-controller rating missing rating or rating not integer: " + req.query.rating);
+		res.status(500).send({
+			message: "user-controller rating missing rating or rating not integer: " + req.query.rating,
+		});
+		return;
+	}
+	logger.info("User-controller rating user id = " + id + "   rating = " + req.query.rating);
+
+	try {
+		var currentRating = await Rating.findOne({
+			where: {
+				user_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		console.log(JSON.stringify("current rating = " + currentRating));
+		let new_rating = {};
+		if (currentRating == null || Object.keys(currentRating).length === 0) {
+			new_rating = await Rating.create({ user_id: id, total: req.query.rating, count: 1 });
+		} else {
+			let new_total = parseInt(currentRating.total) + parseInt(req.query.rating);
+			let new_count = parseInt(currentRating.count) + 1;
+			new_rating = await currentRating.update({ total: new_total, count: new_count });
+		}
+		logger.error("user-controller rate user success rating user with userId: " + id + " rating: " + JSON.stringify(new_rating));
+		res.status(200).send(new_rating);
+	} catch (err) {
+		logger.error("user-controller rate user error rating user with userId: " + id + " error: " + err.message);
+		res.status(500).send("failure to rate user with id = " + id + " ... error is: " + err.message);
+		return;
+	}
+}
+
+/**
+ * Get Ratings for User
+ * @param {number} id - ID of User
+ * @memberof User
+ */
+async function getRating(req, res) {
+	const id = req.query.id;
+	if (id == null || isNaN(parseInt(id))) {
+		logger.error("user-controller getRating missing userId or userId not integer " + id);
+		res.status(500).send({
+			message: "Error getRating User Id is missing or userId not integer " + id,
+		});
+
+		return;
+	}
+
+	try {
+		var currentRating = await Rating.findOne({
+			where: {
+				user_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		console.log(JSON.stringify("current rating = " + currentRating));
+		if (currentRating == null || Object.keys(currentRating).length === 0) {
+			res.status(500).send({ message: "user-controller getRating for user Error retrieving rating user id=" + id });
+			return;
+		}
+		logger.error("user-controller rate user success rating user with userId: " + id + " rating: " + JSON.stringify(currentRating));
+		res.status(200).send(currentRating);
+	} catch (err) {
+		logger.error("user-controller get rating for user error rating user with userId: " + id + " error: " + err.message);
+		res.status(500).send("failure to get rating user with id = " + id + " ... error is: " + err.message);
+		return;
+	}
+}
+
 module.exports = {
 	create,
 	findById,
 	getAddresses,
 	getJobHistory,
+	rate,
+	getRating,
 };
