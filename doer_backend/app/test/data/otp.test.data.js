@@ -8,5 +8,5 @@ const reqCreateOTPWrongNumber_1 = {
 
 module.exports = {
 	reqCreateOTP_1,
-	reqCreateOTPWrongNumber_1
+	reqCreateOTPWrongNumber_1,
 };

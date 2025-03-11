@@ -7,18 +7,18 @@ const getDoerByIdRequestUri = "/doer/getById";
 const getDoerByServicesRequestUri = "/doer/getByServices";
 const getDoerByServicesAndDayRequestUri = "/doer/getByServicesAndDay";
 const rateDoerRequestUri = "/doer/rate";
+const getDoerForJobRequestUri = "/doer/getForJob";
+const updateDoerAvailabilityUri = "/doer/updateAvailability";
+const getDoerHistoryRequestUri = "/doer/getHistory";
 
 const createDoerReviewUri = "/review/create";
 const getReviewsForDoerRequestUri = "/review/getByDoerId";
 const getReviewByIdRequestUri = "/review/getById";
 
-
 const createDoerTripUri = "/trip/create";
 const completeDoerTripUri = "/trip/complete";
 const updateDoerTripUri = "/trip/updateLocation";
 const getDoerTripByJobIdUri = "/trip/getByJobId";
-
-const updateDoerAvailabilityUri = "/updateDoerAvailability";
 
 const createJobUri = "/job/create";
 const acceptJobUri = "/job/accept";
@@ -29,11 +29,9 @@ const addCostToJobUri = "/job/addCost";
 const cancelJobUri = "/job/cancel";
 const abandonJobUri = "/job/abandon";
 
-
 const createMessageUri = "/message/create";
 const getMessageByIdUri = "/message/getById";
 const getMessageByJobIdUri = "/message/getByJobId";
-
 
 const createOTPUri = "/otp/create";
 const validateOTPUri = "/otp/validate";
@@ -59,6 +57,9 @@ module.exports = {
 	getReviewsForDoerRequestUri,
 	getReviewByIdRequestUri,
 	rateDoerRequestUri,
+	getDoerForJobRequestUri,
+	getDoerHistoryRequestUri,
+	updateDoerAvailabilityUri,
 	createDoerReviewUri,
 	createDoerTripUri,
 	completeDoerTripUri,
@@ -82,11 +83,11 @@ module.exports = {
 	createUserUri,
 	getUserByIdUri,
 	createBadgeUri,
-    getBadgeByIdUri,
-    assignBadgeUri,
-    createAddressUri,
-    removeAddressByIdUri,
-    updateAddressUri,
-    cancelJobUri,
-    abandonJobUri
+	getBadgeByIdUri,
+	assignBadgeUri,
+	createAddressUri,
+	removeAddressByIdUri,
+	updateAddressUri,
+	cancelJobUri,
+	abandonJobUri,
 };

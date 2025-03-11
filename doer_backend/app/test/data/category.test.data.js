@@ -1,12 +1,12 @@
 const reqCreateCategory_1 = {
-  "name": "Masonry/Concrete"
-}
+	name: "Masonry/Concrete",
+};
 
 const reqCreateCategory_2 = {
-  "name": "Landscaping"
-}
+	name: "Landscaping",
+};
 
 module.exports = {
-  reqCreateCategory_1,
-  reqCreateCategory_2
-}
+	reqCreateCategory_1,
+	reqCreateCategory_2,
+};

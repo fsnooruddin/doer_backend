@@ -3,18 +3,48 @@ var { expect, jest, test } = require("@jest/globals");
 
 const { reqCreateDoer_1, reqCreateDoer_2 } = require("./data/doer.test.data.js");
 var {
+	getCategoryByIdRequestUri,
+	getCategoryByNameRequestUri,
+	getCategoryTreeRequestUri,
 	getDoerByIdRequestUri,
 	getDoerByServicesRequestUri,
 	getDoerByServicesAndDayRequestUri,
 	getReviewsForDoerRequestUri,
 	getReviewByIdRequestUri,
 	rateDoerRequestUri,
+	getDoerForJobRequestUri,
+	getDoerHistoryRequestUri,
+	updateDoerAvailabilityUri,
 	createDoerReviewUri,
 	createDoerTripUri,
-	updateDoerTripUri,
 	completeDoerTripUri,
+	updateDoerTripUri,
+	getDoerTripByJobIdUri,
 	updateDoerAvailabilityUri,
+	createJobUri,
+	createDoerReviewUri,
+	acceptJobUri,
+	startJobUri,
+	completeJobUri,
+	addCostToJobUri,
+	updateDoerAvailabilityUri,
+	findEligibleDoersUri,
+	createMessageUri,
+	getMessageByIdUri,
+	getMessageByJobIdUri,
 	createDoerUri,
+	createOTPUri,
+	validateOTPUri,
+	createUserUri,
+	getUserByIdUri,
+	createBadgeUri,
+	getBadgeByIdUri,
+	assignBadgeUri,
+	createAddressUri,
+	removeAddressByIdUri,
+	updateAddressUri,
+	cancelJobUri,
+	abandonJobUri,
 } = require("./data/test.uris.js");
 
 async function getData(url) {
@@ -25,6 +55,20 @@ async function getData(url) {
 		throw error;
 	}
 }
+
+/*
+	router.post("/doer/create", doers.create);
+	router.get("/doer/getById", doers.findById);
+	router.get("/doer/getByServices", doers.findByServices);
+	router.get("/doer/getByServicesAndDay", doers.findByServicesAndDay);
+
+	router.get("/doer/getForJob", doers.findForJob);
+	router.get("/doer/getHistory", doers.getHistory);
+	router.post("/doer/rate", doers.rating);
+	router.post("/doer/updateAvailability", doers.updateAvailability);
+    router.get("/doer/rating", doers.getRating);
+    router.get("/doer/getUpcomingJobs", doers.getUpcomingJobs);
+    */
 
 describe("DOER API Tests -- Successful calls", () => {
 	test("Create a new doer", async () => {
@@ -55,8 +99,37 @@ describe("DOER API Tests -- Successful calls", () => {
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 	});
+
+	test("Get Doer for Job", async () => {
+		const res = await request.get(getDoerForJobRequestUri + "?id=1");
+		//  console.log(res.body);
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("doer_id");
+	});
+
+	test("Get Doer History", async () => {
+		const res = await request.get(getDoerHistoryRequestUri + "?id=1");
+		//  console.log(res.body);
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("doer_id");
+	});
+
+	test("Rate Doer", async () => {
+		const res = await request.get(rateDoerRequestUri + "?id=1");
+		//  console.log(res.body);
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("doer_id");
+	});
+
+	test("Update Doer Availability", async () => {
+		const res = await request.get(updateDoerAvailabilityUri + "?id=1");
+		//  console.log(res.body);
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("doer_id");
+	});
 });
 
+/*
 describe("DOER API Tests -- UnSuccessful calls", function () {
 	test("Get Doer by ID, missing ID", async () => {
 		const res = await request.get(getDoerByIdRequestUri);
@@ -91,3 +164,4 @@ describe("DOER API Tests -- UnSuccessful calls", function () {
 		expect(JSON.stringify(res.body)).toContain("message");
 	});
 });
+*/

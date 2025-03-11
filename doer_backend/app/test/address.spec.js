@@ -9,17 +9,21 @@ var {
 	getDoerByIdRequestUri,
 	getDoerByServicesRequestUri,
 	getDoerByServicesAndDayRequestUri,
-	getReviewsForDoerRequestUri,
-	getReviewByIdRequestUri,
+	getMessagesForDoerRequestUri,
+	getMessageByIdRequestUri,
 	rateDoerRequestUri,
-	createDoerReviewUri,
+	createDoerMessageUri,
 	createDoerTripUri,
 	completeDoerTripUri,
 	updateDoerTripUri,
 	getDoerTripByJobIdUri,
 	updateDoerAvailabilityUri,
 	createJobRequestUri,
-	createDoerReviewUri,
+	createDoerTripUri,
+	updateDoerTripUri,
+	createDoerMessageUri,
+	createUserUri,
+	createJobUri,
 	acceptJobUri,
 	startJobUri,
 	completeJobUri,
@@ -29,12 +33,12 @@ var {
 	getMessageByIdUri,
 	getMessageByJobIdUri,
 	createDoerUri,
-	createOTPUri,
-	validateOTPUri,
-	createUserUri,
-	getUserByIdUri,
+	createDoerReviewUri,
 	createAddressUri,
 	removeAddressByIdUri,
+	updateAddressUri,
+	cancelJobUri,
+	abandonJobUri,
 } = require("./data/test.uris.js");
 
 async function getData(url) {
@@ -56,6 +60,14 @@ describe("ADDRESS API Tests -- Successful calls", () => {
 		globalAddressId = res.body.address_id;
 	});
 
+	test("Update a new address", async () => {
+		const res = await request
+			.post(updateAddressByIdUri + "?id=" + globalAddressId)
+			.send()
+			.set("Accept", "application/json");
+		expect(res.status).toBe(200);
+	});
+
 	test("Remove a new address", async () => {
 		const res = await request
 			.post(removeAddressByIdUri + "?id=" + globalAddressId)
@@ -72,7 +84,6 @@ describe("ADDRESS API Tests -- UnSuccessful calls", function () {
 		expect(res.status).toBe(400);
 	});
 
-	/*
 	test("Get Address by ID,Address ID not INTEGER", async () => {
 		const res = await request.get(getAddressByIdUri + "?id=shshhs");
 		//  console.log(res.body);
@@ -93,5 +104,4 @@ describe("ADDRESS API Tests -- UnSuccessful calls", function () {
 		expect(res.status).toBe(500);
 		expect(JSON.stringify(res.body)).toContain("address");
 	});
-	*/
 });

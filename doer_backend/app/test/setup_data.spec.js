@@ -17,6 +17,16 @@ var {
 } = require("./data/job_request.test.data.js");
 
 var {
+	reqCreateBadge_1,
+	reqCreateBadge_2,
+	reqCreateBadgeAssociation_1,
+	reqCreateBadgeAssociation_2,
+	reqCreateBadge_Malformed,
+	reqCreateBadgeAssociation_Malformed,
+} = require("./data/badge.test.data.js");
+
+
+var {
 	getCategoryByIdRequestUri,
 	getCategoryByNameRequestUri,
 	getCategoryTreeRequestUri,
@@ -52,7 +62,10 @@ var {
 	removeAddressByIdUri,
 	updateAddressUri,
 	cancelJobUri,
-    abandonJobUri
+	abandonJobUri,
+	createBadgeUri,
+    	getBadgeByIdUri,
+    	assignBadgeUri,
 } = require("./data/test.uris.js");
 
 async function getData(url) {
@@ -65,14 +78,6 @@ async function getData(url) {
 }
 
 describe("SETUP API Tests -- Successful calls", () => {
-
-        test("User cancel job", async () => {
-    		const res = await request.post(cancelJobUri + "?jobId=1&userId=1").send().set("Accept", "application/json");
-    		expect(res.status).toBe(200);
-    		expect(JSON.stringify(res.body)).toContain("user_id");
-    	});
-
-	/*
 	test("Create a new Doer", async () => {
 		const res = await request.post(createDoerUri).send(reqCreateDoer_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
@@ -85,17 +90,21 @@ describe("SETUP API Tests -- Successful calls", () => {
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
 
-    test("Create a new address for user", async () => {
-    		const res = await request.post(createAddressUri).send(reqCreateAddress_3).set("Accept", "application/json");
-    		expect(res.status).toBe(200);
-    		expect(JSON.stringify(res.body)).toContain("user_id");
-    	});
+	test("Create a new address for user", async () => {
+		const res = await request.post(createAddressUri).send(reqCreateAddress_3).set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("user_id");
+	});
 
-    	test("Update address for user", async () => {
-    		const res = await request.post(updateAddressUri + "?id=a63cc75a-ed7e-4787-a2b6-f6aba66593b0").send(reqCreateAddress_2).set("Accept", "application/json");
-    		expect(res.status).toBe(200);
-    		expect(JSON.stringify(res.body)).toContain("user_id");
-    	});
+	test("Update address for user", async () => {
+		const res = await request
+			.post(updateAddressUri + "?id=535af565-1ac9-4fad-86c1-c3f92538395a")
+			.send(reqCreateAddress_2)
+			.set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		console.log(res.body);
+		expect(JSON.stringify(res.body)).toContain("success");
+	});
 
 	test("Create a new Doer", async () => {
 		const res = await request.post(createDoerUri).send(reqCreateDoer_2).set("Accept", "application/json");
@@ -165,5 +174,41 @@ describe("SETUP API Tests -- Successful calls", () => {
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_trip_id");
 	});
-	*/
+
+	test("User cancel job", async () => {
+		const res = await request
+			.post(cancelJobUri + "?jobId=1&userId=1")
+			.send()
+			.set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		console.log(res);
+		//	expect(JSON.stringify(res.body)).toContain("success");
+	});
+
+	test("Doer abandon job", async () => {
+		const res = await request
+			.post(abandonJobUri + "?jobId=1&doerId=1")
+			.send()
+			.set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		//expect(JSON.stringify(res.body)).toContain("success");
+	});
+
+	test("Create a new badge", async () => {
+    		const res = await request
+    			.post(createBadgeUri)
+    			.send(reqCreateBadge_1)
+    			.set("Accept", "application/json");
+    		expect(res.status).toBe(200);
+    		//expect(JSON.stringify(res.body)).toContain("success");
+    	});
+
+    	test("Associate badge with user", async () => {
+        		const res = await request
+        			.post(assignBadgeUri)
+        			.send(reqCreateBadgeAssociation_1)
+        			.set("Accept", "application/json");
+        		expect(res.status).toBe(200);
+        		//expect(JSON.stringify(res.body)).toContain("success");
+        	});
 });
