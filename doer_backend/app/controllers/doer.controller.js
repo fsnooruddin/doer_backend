@@ -168,11 +168,11 @@ async function findByIdDBCall(id) {
 				{
 					model: db.availability_slots,
 					attributes: {
-						exclude: ["updatedAt", "createdAt"],
+					exclude: ["updatedAt", "createdAt"],
 					},
 				},
 				{
-					model: db.ratings,
+					model: db.doer_ratings,
 					as: "ratings",
 					attributes: {
 						exclude: ["updatedAt", "createdAt", "rating_id", "doer_id"],
@@ -195,7 +195,7 @@ async function findByIdDBCall(id) {
 
 		return data;
 	} catch (err) {
-		logger.error("doer-controller findByIdDBCall couldn't find doer with doerId " + id + "with error " + err.message);
+		logger.error("doer-controller findByIdDBCall couldn't find doer with doerId " + id + " -- error " + err.message);
 		return null;
 	}
 }
