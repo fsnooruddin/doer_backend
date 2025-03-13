@@ -75,7 +75,7 @@ async function findById(req, res) {
 	}
 
 	logger.info("User-controller findOne id = " + id);
-	const data = await User.findByPk(id, { include: [{ association: "addresses" }, { association: "badges" }] });
+	const data = await User.findByPk(id, { include: [{ association: "addresses" }, { association: "badges" }, { association: "ratings" }] });
 
 	if (data == null) {
 		logger.error("user-controller findById couldn't find user with userId " + id);

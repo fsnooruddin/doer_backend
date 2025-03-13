@@ -175,16 +175,23 @@ async function findByIdDBCall(id) {
 					model: db.doer_ratings,
 					as: "ratings",
 					attributes: {
-						exclude: ["updatedAt", "createdAt", "rating_id", "doer_id"],
+						exclude: ["updatedAt", "createdAt", "doer_id"],
 					},
 				},
 				{
 					model: db.reviews,
 					as: "reviews",
 					attributes: {
-						exclude: ["updatedAt", "createdAt", "review_id", "doer_id"],
+						exclude: ["updatedAt", "createdAt","doer_id"],
 					},
 				},
+								{
+                					model: db.badges,
+                					as: "badges",
+                					attributes: {
+                						exclude: ["updatedAt", "createdAt", "doer_id"],
+                					},
+                				},
 			],
 		});
 

@@ -64,6 +64,7 @@ module.exports = (app) => {
     router.post("/badge/create", badges.create);
 	router.get("/badge/getById", badges.get);
 	router.post("/badge/assignBadgeToUser", badges.assignBadgeToUser);
+	router.post("/badge/assignBadgeToDoer", badges.assignBadgeToDoer);
 
 	router.post("/image/upload", image_uploads.create);
 

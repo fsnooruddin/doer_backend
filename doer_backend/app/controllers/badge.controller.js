@@ -7,6 +7,7 @@ const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Badge = db.badges;
 const UserBadgeAssociations = db.user_badge_associations;
+const DoerBadgeAssociations = db.doer_badge_associations;
 const Op = db.Sequelize.Op;
 const logger = require("../utils/Logger.js");
 
@@ -115,8 +116,29 @@ async function assignBadgeToUser(req, res) {
 		});
 }
 
+/**
+ * Assign a Badge to a Doer
+ * @param {number} Badge.id - Badge to assign
+ * @param {number} Badge.doerId - Doer to assign badge to
+ * @return {string} badge - null if success, error string if error
+ * @memberof Badge
+ */
+async function assignBadgeToDoer(req, res) {
+	// Save Badge in the database
+	DoerBadgeAssociations.create(req.body)
+		.then((data) => {
+			logger.info("Success associating badge with doer = " + JSON.stringify(req.body));
+			res.status(200).send(data);
+		})
+		.catch((err) => {
+			logger.error("Error associating badge with doer =  =" + JSON.stringify(req.body) + " error: " + err.message);
+			res.status(500).send("Some error occurred while associating badge with doer = : " + err.message);
+		});
+}
+
 module.exports = {
 	create,
 	get,
 	assignBadgeToUser,
+	assignBadgeToDoer
 };
