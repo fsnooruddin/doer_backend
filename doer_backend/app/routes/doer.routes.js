@@ -35,10 +35,13 @@ module.exports = (app) => {
 	router.post("/job/accept", jobs.acceptJob);
 	router.post("/job/start", jobs.startJob);
 	router.post("/job/complete", jobs.completeJob);
-	router.post("/invoice/generateInvoice", invoices.generateInvoice);
 	router.post("/job/addCost", jobs.addJobCost);
 	router.post("/job/cancel", jobs.cancelJob);
     router.post("/job/abandon", jobs.abandonJob);
+
+    router.post("/invoice/generate", invoices.generateInvoice);
+    router.post("/invoice/approve", invoices.approveInvoice);
+    router.post("/invoice/reject", invoices.rejectInvoice);
 
 	router.post("/trip/create", doer_trips.startDoerTrip);
 	router.post("/trip/complete", doer_trips.completeDoerTrip);

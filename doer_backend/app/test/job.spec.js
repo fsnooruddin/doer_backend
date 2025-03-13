@@ -7,7 +7,7 @@ var {
 	reqCreateJobCost_1,
 	reqCreateJobCost_2,
 	reqCreateJobRequest_Malformed,
-	reqCreateJobCostTip_1
+	reqCreateJobCostTip_1,
 } = require("./data/job_request.test.data.js");
 
 var {
@@ -46,6 +46,7 @@ var {
 	getBadgeByIdUri,
 	createAddressUri,
 	removeAddressByIdUri,
+	generateInvoiceUri
 } = require("./data/test.uris.js");
 
 async function postData(url, data) {
@@ -118,12 +119,18 @@ async function addTipToJobSuccess() {
 	expect(res.status).toBe(200);
 }
 
+async function generateInvoiceSuccess() {
+	const res = await postData(generateInvoiceUri + "?jobId=1");
+	expect(res.status).toBe(200);
+}
+
 describe("JOB API Tests -- Successful calls", () => {
 	test("Successfully create a new Job Request", createJobSuccess);
 	test("Successfully accept a Job ", acceptJobSuccess);
 	test("Successfully complete Job ", completeJobSuccess);
 	test("Successfully add cost to Job ", addCostToJobSuccess);
 	test("Successfully add tip to Job ", addTipToJobSuccess);
+	test("Successfully generate invoice for Job ", generateInvoiceSuccess);
 });
 
 describe("JOB API Tests -- Failure calls", () => {

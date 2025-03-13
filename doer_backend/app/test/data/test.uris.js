@@ -47,6 +47,8 @@ const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";
 const updateAddressUri = "/address/update";
 
+const generateInvoiceUri = "/invoice/generateInvoice";
+
 module.exports = {
 	getCategoryByIdRequestUri,
 	getCategoryByNameRequestUri,
@@ -90,4 +92,5 @@ module.exports = {
 	updateAddressUri,
 	cancelJobUri,
 	abandonJobUri,
+	generateInvoiceUri
 };
