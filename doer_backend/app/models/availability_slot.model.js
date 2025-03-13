@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 		},
 		day: {
-			type: Sequelize.TEXT,
+			type: Sequelize.ENUM("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"),
 		},
 		start_time: {
 			type: Sequelize.INTEGER,

@@ -22,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: true,
 		},
 		day: {
-			type: Sequelize.STRING,
+			type: Sequelize.ENUM("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"),
 			allowNull: false,
 		},
 		req_time: {
