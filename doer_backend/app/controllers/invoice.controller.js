@@ -20,7 +20,7 @@ async function generateInvoice(req, res) {
 
 	logger.info("invoice-controller generateInvoice, = " + jobId);
 
-	const job = await Job.findByPk(req.query.jobId);
+	const job = await Job.findByPk(jobId);
 	console.log(JSON.stringify(job));
 	if (job == null) {
 		logger.error("invoice-controller generateInvoice couldn't find job with job Id : " + jobId);
@@ -49,8 +49,8 @@ async function generateInvoice(req, res) {
 	});
 
 	if (doer == null) {
-		logger.error("invoice-controller generateInvoice couldn't find job with job Id : " + job.doer_id);
-		res.status(400).send({ message: "Error generateInvoice - couldn't find job with job Id : " + job.doer_id });
+		logger.error("invoice-controller generateInvoice couldn't find doer with doer Id : " + job.doer_id);
+		res.status(400).send({ message: "Error generateInvoice - couldn't find doer with doer Id : " + job.doer_id });
 		return;
 	}
 	var hourly_rate = Utils.getRateFromAvailabilitySlot(dayRequested, timeRequested, JSON.parse(JSON.stringify(doer.availability_slots)));
@@ -111,7 +111,7 @@ logger.info("Job-controller Job-controller generateInvoice total cost is " + cos
 	try {
 		// Save new invoice in the database
 
-		const new_invoice = Invoice.create(job_invoice);
+		const new_invoice = await Invoice.create(job_invoice);
 		logger.info("Job-controller Job-controller completeJob invoice create success: " + JSON.stringify(new_invoice));
 		res.status(200).send(new_invoice);
 		return;
