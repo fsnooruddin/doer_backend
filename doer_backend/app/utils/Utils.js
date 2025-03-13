@@ -1,5 +1,6 @@
-const db = require("../models");
-const logger = require("../utils/Logger.js");
+//const db = require("../models");
+//const Doers = require("../controllers/doer.controller.js");
+const logger = require("./Logger.js");
 
 module.exports = {
 	escapeJSONString,
@@ -9,8 +10,19 @@ module.exports = {
 	filterByTime,
 	filterByDistance,
 	getRateFromAvailabilitySlot,
-	validateIntegerParam
+	validateIntegerParam,
+	getDistanceBetweenTwoPoint,
+	findDoersByServicesAndDay,
+	findDoerById
 };
+
+async function findDoersByServicesAndDay(sservices, sdays) {
+    return (Doers.findByServicesAndDayDBCall(sservices, sdays));
+}
+
+async function findDoerById(doerId) {
+    return (Doers.findByIdDBCall(doerId));
+}
 
 function escapeJSONString(server_return_string) {
 	var data_str = JSON.stringify(server_return_string);
@@ -29,6 +41,18 @@ function escapeJSONString(server_return_string) {
 	data_str = data_str.replace(/[\u0000-\u001F]+/g, "");
 
 	return JSON.parse(data_str);
+}
+
+function getDistanceBetweenTwoPoint(lat1, lon1, lat2, lon2) {
+
+  const r = 6371; // km
+  const p = Math.PI / 180;
+
+  const a = 0.5 - Math.cos((lat2 - lat1) * p) / 2
+                + Math.cos(lat1 * p) * Math.cos(lat2 * p) *
+                  (1 - Math.cos((lon2 - lon1) * p)) / 2;
+
+  return 2 * r * Math.asin(Math.sqrt(a));
 }
 
 function filterByDistance(timeRequested, doers) {
@@ -107,34 +131,12 @@ function getTimeFromAvailability(availability) {
 	}
 }
 
-function timesMatch(reqSlotTime, slotTime) {
-	let retArray = slotTime.split("-");
-	let doerStartTime = parseInt(retArray[0]);
-	let doerCloseTime = parseInt(retArray[1]);
-	logger.trace("doer slot start time = " + doerStartTime + "  doer slot end time = " + doerCloseTime);
-
-	retArray = reqSlotTime.split("-");
-	let reqStartTime = parseInt(retArray[0]);
-	let reqCloseTime = parseInt(retArray[1]);
-	logger.trace("job request start time = " + reqStartTime + "  job request end time = " + reqCloseTime);
-
-	if (reqStartTime >= doerStartTime) {
-		if (reqCloseTime <= doerCloseTime) {
-			logger.trace(reqSlotTime + "request slot matches doer availability slot " + slotTime);
-			return true;
-		}
-	}
-	return false;
-}
-
 function processTimeMatch(reqSlotDay, reqSlotTime, avail) {
 	for (let i = 0; i < avail.length; i++) {
 		let a_entry = avail[i];
-		logger.trace("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " matches " + JSON.stringify(a_entry));
-		var slotDay = a_entry.slot.day;
-		logger.trace("slot day is = " + slotDay);
-		var slotTime = a_entry.slot.time;
-		logger.trace("slot time is = " + slotTime);
+		logger.trace("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " matching " + JSON.stringify(a_entry));
+		var slotDay = a_entry.day;
+
 		let dayMatch = false;
 		let timeMatch = false;
 
@@ -142,26 +144,28 @@ function processTimeMatch(reqSlotDay, reqSlotTime, avail) {
 			dayMatch = true;
 		}
 
-		timeMatch = timesMatch(reqSlotTime, slotTime);
+        if(reqSlotTime >= a_entry.start_time && reqSlotTime <= a_entry.end_time) {
+            timeMatch = true;
+        }
 
 		if (dayMatch === true && timeMatch === true) {
 			logger.info("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " matches " + JSON.stringify(a_entry));
 			return i;
 		}
 	}
-	logger.trace("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " doesn't matche " + JSON.stringify(a_entry));
+	logger.trace("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " doesn't matche " );
 	return -1;
 }
 
 function getRateFromAvailabilitySlot(reqSlotDay, reqSlotTime, avail) {
 	let idx = processTimeMatch(reqSlotDay, reqSlotTime, avail);
 	if (idx == -1) {
-		logger.warn("getRateFromAvailabilitySlot -- reqSlot: " + reqSlotDay + " , " + reqSlotTime + " found no matches, return -1 for rate");
+		logger.error("getRateFromAvailabilitySlot -- reqSlot: " + reqSlotDay + " , " + reqSlotTime + " found no matches, return -1 for rate");
 		return -1;
 	}
 
 	let rate = avail[idx].rate;
-	logger.warn("getRateFromAvailabilitySlot -- reqSlot: " + reqSlotDay + " , " + reqSlotTime + " returning rate = " + rate);
+	logger.info("getRateFromAvailabilitySlot -- reqSlot: " + reqSlotDay + " , " + reqSlotTime + " returning rate = " + rate);
 	return rate;
 }
 

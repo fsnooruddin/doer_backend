@@ -11,6 +11,7 @@ module.exports = (app) => {
 	const image_uploads = require("../controllers/image_upload.controller.js");
 	const users =  require("../controllers/user.controller.js");
     const addresses =  require("../controllers/address.controller.js");
+    const invoices =  require("../controllers/invoice.controller.js");
 
 	var router = require("express").Router();
 
@@ -34,7 +35,7 @@ module.exports = (app) => {
 	router.post("/job/accept", jobs.acceptJob);
 	router.post("/job/start", jobs.startJob);
 	router.post("/job/complete", jobs.completeJob);
-	router.post("/job/generateInvoice", jobs.generateInvoice);
+	router.post("/invoice/generateInvoice", invoices.generateInvoice);
 	router.post("/job/addCost", jobs.addJobCost);
 	router.post("/job/cancel", jobs.cancelJob);
     router.post("/job/abandon", jobs.abandonJob);
@@ -66,6 +67,8 @@ module.exports = (app) => {
 	router.post("/user/create", users.create);
 	router.get("/user/getById", users.findById);
 	router.get("/user/getAddresses", users.getAddresses);
+	router.post("/user/rate", users.rate);
+	router.get("/user/rating", users.getRating);
 
     router.post("/address/create", addresses.create);
 	router.post("/address/remove", addresses.remove);

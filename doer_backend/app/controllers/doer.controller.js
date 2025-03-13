@@ -9,7 +9,7 @@ const Utils = require("../utils/Utils.js");
 const logger = require("../utils/Logger.js");
 const Doer = db.doers;
 const Job = db.jobs;
-const Invoice = db.invoices;
+//const Invoice = db.invoices;
 const Op = db.Sequelize.Op;
 
 const Availability = db.availability_slots;
@@ -168,7 +168,7 @@ async function findByIdDBCall(id) {
 				{
 					model: db.availability_slots,
 					attributes: {
-					exclude: ["updatedAt", "createdAt"],
+						exclude: ["updatedAt", "createdAt"],
 					},
 				},
 				{

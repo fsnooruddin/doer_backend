@@ -38,6 +38,10 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING,
 			allowNull: true,
 		},
+		duration: {
+        			type: Sequelize.INTEGER,
+        			allowNull: true,
+        		},
 		status: {
 			type: Sequelize.ENUM("requested", "accepted", "rejected", "in-progress", "completed", "abandoned", "cancelled"),
 			allowNull: false,

@@ -6,7 +6,6 @@
 
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
-const Doers = require("./doer.controller.js");
 const KU = require("../utils/KafkaUtil.js");
 const logger = require("../utils/Logger.js");
 const Job = db.jobs;
@@ -154,7 +153,7 @@ async function getDoers(services, time) {
 	try {
 		const sservices = "%" + services + "%";
 		const sdays = "%" + dayRequested + "%";
-		const doer_data = await Doers.findByServicesAndDayDBCall(sservices, sdays);
+		const doer_data = await Utils.findDoersByServicesAndDay(sservices, sdays);
 		if (doer_data) {
 			if (doer_data.length == 0) {
 				logger.warn("Found 0 Doers for services = " + services + " day = " + dayRequested + " time = " + timeRequested);
@@ -401,86 +400,6 @@ async function completeJob(req, res) {
 	}
 }
 
-async function generateInvoice(req, res) {
-	const jobId = req.query.jobId;
-	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
-		logger.error("job_request-controller generateInvoice,  missing job Id or job Id not integer: " + jobId);
-		res.status(400).send({
-			message: "Error generateInvoice - Job Id is missing or job Id not integer: " + jobId,
-		});
-		return;
-	}
-
-	logger.info("job-controller generateInvoice, job id = " + jobId);
-	const job = await findByIdDBCall(jobId);
-	const doer = await Doers.findByIdDBCall(job.doer_id);
-
-	if (job == null || doer == null) {
-		logger.error(
-			"job_request-controller - generateInvoice -  Error retrieving doer or job for generate invoice request, doer id = " + doerId + " job id = " + jobId
-		);
-		res.status(500).send({
-			message:
-				"job_request-controller - generateInvoice - Error retrieving doer or job for generate invoice request, doer id = " +
-				doerId +
-				" job id = " +
-				jobId,
-		});
-		return;
-	}
-
-	var dayRequested = Utils.getDayFromAvailability(job.time);
-	var timeRequested = Utils.getTimeFromAvailability(job.time);
-
-	console.log(job.time);
-	console.log(dayRequested);
-	console.log(timeRequested);
-
-	var objs = JSON.parse(doer.availability);
-	logger.info("Job-controlleravailability = " + objs);
-	logger.info("Job-controller availability = " + JSON.stringify(objs));
-	logger.info("Job-controller one slot = " + JSON.stringify(objs.slots[0]));
-	logger.info("Job-controller slots = " + JSON.stringify(JSON.parse(JSON.stringify(objs.slots[0]))));
-	//console.log(JSON.parse (objs));
-	var hourly_rate = Utils.getRateFromAvailabilitySlot(dayRequested, timeRequested, JSON.parse(JSON.stringify(objs.slots)));
-	if (hourly_rate == -1) {
-		res.status(500).send({
-			message: "Error retrieving rate or  job completion request, doer id = " + job.doer_id,
-		});
-		return;
-	}
-
-	// Create a completed_job
-	const cost = job.duration * hourly_rate;
-	logger.info("Job-controller Job-controller completeJob total cost is duration * rate: " + job.duration + " * " + hourly_rate);
-
-	const job_invoice = {
-		doer_id: job.doer_id,
-		user_id: job.user_id,
-		job_id: job.job_id,
-		duration: job.duration,
-		cost: cost,
-		location: job.location,
-	};
-
-	logger.info("Job-controller Job-controller completeJob total cost is duration * rate: " + job.duration + " * " + hourly_rate);
-
-	try {
-		// Save completed_job] in the database
-
-		const data = JobInvoices.create(job_invoice);
-		logger.info("Job-controller Job-controller completeJob invoice create success: " + JSON.stringify(data));
-		res.status(200).send(data);
-		return;
-	} catch (err) {
-		logger.error("Job-controller Job-controller completeJob creating invoice failed. error =  " + err.message);
-		res.status(500).send({
-			message: err.message || "Some error occurred while generating the job invoice.",
-		});
-		return;
-	}
-}
-
 /**
  * Called by functions to record changes to job .
  * @param {number} jobId - Job being changed
@@ -575,7 +494,6 @@ module.exports = {
 	acceptJob,
 	startJob,
 	completeJob,
-	generateInvoice,
 	addJobCost,
 	cancelJob,
 	abandonJob,

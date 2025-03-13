@@ -20,11 +20,7 @@ module.exports = (sequelize, Sequelize) => {
 		duration: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
-		},
-		location: {
-			type: Sequelize.STRING,
-			allowNull: false,
-		},
+		}
 	});
 
 	return Invoice;
