@@ -30,6 +30,14 @@ const reqCreateJobCost_1 = {
 	description: "parts fr the sink",
 };
 
+
+const reqCreateJobCostTip_1 = {
+	job_id: "2",
+	cost: "100",
+	description: "tip for doer",
+};
+
+
 const reqCreateJobCost_2 = {
 	job_id: "2",
 	cost: "100",
@@ -42,4 +50,5 @@ module.exports = {
 	reqCreateJobCost_1,
 	reqCreateJobCost_2,
 	reqCreateJobRequest_Malformed,
+	reqCreateJobCostTip_1
 };

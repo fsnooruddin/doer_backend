@@ -7,6 +7,7 @@ var {
 	reqCreateJobCost_1,
 	reqCreateJobCost_2,
 	reqCreateJobRequest_Malformed,
+	reqCreateJobCostTip_1
 } = require("./data/job_request.test.data.js");
 
 var {
@@ -112,11 +113,17 @@ async function addCostToJobSuccess() {
 	expect(res.status).toBe(200);
 }
 
+async function addTipToJobSuccess() {
+	const res = await postData(addCostToJobUri, reqCreateJobCostTip_1);
+	expect(res.status).toBe(200);
+}
+
 describe("JOB API Tests -- Successful calls", () => {
 	test("Successfully create a new Job Request", createJobSuccess);
 	test("Successfully accept a Job ", acceptJobSuccess);
 	test("Successfully complete Job ", completeJobSuccess);
-	test("Successfully add jost to Job ", addCostToJobSuccess);
+	test("Successfully add cost to Job ", addCostToJobSuccess);
+	test("Successfully add tip to Job ", addTipToJobSuccess);
 });
 
 describe("JOB API Tests -- Failure calls", () => {
