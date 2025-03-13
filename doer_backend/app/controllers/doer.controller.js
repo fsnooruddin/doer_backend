@@ -9,7 +9,7 @@ const Utils = require("../utils/Utils.js");
 const logger = require("../utils/Logger.js");
 const Doer = db.doers;
 const Job = db.jobs;
-//const Invoice = db.invoices;
+const Invoice = db.invoices;
 const Op = db.Sequelize.Op;
 
 const Availability = db.availability_slots;
@@ -639,6 +639,7 @@ async function getHistory(req, res) {
 	var doer = null;
 	var completed_jobs = null;
 	var accepted_jobs = null;
+	var abandoned_jobs = null;
 	var invoices = null;
 	try {
 		doer = await Doer.findOne({
@@ -686,10 +687,23 @@ async function getHistory(req, res) {
 		return;
 	}
 
+	try {
+		abandoned_jobs = await Job.findAll({
+			where: { doer_id: id, status: "abandoned" },
+			attributes: { exclude: ["updatedAt"] },
+		});
+	} catch (err) {
+		res.status(500).send({
+			message: "Error retrieving abandoned jobs for doer getHistory = " + id + " error: " + err.message,
+		});
+		return;
+	}
+
 	const history = {
 		doer_profile: doer,
 		completed_jobs: completed_jobs,
 		accepted_jobs: accepted_jobs,
+		abandoned_jobs: abandoned_jobs
 	};
 
 	res.status(200).send(history);
