@@ -649,6 +649,7 @@ async function getHistory(req, res) {
 		res.status(500).send({
 			message: "Error retrieving doer for doer getHistory = " + id + " error: " + err.message,
 		});
+		return;
 	}
 
 	try {
@@ -658,6 +659,7 @@ async function getHistory(req, res) {
 		res.status(500).send({
 			message: "Error retrieving invoices for doer getHistory = " + id + " error: " + err.message,
 		});
+		return;
 	}
 
 	try {
@@ -669,6 +671,7 @@ async function getHistory(req, res) {
 		res.status(500).send({
 			message: "Error retrieving completed jobs for doer getHistory = " + id + " error: " + err.message,
 		});
+		return;
 	}
 
 	try {
@@ -680,6 +683,7 @@ async function getHistory(req, res) {
 		res.status(500).send({
 			message: "Error retrieving accepted jobs for doer getHistory = " + id + " error: " + err.message,
 		});
+		return;
 	}
 
 	const history = {
@@ -689,6 +693,7 @@ async function getHistory(req, res) {
 	};
 
 	res.status(200).send(history);
+	return;
 }
 
 /**
