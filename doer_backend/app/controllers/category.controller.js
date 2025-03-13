@@ -81,6 +81,15 @@ async function findOneById(req, res) {
 				exclude: ["updatedAt", "createdAt"],
 			},
 		});
+
+		logger.info("category-controller findOneById id = " + id + " response is = " + JSON.stringify(response_data));
+		for (let i = 0; i < response_data.length; i++) {
+                console.log(JSON.stringify(response_data[i]));
+                const tr_alias = req.t(response_data[i].alias, { ns: 'category' });
+        		console.log("alias = " + response_data[i].alias + " tr alias = " + tr_alias);
+
+        	}
+
 		logger.info("category-controller findOneById id = " + id + " response is = " + JSON.stringify(response_data));
 		res.send(response_data);
 	} catch (err) {

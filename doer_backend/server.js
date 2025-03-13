@@ -1,11 +1,17 @@
 const express = require("express");
 const cors = require("cors");
+const i18next = require('i18next');
+const Backend = require('i18next-fs-backend');
+const i18nextMiddleware = require('i18next-http-middleware');
+
 const ku = require("./app/utils/KafkaUtil.js");
 const fileUpload = require("express-fileupload");
 const logger = require("./app/utils/Logger.js");
 
 const app = express();
 const db = require("./app/models");
+const path = require('path');
+const cookieParser = require('cookie-parser');
 
 let forceFlag = false;
 let kafkaFlag = false;
@@ -19,6 +25,14 @@ if (kafkaFlag) {
 }
 
 require("./app/routes/doer.routes")(app);
+
+// Route Example
+app.get('/', (req, res) => {
+  const welcomeMessage = req.t('welcome', {ns: 'common'});
+  const description = req.t('description', {ns: 'common'});
+  res.send(`<h1>${welcomeMessage}</h1><p>${description}</p>`);
+});
+
 
 // set port, listen for requests
 const PORT = 8080;
@@ -39,7 +53,8 @@ function init_db() {
 	db.doer_trips = require("./app/models/doer_trip.model.js")(db.sequelize, db.Sequelize);
 	db.doer_trip_location_updates = require("./app/models/doer_trip_location_update.model.js")(db.sequelize, db.Sequelize);
 	db.reviews = require("./app/models/review.model.js")(db.sequelize, db.Sequelize);
-	db.ratings = require("./app/models/rating.model.js")(db.sequelize, db.Sequelize);
+	db.doer_ratings = require("./app/models/doer_rating.model.js")(db.sequelize, db.Sequelize);
+	db.user_ratings = require("./app/models/user_rating.model.js")(db.sequelize, db.Sequelize);
 	db.invoices = require("./app/models/invoice.model.js")(db.sequelize, db.Sequelize);
 	db.messages = require("./app/models/message.model.js")(db.sequelize, db.Sequelize);
 	db.addresses = require("./app/models/address.model.js")(db.sequelize, db.Sequelize);
@@ -64,9 +79,12 @@ function init_db() {
 	db.doers.hasMany(db.jobs, { foreignKey: "doer_id", as: "jobs" });
 	db.jobs.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
-	db.doers.hasOne(db.ratings, { foreignKey: "doer_id", as: "ratings" });
+	db.doers.hasOne(db.doer_ratings, { foreignKey: "doer_id", as: "ratings" });
+
+	db.users.hasOne(db.user_ratings, { foreignKey: "user_id", as: "ratings" });
 
 	db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
+	db.reviews.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
 	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id", as: "badges", otherKey: "user_id" });
 	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "badge_id", otherKey: "user_id" });
@@ -122,4 +140,38 @@ function init_app() {
 
 	// setup file upload handler
 	app.use(fileUpload());
+
+	i18next
+      .use(Backend)
+      .use(i18nextMiddleware.LanguageDetector)
+      .init(
+        {
+          ns:['common', 'category'],
+          defaultNS: 'common',
+          backend: {
+            loadPath: ('./app/locales/{{ns}}/{{lng}}.json')
+          },
+          debug: false,
+          detection: {
+            order: ['querystring', 'cookie'],
+            caches: ['cookie']
+          },
+          saveMissing: true,
+          fallbackLng: 'en',
+          preload: ['en', 'es', 'fr']
+        },
+        (err, t) => {
+          if (err) {
+            return logger.error("Couldn't initialize i18next, error is: " + err);
+          }
+          logger.info('i18next is ready...');
+          logger.info(t('welcome'));
+          logger.info(t('welcome', { lng: 'es' }));
+        }
+      );
+
+    // Middleware
+    app.use(cookieParser());
+    app.use(i18nextMiddleware.handle(i18next));
+
 }
