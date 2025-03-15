@@ -46,7 +46,7 @@ var {
 	getBadgeByIdUri,
 	createAddressUri,
 	removeAddressByIdUri,
-	generateInvoiceUri
+	generateInvoiceUri,
 } = require("./data/test.uris.js");
 
 async function postData(url, data) {

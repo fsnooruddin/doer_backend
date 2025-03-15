@@ -92,5 +92,5 @@ module.exports = {
 	updateAddressUri,
 	cancelJobUri,
 	abandonJobUri,
-	generateInvoiceUri
+	generateInvoiceUri,
 };

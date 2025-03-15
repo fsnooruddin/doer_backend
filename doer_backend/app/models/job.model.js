@@ -39,9 +39,9 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: true,
 		},
 		duration: {
-        			type: Sequelize.INTEGER,
-        			allowNull: true,
-        		},
+			type: Sequelize.INTEGER,
+			allowNull: true,
+		},
 		status: {
 			type: Sequelize.ENUM("requested", "accepted", "rejected", "in-progress", "completed", "abandoned", "cancelled"),
 			allowNull: false,

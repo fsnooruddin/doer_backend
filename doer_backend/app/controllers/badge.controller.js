@@ -140,5 +140,5 @@ module.exports = {
 	create,
 	get,
 	assignBadgeToUser,
-	assignBadgeToDoer
+	assignBadgeToDoer,
 };

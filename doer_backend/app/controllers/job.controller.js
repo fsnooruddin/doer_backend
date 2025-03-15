@@ -164,8 +164,8 @@ async function findEligibleDoers(req, res) {
 	}
 
 	try {
-	    const svcs = "%" + data.services + "%";
-		const response_data =  await DBQuery.doer_findByServiceDayTimeDBCall(svcs, data.day, data.req_time);
+		const svcs = "%" + data.services + "%";
+		const response_data = await DBQuery.doer_findByServiceDayTimeDBCall(svcs, data.day, data.req_time);
 		logger.debug("findEligibleDoers returning: " + JSON.stringify(response_data));
 		res.status(200).send(response_data);
 		return;

@@ -22,7 +22,6 @@ const updateDoerTrip_2 = {
 	},
 };
 
-
 const updateDoerTrip_Malformed = {
 	location_update: {
 		coordinates: [77.6879689, 27.4072289],

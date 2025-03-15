@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
 		duration: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
-		}
+		},
 	});
 
 	return Invoice;

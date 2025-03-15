@@ -183,16 +183,16 @@ async function findByIdDBCall(id) {
 					model: db.reviews,
 					as: "reviews",
 					attributes: {
-						exclude: ["updatedAt", "createdAt","doer_id"],
+						exclude: ["updatedAt", "createdAt", "doer_id"],
 					},
 				},
-								{
-                					model: db.badges,
-                					as: "badges",
-                					attributes: {
-                						exclude: ["updatedAt", "createdAt", "doer_id"],
-                					},
-                				},
+				{
+					model: db.badges,
+					as: "badges",
+					attributes: {
+						exclude: ["updatedAt", "createdAt", "doer_id"],
+					},
+				},
 			],
 		});
 
@@ -527,7 +527,7 @@ async function getHistory(req, res) {
 		doer_profile: doer,
 		completed_jobs: completed_jobs,
 		accepted_jobs: accepted_jobs,
-		abandoned_jobs: abandoned_jobs
+		abandoned_jobs: abandoned_jobs,
 	};
 
 	res.status(200).send(history);
@@ -567,5 +567,5 @@ module.exports = {
 	rating,
 	updateAvailability,
 	getUpcomingJobs,
-	getRating
+	getRating,
 };

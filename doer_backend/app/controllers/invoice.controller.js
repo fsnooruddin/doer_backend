@@ -171,20 +171,20 @@ async function approveInvoice(req, res) {
 	}
 
 	try {
-    		await Invoice.update({status: "approved" }, { where: { invoice_id: invoiceId } });
-    		logger.info("invoice-controller approveInvoice SUCCESS,  invoice id = " + invoiceId);
-    	//	updateJobHistory(jobId, "status", "accepted", "doer", doerId);
-    		res.status(200).send("approve invoice success");
-    		return;
-    	} catch (error) {
-    		logger.error("invoice-controller approveInvoice failed with error " + error.message);
-    		res.status(500).send("invoice-controller approveInvoice failed with error  " + error.message);
-    		return;
-    	}
+		await Invoice.update({ status: "approved" }, { where: { invoice_id: invoiceId } });
+		logger.info("invoice-controller approveInvoice SUCCESS,  invoice id = " + invoiceId);
+		//	updateJobHistory(jobId, "status", "accepted", "doer", doerId);
+		res.status(200).send("approve invoice success");
+		return;
+	} catch (error) {
+		logger.error("invoice-controller approveInvoice failed with error " + error.message);
+		res.status(500).send("invoice-controller approveInvoice failed with error  " + error.message);
+		return;
+	}
 }
 
 async function rejectInvoice(req, res) {
-const invoiceId = req.query.invoiceId;
+	const invoiceId = req.query.invoiceId;
 	if (Utils.validateIntegerParam("Invoice Id", invoiceId) == false) {
 		logger.error("invoice-controller rejectInvoice missing invoice Id or invoice Id not integer: " + invoiceId);
 		res.status(400).send({ message: "Error rejectInvoice - invoice Id is missing or invoice id is not integer" });
@@ -192,16 +192,16 @@ const invoiceId = req.query.invoiceId;
 	}
 
 	try {
-    		await Invoice.update({status: "rejected" }, { where: { invoice_id: invoiceId } });
-    		logger.info("invoice-controller rejectInvoice SUCCESS,  invoice id = " + invoiceId);
-    	//	updateJobHistory(jobId, "status", "accepted", "doer", doerId);
-    		res.status(200).send("reject invoice success");
-    		return;
-    	} catch (error) {
-    		logger.error("invoice-controller rejectInvoice failed with error " + error.message);
-    		res.status(500).send("invoice-controller rejectInvoice failed with error  " + error.message);
-    		return;
-    	}
+		await Invoice.update({ status: "rejected" }, { where: { invoice_id: invoiceId } });
+		logger.info("invoice-controller rejectInvoice SUCCESS,  invoice id = " + invoiceId);
+		//	updateJobHistory(jobId, "status", "accepted", "doer", doerId);
+		res.status(200).send("reject invoice success");
+		return;
+	} catch (error) {
+		logger.error("invoice-controller rejectInvoice failed with error " + error.message);
+		res.status(500).send("invoice-controller rejectInvoice failed with error  " + error.message);
+		return;
+	}
 }
 
 async function sendInvoiceForApproval(req, res) {}
@@ -211,5 +211,5 @@ module.exports = {
 	addCostToJob,
 	addTipToJob,
 	rejectInvoice,
-	approveInvoice
+	approveInvoice,
 };
