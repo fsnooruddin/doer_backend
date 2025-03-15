@@ -1,5 +1,4 @@
-//const db = require("../models");
-//const Doers = require("../controllers/doer.controller.js");
+
 const logger = require("./Logger.js");
 
 module.exports = {
@@ -12,17 +11,8 @@ module.exports = {
 	getRateFromAvailabilitySlot,
 	validateIntegerParam,
 	getDistanceBetweenTwoPoint,
-	findDoersByServicesAndDay,
-	findDoerById
 };
 
-async function findDoersByServicesAndDay(sservices, sdays) {
-    return (Doers.findByServicesAndDayDBCall(sservices, sdays));
-}
-
-async function findDoerById(doerId) {
-    return (Doers.findByIdDBCall(doerId));
-}
 
 function escapeJSONString(server_return_string) {
 	var data_str = JSON.stringify(server_return_string);
@@ -92,6 +82,7 @@ async function filterByTime(dayRequested, timeRequested, doers) {
 			logger.trace("Processing Doer Availability" + "     " + JSON.stringify(d_entry));
 
 			console.log(typeof d_entry.availability);
+			console.log( d_entry.availability);
 			console.log(JSON.parse(d_entry.availability));
 
 			var objs = JSON.parse(d_entry.availability);
