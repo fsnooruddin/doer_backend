@@ -14,6 +14,15 @@ const updateDoerTrip_1 = {
 	},
 };
 
+const updateDoerTrip_2 = {
+	id: "1",
+	location_update: {
+		type: "Point",
+		coordinates: [77.6879689, 27.4072289],
+	},
+};
+
+
 const updateDoerTrip_Malformed = {
 	location_update: {
 		coordinates: [77.6879689, 27.4072289],
@@ -23,5 +32,6 @@ const updateDoerTrip_Malformed = {
 module.exports = {
 	createDoerTrip_1,
 	updateDoerTrip_1,
+	updateDoerTrip_2,
 	updateDoerTrip_Malformed,
 };
