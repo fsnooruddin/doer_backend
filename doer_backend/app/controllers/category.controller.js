@@ -7,6 +7,7 @@ const Utils = require("../utils/Utils.js");
 const Category = db.categories;
 const logger = require("../utils/Logger.js");
 const Op = db.Sequelize.Op;
+const i18next = require("i18next");
 
 /**
  * Create a new Category
@@ -73,25 +74,20 @@ async function findOneById(req, res) {
 
 	logger.info("category-controller findOneById id = " + id);
 	try {
-		const response_data = await Category.findAll({
-			where: {
-				category_id: id,
-			},
-			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
-		});
+		var response_data = await Category.findByPk(id);
 
-		logger.info("category-controller findOneById id = " + id + " response is = " + JSON.stringify(response_data));
-		for (let i = 0; i < response_data.length; i++) {
-                console.log(JSON.stringify(response_data[i]));
-                const tr_alias = req.t(response_data[i].alias, { ns: 'category' });
-        		console.log("alias = " + response_data[i].alias + " tr alias = " + tr_alias);
+		logger.info("category-controller findOneById id = " + id + " response data is = " + JSON.stringify(response_data));
 
-        	}
+		var entry = JSON.parse(JSON.stringify(response_data));
+		console.log("language = " + i18next.resolvedLanguage);
 
-		logger.info("category-controller findOneById id = " + id + " response is = " + JSON.stringify(response_data));
-		res.send(response_data);
+		entry.tr_name = req.t(entry.name, { ns: "category" });
+		entry.tr_alias = req.t(entry.alias, { ns: "category" });
+
+		console.log("new entry " + JSON.stringify(entry));
+
+		logger.info("category-controller findOneById id = " + id + " tr response is = " + JSON.stringify(entry));
+		res.send(entry);
 	} catch (err) {
 		logger.error("Error retrieving category with id=" + id + " error: " + err.message);
 		res.status(500).send({ message: "Error retrieving category with id=" + id + " error: " + err.message });
@@ -118,7 +114,7 @@ async function findOneByName(req, res) {
 	const search_str = "%" + name + "%";
 	logger.info("category-controller findOneByName name = " + name);
 	try {
-		const response_data = await Category.findAll({
+		const response_data = await Category.findOne({
 			where: {
 				name: {
 					[Op.iLike]: search_str,
