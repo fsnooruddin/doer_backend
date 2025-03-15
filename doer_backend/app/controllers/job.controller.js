@@ -13,6 +13,7 @@ const JobInvoices = db.invoices;
 const JobHistories = db.job_histories;
 const JobCosts = db.job_costs;
 const Op = db.Sequelize.Op;
+const DBQuery = require("../utils/DBQuery.js");
 
 /**
  * Create a Job
@@ -145,46 +146,17 @@ function filterByDistance(timeRequested, doers) {
 	req.end();
 }
 
-async function getDoers(services, time) {
-	const retArray = time.split(",");
-	const dayRequested = retArray[0];
-	const timeRequested = retArray[1];
-	logger.info("Finding Doers for services = " + services + " day = " + dayRequested + " time = " + timeRequested);
-	try {
-		const sservices = "%" + services + "%";
-		const sdays = "%" + dayRequested + "%";
-		const doer_data = await Utils.findDoersByServicesAndDay(sservices, sdays);
-		if (doer_data) {
-			if (doer_data.length == 0) {
-				logger.warn("Found 0 Doers for services = " + services + " day = " + dayRequested + " time = " + timeRequested);
-				return null;
-			}
-			logger.debug("response data from getDoers is " + JSON.stringify(doer_data));
-			logger.info("Found " + doer_data.length + " Doers for services + day ... filtering for time...");
-			const response_data = await Utils.filterByTime(dayRequested, timeRequested, doer_data);
-			logger.info("Doers left after filtering for time =  " + response_data.length);
-			return response_data;
-		} else {
-			return null;
-		}
-	} catch (error) {
-		logger.error("Can't get doers in getDoers...error is: " + error.message);
-		return "Couldn't find any doers for given request";
-	}
-}
-
 // Retrieve all Users from the database
 // or only those whose title  matches
 async function findEligibleDoers(req, res) {
 	const id = req.query.jobId;
 	if (id == null || isNaN(parseInt(id))) {
 		logger.error("job_request-controller findEligibleDoers missing jobId or job Id not integer: " + id);
-		res.status(500).send("findEligibleDoers -- jobId was missing or job Id not integer: " + id);
+		res.status(400).send("findEligibleDoers -- jobId was missing or job Id not integer: " + id);
 		return;
 	}
-	logger.info("job_request-controller findEligibleDoers, id = " + id);
 	const data = await findByIdDBCall(id);
-	logger.trace("data from find job request is = " + data + ", job id = " + id);
+	logger.info("data from find job request is = " + JSON.stringify(data) + ", job id = " + id);
 	if (data == null) {
 		logger.warn("data from find job request is = null , job id = " + id);
 		res.status(500).send("Couldn't find job request");
@@ -192,7 +164,8 @@ async function findEligibleDoers(req, res) {
 	}
 
 	try {
-		const response_data = await getDoers(data.services, data.time);
+	    const svcs = "%" + data.services + "%";
+		const response_data =  await DBQuery.doer_findByServiceDayTimeDBCall(svcs, data.day, data.req_time);
 		logger.debug("findEligibleDoers returning: " + JSON.stringify(response_data));
 		res.status(200).send(response_data);
 		return;
@@ -488,7 +461,6 @@ async function addJobCost(req, res) {
 module.exports = {
 	create,
 	findEligibleDoers,
-	getDoers,
 	findById,
 	findByIdDBCall,
 	acceptJob,

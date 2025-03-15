@@ -15,6 +15,7 @@ const Op = db.Sequelize.Op;
 const Availability = db.availability_slots;
 const Rating = db.doer_ratings;
 const jobs = require("./job.controller.js");
+const DBQuery = require("../utils/DBQuery.js");
 
 /**
  * Create a Doer
@@ -266,12 +267,12 @@ async function findByServicesAndDay(req, res) {
 	}
 
 	services = "%" + services + "%";
-	day = "%" + day + "%";
+
 	logger.info("Doer-controller findByServicesAndDay services = " + services + ", day = " + day);
 
 	let doers_found = {};
 	try {
-		doers_found = await findByServicesAndDayDBCall(services, day);
+		doers_found = await DBQuery.doer_findByServiceDayDBCall(services, day);
 		logger.info("doer-controller findByServicesAndDay -- services is " + services + " returning " + JSON.stringify(doers_found));
 		res.status(200).send(doers_found);
 		return;
@@ -284,183 +285,6 @@ async function findByServicesAndDay(req, res) {
 	}
 }
 
-async function findByServicesAndDayDBCall(services, day) {
-	logger.info("Doer-controller findByServicesAndDayDBCall services = " + services + " day = " + day);
-
-	/*
-SELECT  "doer_trip"."doer_trip_id",
-                  "doer_trip"."description"
-                  FROM "doer_trips" AS "trips"
-                  INNER JOIN
-                  "doer_trip_location_updates" ON "trips"."doer_trip_id" = "doer_trip_location_updates"."doer_trip_id" AND
-"trips"."doer_id" = “1";
-
-*/
-
-	var doers_found = {};
-	try {
-		doers_found = await db.sequelize.query(
-			`SELECT  "doer"."doer_id",
-                     "doer"."name",
-                     "doer"."phone_number",
-                     "doer"."location",
-                     "doer"."services",
-                     "doer"."minimum_charges",
-                     "doer"."img_url"
-
-                     FROM "doers" AS "doer"
-                     INNER JOIN
-                     "availability_slots" ON "doer"."doer_id" = "availability_slots"."doer_id"
-                     AND
-                     "doer"."services" ILIKE :svcs
-                     AND
-                     "availability_slots"."day" ILIKE :day`,
-			{
-				replacements: { svcs: services, day: day },
-			}
-		);
-
-		for (let i = 0; i < doers_found[0].length; i++) {
-			var doer_slots = {};
-			console.log("FOUND DOERS >>>>>");
-			//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-
-			doer_slots = await Availability.findAll({
-				where: {
-					doer_id: doers_found[0][i].doer_id,
-				},
-				attributes: {
-					exclude: ["updatedAt", "createdAt"],
-				},
-			});
-			//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
-			doers_found[0][i].availability = doer_slots;
-			logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-		}
-	} catch (err) {
-		logger.error("doer-controller findByServicesAndDayDBCall -- services is " + services + " error is " + err.message);
-		return null;
-	}
-
-	logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
-	return doers_found[0];
-}
-
-async function findByServicesDayAndTimeDBCall(services, day, rstart, end) {
-	logger.info("Doer-controller findByServicesDayAndTimeDBCall services = " + services + " day = " + day);
-
-	var doers_found = {};
-	try {
-		doers_found = await db.sequelize.query(
-			`SELECT  "doer"."doer_id",
-                     "doer"."name",
-                     "doer"."phone_number",
-                     "doer"."location",
-                     "doer"."services",
-                     "doer"."minimum_charges",
-                     "doer"."img_url"
-
-                     FROM "doers" AS "doer"
-                     INNER JOIN
-                     "availability_slots" ON "doer"."doer_id" = "availability_slots"."doer_id"
-                     AND
-                     "doer"."services" ILIKE :svcs
-                     AND
-                     "availability_slots"."day" ILIKE :day
-                     AND
-                     "availability_slots"."end_time" > :rstart
-                     `,
-			{
-				replacements: { svcs: services, day: day, rstart: rstart },
-			}
-		);
-
-		for (let i = 0; i < doers_found[0].length; i++) {
-			var doer_slots = {};
-			console.log("FOUND DOERS >>>>>");
-			//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-
-			doer_slots = await Availability.findAll({
-				where: {
-					doer_id: doers_found[0][i].doer_id,
-				},
-				attributes: {
-					exclude: ["updatedAt", "createdAt"],
-				},
-			});
-			//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
-			doers_found[0][i].availability = doer_slots;
-			logger.info("doer-controller findByServicesDayAndTimeDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
-		}
-	} catch (err) {
-		logger.error("doer-controller findByServicesDayAndTimeDBCall -- services is " + services + " error is " + err.message);
-		return null;
-	}
-
-	logger.info("doer-controller findByServicesDayAndTimeDBCall -- SUCCESS returning SIZE: " + doers_found[0].length);
-	return doers_found[0];
-}
-
-/**
- * Find Doers for job
- * @param {integer} jobId - Job Id for which we need doers. This will search for doers by services requested for the
- * job, and then filter by availability and distance.
- * @return {string|null} Doer - null if failure, JSON array object representing Doers offering services if success
- * @memberof Doer
- */
-async function findForJob(req, res) {
-	var id = req.query.jobId;
-
-	var job_to_fill = await jobs.findByIdDBCall(id);
-	if (job_to_fill == null) {
-		logger.error("doer-controller findForJob -- can't find job with id = " + id);
-		res.status(500).send({
-			message: "Error retrieving Job findForJob -- can't find job with id = " + id,
-		});
-		return;
-	}
-	console.log(JSON.stringify(job_to_fill));
-	var services = "%" + job_to_fill.services + "%";
-	var day = job_to_fill.day;
-	var doers_found = await findByServicesDayAndTimeDBCall(services, day, job_to_fill.req_time);
-
-	// filter by distance
-	var ret_arry = [];
-	try {
-		for (var i = 0; i < doers_found.length; i++) {
-			var doer = doers_found[i];
-			console.log("doer 0 = " + JSON.stringify(doer));
-			console.log("doer 1 = " + JSON.stringify(doer.availability));
-
-			for (var j = 0; j < doer.availability.length; j++) {
-				console.log("doer 2 = " + JSON.stringify(doer.availability[j]));
-				var d_radius = doer.availability[j].radius;
-
-				var dist = Utils.getDistanceBetweenTwoPoint(
-					job_to_fill.latitude,
-					job_to_fill.longitude,
-					doer.availability[j].latitude,
-					doer.availability[j].longitude
-				);
-				logger.info("distance between job and doer id = " + doer.doer_id + " is " + dist);
-				if (dist < d_radius) {
-					ret_arry.push(doer);
-					logger.info(" doer id = " + doer.doer_id + " is within range");
-					break;
-				} else {
-					logger.info(" doer id = " + doer.doer_id + " is out of range");
-				}
-			}
-		}
-		res.status(200).send(ret_arry);
-		return;
-	} catch (err) {
-		logger.error("doer-controller findByServicesAndDay -- services is " + services + " error is " + err.message);
-		res.status(500).send({
-			message: "Error retrieving Doer with findByServicesAndDay =" + services + " error: " + err.message,
-		});
-	}
-}
 /**
  * Update Availability of a Doer
  * @param {number} id - ID of Doer to update
@@ -739,11 +563,9 @@ module.exports = {
 	findByIdDBCall,
 	findByServices,
 	findByServicesAndDay,
-	findByServicesAndDayDBCall,
 	getHistory,
 	rating,
 	updateAvailability,
 	getUpcomingJobs,
-	getRating,
-	findForJob,
+	getRating
 };
