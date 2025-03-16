@@ -21,6 +21,11 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.INTEGER,
 			allowNull: false,
 		},
+		status: {
+        			type: Sequelize.ENUM("created", "accepted", "rejected", "in-progress", "completed", "cancelled"),
+        			allowNull: false,
+        			defaultValue: "created",
+        		},
 	});
 
 	return Invoice;
