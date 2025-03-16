@@ -14,7 +14,17 @@ const reqCreateJobRequest_2 = {
 	latitude: "33.8352932",
 	day: "Fri",
 	req_time: "12",
-	services: "Landscapring",
+	services: "Landscaping",
+	description: "plant roses",
+};
+
+const reqCreateJobRequest_3 = {
+	user_id: "2",
+	longitude: "-117.91450359999999",
+	latitude: "33.8352932",
+	day: "Sun",
+	req_time: "10",
+	services: "Electrician",
 	description: "plant roses",
 };
 
@@ -45,6 +55,7 @@ const reqCreateJobCost_2 = {
 module.exports = {
 	reqCreateJobRequest_1,
 	reqCreateJobRequest_2,
+	reqCreateJobRequest_3,
 	reqCreateJobCost_1,
 	reqCreateJobCost_2,
 	reqCreateJobRequest_Malformed,

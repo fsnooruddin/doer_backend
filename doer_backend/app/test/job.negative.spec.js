@@ -1,57 +1,44 @@
 const request = require("supertest")("http://127.0.0.1:8080/api/doer");
 var { expect, jest, test } = require("@jest/globals");
 
-var {
-	reqCreateJobRequest_1,
-	reqCreateJobRequest_2,
-	reqCreateJobCost_1,
-	reqCreateJobCost_2,
-	reqCreateJobRequest_Malformed,
-	reqCreateJobCostTip_1,
-} = require("./data/job_request.test.data.js");
+const fs = require("fs");
+const path = require("path");
 
-var {
-	getCategoryByIdRequestUri,
-	getCategoryByNameRequestUri,
-	getCategoryTreeRequestUri,
-	getDoerByIdRequestUri,
-	getDoerByServicesRequestUri,
-	getDoerByServicesAndDayRequestUri,
-	getReviewsForDoerRequestUri,
-	getReviewByIdRequestUri,
-	rateDoerRequestUri,
-	createDoerReviewUri,
-	createDoerTripUri,
-	completeDoerTripUri,
-	updateDoerTripUri,
-	getDoerTripByJobIdUri,
-	updateDoerAvailabilityUri,
-	createJobUri,
-	createDoerReviewUri,
-	acceptJobUri,
-	startJobUri,
-	completeJobUri,
-	addCostToJobUri,
-	updateDoerAvailabilityUri,
-	findEligibleDoersUri,
-	createMessageUri,
-	getMessageByIdUri,
-	getMessageByJobIdUri,
-	createDoerUri,
-	createOTPUri,
-	validateOTPUri,
-	createUserUri,
-	getUserByIdUri,
-	createBadgeUri,
-	getBadgeByIdUri,
-	createAddressUri,
-	removeAddressByIdUri,
-	generateInvoiceUri,
-	getInvoiceUri,
-	approveInvoiceUri,
-	rejectInvoiceUri,
-	getInvoiceUri
-} = require("./data/test.uris.js");
+var global_badgeId = null;
+var global_userId = null;
+const global_modules = {};
+function loadModules(directoryPath) {
+	const absolutePath = path.resolve(directoryPath); // Get absolute path
+	console.log(absolutePath);
+	fs.readdirSync(absolutePath).forEach((file) => {
+		const filePath = path.join(absolutePath, file);
+		const fileStat = fs.statSync(filePath);
+		console.log(filePath);
+		if (fileStat.isFile() && path.extname(file) === ".js") {
+			const moduleName = path.basename(file, ".js");
+			global_modules[moduleName] = require(filePath);
+		}
+	});
+	// Accessing loaded modules
+	for (const moduleName in global_modules) {
+		if (global_modules.hasOwnProperty(moduleName)) {
+			console.log(`Loaded module: ${moduleName}`);
+			// Use loadedglobal_modules[moduleName] to access the module's exports
+		}
+	}
+	console.log(global_modules["address.test.data"].reqCreateAddress_1);
+}
+
+beforeAll(() => {
+	console.log("before all");
+	const currentWorkingDirectory = process.cwd();
+	console.log(`Current working directory: ${currentWorkingDirectory}`);
+
+	loadModules("./data");
+});
+
+
+var test_uris = require("./data/test.uris.js");
 
 async function postData(url, data) {
 	try {
@@ -62,77 +49,11 @@ async function postData(url, data) {
 	}
 }
 
-async function createJobSuccess() {
-	const res = await postData(createJobUri, reqCreateJobRequest_1);
-	expect(res.status).toBe(200);
-	expect(JSON.stringify(res.body)).toContain("job_id");
-}
-
-async function createJobFailure() {
-	const res = await postData(createJobUri, reqCreateJobRequest_Malformed);
-	expect(res.status).toBe(500);
-}
-
-async function acceptJobSuccess() {
-	const res = await postData(acceptJobUri + "?doerId=40&jobId=18", "");
-	expect(res.status).toBe(200);
-}
-
-async function completeJobSuccess() {
-	const res = await postData(completeJobUri + "?doerId=1&jobId=1&duration=120", "");
-	expect(res.status).toBe(200);
-}
-
-async function acceptJobFailureMissingDoerId() {
-	const res = await postData(acceptJobUri + "?jobId=1", "");
-	expect(res.status).toBe(500);
-}
-
-async function acceptJobFailureMissingJobId() {
-	const res = await postData(acceptJobUri + "?doerId=1", "");
-	expect(res.status).toBe(500);
-}
-
-async function acceptJobFailureJobIdNotInteger() {
-	const res = await postData(acceptJobUri + "doerId=1&jobId=ssjjjss", "");
-	expect(res.status).toBe(500);
-}
-
-async function acceptJobFailureDoerIdNotInteger() {
-	const res = await postData(acceptJobUri + "?doerId=ssjksks&jobId=1", "");
-	expect(res.status).toBe(500);
-}
-
-async function completeJobFailureMissingJobId() {
-	const res = await postData(completeJobUri + "?duration=120", "");
-	expect(res.status).toBe(500);
-}
-
-async function completeJobFailureMissingDuration() {
-	const res = await postData(completeJobUri + "?doerId=1&jobId=1", "");
-	expect(res.status).toBe(500);
-}
-
-async function addCostToJobSuccess() {
-	const res = await postData(addCostToJobUri, reqCreateJobCost_1);
-	expect(res.status).toBe(200);
-}
-
-async function addTipToJobSuccess() {
-	const res = await postData(addCostToJobUri, reqCreateJobCostTip_1);
-	expect(res.status).toBe(200);
-}
-
-async function generateInvoiceSuccess() {
-	const res = await postData(generateInvoiceUri + "?jobId=1");
-	expect(res.status).toBe(200);
-}
-
-
-describe("JOB API Tests -- NEGATIVE TESTSFailure calls", () => {
-	test("Fail to create a new Job Request, malformed json body", createJobFailure);
-	test("Fail to create a new Job Request, missing json body", createJobFailure);
-	test("Fail to complete Job, missing JobId ", completeJobFailureMissingJobId);
-	test("Fail to complete Job, missing Duration ", completeJobFailureMissingDuration);
-	test("Fail to accept a Job ", acceptJobSuccess);
+describe("JOB API Tests -- NEGATIVE", () => {
+	test("Create a new Doer", async () => {
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("doer_id");
+		global_doerId = res.body.doer_id;
+	});
 });

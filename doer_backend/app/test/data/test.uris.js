@@ -7,7 +7,7 @@ const getDoerByIdRequestUri = "/doer/getById";
 const getDoerByServicesRequestUri = "/doer/getByServices";
 const getDoerByServicesAndDayRequestUri = "/doer/getByServicesAndDay";
 const rateDoerRequestUri = "/doer/rate";
-const getDoerForJobRequestUri = "/doer/getForJob";
+const getDoerForJobRequestUri = "/job/findEligibleDoers";
 const updateDoerAvailabilityUri = "/doer/updateAvailability";
 const getDoerHistoryRequestUri = "/doer/getHistory";
 
@@ -41,7 +41,8 @@ const getUserByIdUri = "/user/getById";
 
 const createBadgeUri = "/badge/create";
 const getBadgeByIdUri = "/badge/getById";
-const assignBadgeUri = "/badge/assignBadgeToUser";
+const assignBadgeUserUri = "/badge/assignBadgeToUser";
+const assignBadgeDoerUri = "/badge/assignBadgeToDoer";
 
 const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";
@@ -89,7 +90,8 @@ module.exports = {
 	getUserByIdUri,
 	createBadgeUri,
 	getBadgeByIdUri,
-	assignBadgeUri,
+	assignBadgeUserUri,
+	assignBadgeDoerUri,
 	createAddressUri,
 	removeAddressByIdUri,
 	updateAddressUri,
