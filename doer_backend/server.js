@@ -1,17 +1,17 @@
 const express = require("express");
 const cors = require("cors");
-const i18next = require('i18next');
-const Backend = require('i18next-fs-backend');
-const i18nextMiddleware = require('i18next-http-middleware');
 
-const ku = require("./app/utils/KafkaUtil.js");
+const path = require("path");
+const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
-const logger = require("./app/utils/Logger.js");
 
+const i18next = require("i18next");
+const Backend = require("i18next-fs-backend");
+const i18nextMiddleware = require("i18next-http-middleware");
+const ku = require("./app/utils/KafkaUtil.js");
+const logger = require("./app/utils/Logger.js");
 const app = express();
 const db = require("./app/models");
-const path = require('path');
-const cookieParser = require('cookie-parser');
 
 let forceFlag = false;
 let kafkaFlag = false;
@@ -27,12 +27,11 @@ if (kafkaFlag) {
 require("./app/routes/doer.routes")(app);
 
 // Route Example
-app.get('/', (req, res) => {
-  const welcomeMessage = req.t('welcome', {ns: 'common'});
-  const description = req.t('description', {ns: 'common'});
-  res.send(`<h1>${welcomeMessage}</h1><p>${description}</p>`);
+app.get("/", (req, res) => {
+	const welcomeMessage = req.t("welcome", { ns: "common" });
+	const description = req.t("description", { ns: "common" });
+	res.send(`<h1>${welcomeMessage}</h1><p>${description}</p>`);
 });
-
 
 // set port, listen for requests
 const PORT = 8080;
@@ -59,16 +58,17 @@ function init_db() {
 	db.messages = require("./app/models/message.model.js")(db.sequelize, db.Sequelize);
 	db.addresses = require("./app/models/address.model.js")(db.sequelize, db.Sequelize);
 	db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
+	db.doer_badge_associations = require("./app/models/doer_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.job_costs = require("./app/models/job_cost.model.js")(db.sequelize, db.Sequelize);
 	db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
-    db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
-    db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
+	db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
+	db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
 
-    db.doer_trips.hasMany(db.doer_trip_location_updates, { foreignKey: "doer_trip_id"});
-    db.doer_trip_location_updates.belongsTo(db.doer_trips, { foreignKey: "doer_trip_id"});
+	db.doer_trips.hasMany(db.doer_trip_location_updates, { foreignKey: "doer_trip_id" });
+	db.doer_trip_location_updates.belongsTo(db.doer_trips, { foreignKey: "doer_trip_id" });
 
-    db.jobs.hasMany(db.doer_trips, { foreignKey: "job_id", as: "doer_trips" });
-    db.doer_trips.belongsTo(db.jobs, { foreignKey: "job_id", as: "doer_trips" });
+	db.jobs.hasMany(db.doer_trips, { foreignKey: "job_id", as: "doer_trips" });
+	db.doer_trips.belongsTo(db.jobs, { foreignKey: "job_id", as: "doer_trips" });
 
 	db.users.hasMany(db.addresses, { foreignKey: "user_id", as: "addresses" });
 	//db.addresses.belongsTo(db.users, { foreignKey: "user_id", as: "users" });
@@ -86,14 +86,17 @@ function init_db() {
 	db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
 	db.reviews.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
-	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id", as: "badges", otherKey: "user_id" });
-	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "badge_id", otherKey: "user_id" });
+	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id"});
+	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "user_id"});
+
+	db.badges.belongsToMany(db.doers, { through: db.doer_badge_associations, foreignKey: "badge_id", as: "doer_badges", otherKey: "doer_id" });
+	db.doers.belongsToMany(db.badges, { through: db.doer_badge_associations, foreignKey: "badge_id", otherKey: "doer_id" });
 
 	db.jobs.hasMany(db.job_costs, { foreignKey: "job_id", as: "costs" });
 
-    db.doers.hasMany(db.certificates , { foreignKey: "doer_id", as: "certificates" });
+	db.doers.hasMany(db.certificates, { foreignKey: "doer_id", as: "certificates" });
 
-    db.doers.hasMany(db.availability_slots , { foreignKey: "doer_id"});
+	db.doers.hasMany(db.availability_slots, { foreignKey: "doer_id" });
 
 	db.sequelize
 		.sync({ force: forceFlag })
@@ -142,36 +145,35 @@ function init_app() {
 	app.use(fileUpload());
 
 	i18next
-      .use(Backend)
-      .use(i18nextMiddleware.LanguageDetector)
-      .init(
-        {
-          ns:['common', 'category'],
-          defaultNS: 'common',
-          backend: {
-            loadPath: ('./app/locales/{{ns}}/{{lng}}.json')
-          },
-          debug: false,
-          detection: {
-            order: ['querystring', 'cookie'],
-            caches: ['cookie']
-          },
-          saveMissing: true,
-          fallbackLng: 'en',
-          preload: ['en', 'es', 'fr']
-        },
-        (err, t) => {
-          if (err) {
-            return logger.error("Couldn't initialize i18next, error is: " + err);
-          }
-          logger.info('i18next is ready...');
-          logger.info(t('welcome'));
-          logger.info(t('welcome', { lng: 'es' }));
-        }
-      );
+		.use(Backend)
+		.use(i18nextMiddleware.LanguageDetector)
+		.init(
+			{
+				ns: ["common", "category"],
+				defaultNS: "common",
+				backend: {
+					loadPath: path.resolve("./app/resources/locales/{{ns}}/{{lng}}.json"),
+				},
+				debug: true,
+				detection: {
+					order: ["querystring", "cookie"],
+					caches: ["cookie"],
+				},
+				saveMissing: true,
+				fallbackLng: "en",
+				preload: ["en", "es", "fr", "de"],
+			},
+			(err, t) => {
+				if (err) {
+					return logger.error("Couldn't initialize i18next, error is: " + err);
+				}
+				logger.info("i18next is ready...");
+				logger.info(t("welcome"));
+				logger.info(t("welcome", { lng: "de" }));
+			}
+		);
 
-    // Middleware
-    app.use(cookieParser());
-    app.use(i18nextMiddleware.handle(i18next));
-
+	// Middleware
+	app.use(cookieParser());
+	app.use(i18nextMiddleware.handle(i18next));
 }
