@@ -461,9 +461,7 @@ async function getHistory(req, res) {
 	logger.info("Doer-controller getHistory id = " + id);
 
 	var doer = null;
-	var completed_jobs = null;
-	var accepted_jobs = null;
-	var abandoned_jobs = null;
+	var job_history = null;
 	var invoices = null;
 	try {
 		doer = await Doer.findOne({
@@ -488,8 +486,8 @@ async function getHistory(req, res) {
 	}
 
 	try {
-		completed_jobs = await Job.findAll({
-			where: { doer_id: id, status: "completed" },
+		job_history = await Job.findAll({
+			where: { doer_id: id, [Op.or]: [{ status: "accepted" }, { status: "cancelled" }, { status: "abandoned" }, { status: "completed" }] },
 			attributes: { exclude: ["updatedAt"] },
 		});
 	} catch (err) {
@@ -499,35 +497,9 @@ async function getHistory(req, res) {
 		return;
 	}
 
-	try {
-		accepted_jobs = await Job.findAll({
-			where: { doer_id: id, status: "accepted" },
-			attributes: { exclude: ["updatedAt"] },
-		});
-	} catch (err) {
-		res.status(500).send({
-			message: "Error retrieving accepted jobs for doer getHistory = " + id + " error: " + err.message,
-		});
-		return;
-	}
-
-	try {
-		abandoned_jobs = await Job.findAll({
-			where: { doer_id: id, status: "abandoned" },
-			attributes: { exclude: ["updatedAt"] },
-		});
-	} catch (err) {
-		res.status(500).send({
-			message: "Error retrieving abandoned jobs for doer getHistory = " + id + " error: " + err.message,
-		});
-		return;
-	}
-
 	const history = {
 		doer_profile: doer,
-		completed_jobs: completed_jobs,
-		accepted_jobs: accepted_jobs,
-		abandoned_jobs: abandoned_jobs,
+		job_history: job_history,
 	};
 
 	res.status(200).send(history);

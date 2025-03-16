@@ -26,6 +26,7 @@ var global_jobId = null;
 var global_userId = null;
 var global_doerId = null;
 var global_jobId2 = null;
+var global_jobId3 = null;
 const global_modules = {};
 function loadModules(directoryPath) {
 	const absolutePath = path.resolve(directoryPath); // Get absolute path
@@ -73,18 +74,28 @@ describe("JOB API Tests -- SUCCESS", () => {
 	});
 
 	test("Create a new Job Request", async () => {
+		reqCreateJobRequest_1.user_id = global_userId;
 		const res = await request.post(test_uris.createJobUri).send(reqCreateJobRequest_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("job_id");
 		global_jobId = res.body.job_id;
 	});
 
-		test("Create a new Job Request", async () => {
-    		const res = await request.post(test_uris.createJobUri).send(reqCreateJobRequest_1).set("Accept", "application/json");
-    		expect(res.status).toBe(200);
-    		expect(JSON.stringify(res.body)).toContain("job_id");
-    		global_jobId2 = res.body.job_id;
-    	});
+	test("Create a new Job Request", async () => {
+		reqCreateJobRequest_1.user_id = global_userId;
+		const res = await request.post(test_uris.createJobUri).send(reqCreateJobRequest_1).set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("job_id");
+		global_jobId2 = res.body.job_id;
+	});
+
+	test("Create a new Job Request", async () => {
+		reqCreateJobRequest_1.user_id = global_userId;
+		const res = await request.post(test_uris.createJobUri).send(reqCreateJobRequest_1).set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		expect(JSON.stringify(res.body)).toContain("job_id");
+		global_jobId3 = res.body.job_id;
+	});
 
 	test("Accept a job", async () => {
 		const res = await request
@@ -95,14 +106,23 @@ describe("JOB API Tests -- SUCCESS", () => {
 		global_job_Id = res.body.job_id;
 	});
 
-		test("Accept a job", async () => {
-    		const res = await request
-    			.post(test_uris.acceptJobUri + "?doerId=" + global_doerId + "&jobId=" + global_jobId2)
-    			.send("")
-    			.set("Accept", "application/json");
-    		expect(res.status).toBe(200);
-    		global_job_Id = res.body.job_id;
-    	});
+	test("Accept a job", async () => {
+		const res = await request
+			.post(test_uris.acceptJobUri + "?doerId=" + global_doerId + "&jobId=" + global_jobId2)
+			.send("")
+			.set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		global_job_Id = res.body.job_id;
+	});
+
+	test("Accept a job", async () => {
+		const res = await request
+			.post(test_uris.acceptJobUri + "?doerId=" + global_doerId + "&jobId=" + global_jobId3)
+			.send("")
+			.set("Accept", "application/json");
+		expect(res.status).toBe(200);
+		global_job_Id = res.body.job_id;
+	});
 
 	test("User cancel job", async () => {
 		const res = await request
