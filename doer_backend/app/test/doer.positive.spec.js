@@ -70,7 +70,7 @@ async function getData(url) {
     router.get("/doer/getUpcomingJobs", doers.getUpcomingJobs);
     */
 
-describe("DOER API Tests -- Successful calls", () => {
+describe("DOER API Tests -- POSITIVE TESTS", () => {
 	test("Create a new doer", async () => {
 		const res = await request.post(createDoerUri).send(reqCreateDoer_1).set("Accept", "application/json");
 		//   console.log(res.body);
@@ -129,39 +129,3 @@ describe("DOER API Tests -- Successful calls", () => {
 	});
 });
 
-/*
-describe("DOER API Tests -- UnSuccessful calls", function () {
-	test("Get Doer by ID, missing ID", async () => {
-		const res = await request.get(getDoerByIdRequestUri);
-		expect(res.status).toBe(500);
-	});
-
-	test("Search Doers by Service, missing service", async () => {
-		const res = await request.get(getDoerByServicesRequestUri);
-		//console.log(res.body);
-		expect(res.status).toBe(500);
-		expect(JSON.stringify(res.body)).toContain("message");
-	});
-
-	test("Search Doers by Service, service not string", async () => {
-		const res = await request.get(getDoerByServicesRequestUri + "?service=827727");
-		//console.log(res.body);
-		expect(res.status).toBe(500);
-		expect(JSON.stringify(res.body)).toContain("message");
-	});
-
-	test("Get Doer by ID, missing Doer ID", async () => {
-		const res = await request.get(getDoerByIdRequestUri);
-		//  console.log(res.body);
-		expect(res.status).toBe(500);
-		expect(JSON.stringify(res.body)).toContain("message");
-	});
-
-	test("Get Doer by ID, Doer ID not STRING", async () => {
-		const res = await request.get(getDoerByIdRequestUri + "?id=shshhs");
-		//  console.log(res.body);
-		expect(res.status).toBe(500);
-		expect(JSON.stringify(res.body)).toContain("message");
-	});
-});
-*/

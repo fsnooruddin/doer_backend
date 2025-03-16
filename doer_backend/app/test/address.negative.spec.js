@@ -52,32 +52,7 @@ async function getData(url) {
 
 let globalAddressId = "";
 
-describe("ADDRESS API Tests -- Successful calls", () => {
-	test("Create a new address", async () => {
-		const res = await request.post(createAddressUri).send(reqCreateAddress_1).set("Accept", "application/json");
-		expect(res.status).toBe(200);
-		expect(JSON.stringify(res.body)).toContain("address_id");
-		globalAddressId = res.body.address_id;
-	});
-
-	test("Update a new address", async () => {
-		const res = await request
-			.post(updateAddressByIdUri + "?id=" + globalAddressId)
-			.send()
-			.set("Accept", "application/json");
-		expect(res.status).toBe(200);
-	});
-
-	test("Remove a new address", async () => {
-		const res = await request
-			.post(removeAddressByIdUri + "?id=" + globalAddressId)
-			.send()
-			.set("Accept", "application/json");
-		expect(res.status).toBe(200);
-	});
-});
-
-describe("ADDRESS API Tests -- UnSuccessful calls", function () {
+describe("ADDRESS API Tests -- NEGATIVE TESTS", function () {
 	test("Create Address, missing req body", async () => {
 		const res = await request.post(createAddressUri);
 

@@ -47,6 +47,10 @@ var {
 	createAddressUri,
 	removeAddressByIdUri,
 	generateInvoiceUri,
+	getInvoiceUri,
+	approveInvoiceUri,
+	rejectInvoiceUri,
+	getInvoiceUri
 } = require("./data/test.uris.js");
 
 async function postData(url, data) {
@@ -124,16 +128,8 @@ async function generateInvoiceSuccess() {
 	expect(res.status).toBe(200);
 }
 
-describe("JOB API Tests -- Successful calls", () => {
-	test("Successfully create a new Job Request", createJobSuccess);
-	test("Successfully accept a Job ", acceptJobSuccess);
-	test("Successfully complete Job ", completeJobSuccess);
-	test("Successfully add cost to Job ", addCostToJobSuccess);
-	test("Successfully add tip to Job ", addTipToJobSuccess);
-	test("Successfully generate invoice for Job ", generateInvoiceSuccess);
-});
 
-describe("JOB API Tests -- Failure calls", () => {
+describe("JOB API Tests -- NEGATIVE TESTSFailure calls", () => {
 	test("Fail to create a new Job Request, malformed json body", createJobFailure);
 	test("Fail to create a new Job Request, missing json body", createJobFailure);
 	test("Fail to complete Job, missing JobId ", completeJobFailureMissingJobId);

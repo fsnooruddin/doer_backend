@@ -42,7 +42,7 @@ async function getData(url) {
 	}
 }
 
-describe("REVIEW API Tests -- Successful calls", () => {
+describe("REVIEW API Tests -- POSITIVE TESTS", () => {
 	test("Create a new review", async () => {
 		const res = await request.post(createDoerReviewUri).send(reqCreateReview_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
@@ -64,32 +64,3 @@ describe("REVIEW API Tests -- Successful calls", () => {
 	});
 });
 
-describe("REVIEW API Tests -- UnSuccessful calls", function () {
-	test("Get Review by ID, missing ID", async () => {
-		const res = await request.get(getReviewByIdRequestUri);
-		expect(res.status).toBe(400);
-	});
-
-	test("Get Review by ID,Review ID not INTEGER", async () => {
-		const res = await request.get(getReviewByIdRequestUri + "?id=shshhs");
-		//  console.log(res.body);
-		expect(res.status).toBe(400);
-	});
-
-	test("Get Review by DOER ID, missing DOER ID", async () => {
-		const res = await request.get(getReviewsForDoerRequestUri);
-		//  console.log(res.body);
-		expect(res.status).toBe(400);
-	});
-
-	test("Get Review by DOER ID, DOER ID not INTEGER", async () => {
-		const res = await request.get(getReviewsForDoerRequestUri + "?doerId=1ssweeds");
-		//  console.log(res.body);
-		expect(res.status).toBe(400);
-	});
-
-	test("FAIL to create a new review -- malformed body, not null violation", async () => {
-		const res = await request.post(createDoerReviewUri).send(reqCreateReview_Malformed).set("Accept", "application/json");
-		expect(res.status).toBe(400);
-	});
-});

@@ -51,23 +51,8 @@ async function createDoerTripSuccess() {
 	expect(JSON.stringify(res.body)).toContain("doer_trip_id");
 }
 
-describe("DOER TRIP API Tests -- Successful calls", () => {
-	it("should create a new doer trip", async () => {
-		const res = await request.post(createDoerTripUri).send(createDoerTrip_1).set("Accept", "application/json");
-		// console.log(res.body);
-		expect(res.status).toBe(200);
-		expect(JSON.stringify(res.body)).toContain("doer_trip_id");
-	});
 
-	it("send location update", async () => {
-		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_1).set("Accept", "application/json");
-		//console.log(res.body);
-		expect(res.status).toBe(200);
-		expect(JSON.stringify(res.body)).toContain("doer_trip_id");
-	});
-});
-
-describe("DOER TRIP API -- Failure Calls", function () {
+describe("DOER TRIP API -- NEGATIVE TESTS", function () {
 	it("send malformed location update", async () => {
 		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_Malformed).set("Accept", "application/json");
 		//console.log(res.body);

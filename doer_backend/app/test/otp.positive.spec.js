@@ -46,7 +46,7 @@ async function getData(url) {
 
 let globalOTP = "";
 
-describe("OTP API Tests -- Successful calls", () => {
+describe("OTP API Tests -- POSITIVE TESTS", () => {
 	test("Create a new otp", async () => {
 		const res = await request.post(createOTPUri).send(reqCreateOTP_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
@@ -67,15 +67,3 @@ describe("OTP API Tests -- Successful calls", () => {
 	});
 });
 
-describe("OTP API Tests -- UnSuccessful calls", () => {
-	test("Validate a otp -- WRONG number", async () => {
-		let validateOTPRequest = reqCreateOTPWrongNumber_1;
-		validateOTPRequest.otp = globalOTP;
-		console.log(validateOTPRequest);
-		const res = await request.post(validateOTPUri).send(reqCreateOTP_1).set("Accept", "application/json");
-		console.log(JSON.stringify(res));
-		expect(res.status).toBe(500);
-
-		expect(JSON.stringify(res.text)).toContain("message");
-	});
-});

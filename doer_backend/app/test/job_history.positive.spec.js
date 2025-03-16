@@ -76,7 +76,7 @@ async function getData(url) {
 	}
 }
 
-describe("SETUP API Tests -- Successful calls", () => {
+describe("SETUP API Tests -- POSITIVE TESTS", () => {
 	test("Create a new Doer", async () => {
 		const res = await request.post(createDoerUri).send(reqCreateDoer_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);

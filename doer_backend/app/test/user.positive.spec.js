@@ -42,7 +42,7 @@ async function getData(url) {
 	}
 }
 
-describe("USER API Tests -- Successful calls", () => {
+describe("USER API Tests -- POSITIVE TESTS", () => {
 	test("Create a new user", async () => {
 		const res = await request.post(createUserUri).send(reqCreateUser_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
@@ -57,4 +57,3 @@ describe("USER API Tests -- Successful calls", () => {
 	});
 });
 
-describe("USER API Tests -- UnSuccessful calls", function () {});
