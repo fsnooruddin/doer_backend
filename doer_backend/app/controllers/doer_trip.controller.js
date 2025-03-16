@@ -137,32 +137,22 @@ async function updateDoerTripLocation(req, res) {
  * @memberof DoerTrip
  */
 async function getDoerTripByJobId(req, res) {
-	const id = req.query.jobId;
-	if (id == null) {
-		logger.error("Error retrieving doer trips by ID, job Id is missing");
-		res.status(400).send({
-			message: "Error retrieving doer trips by id, job Id is missing",
-		});
+	const jobId = req.query.jobId;
+		if (Utils.validateIntegerParam("Job Id", jobId) == false) {
+    		logger.error("doer-trip-controller getDoerTripByJobId, missing job Id or job Id not integer: " + jobId);
+    		res.status(400).send({
+            			message: "doer-trip-controller getDoerTripByJobId, missing job Id or job Id not integer: " + jobId
+            		});
+            		return;
+    	}
 
-		return;
-	}
-	logger.info("doer-trip-controller findById job id = " + id);
-	logger.info(typeof id);
-	logger.info(parseInt(id));
+	logger.info("doer-trip-controller findById job id = " + jobId);
 
-	if (isNaN(parseInt(id))) {
-		logger.error("Error retrieving doer trips by ID, review Id is not integer, id = " + id);
-		res.status(400).send({
-			message: "Error retrieving doer trips by id, review Id is not integer",
-		});
-
-		return;
-	}
 
 	try {
 		const data = await DoerTrip.findAll({
 			where: {
-				job_id: id,
+				job_id: jobId,
 			},
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
@@ -177,13 +167,13 @@ async function getDoerTripByJobId(req, res) {
 			],
 		});
 
-		logger.info("doer-trip-controller findByJobId -- job id is " + id + " returning " + JSON.stringify(data));
+		logger.info("doer-trip-controller findByJobId -- job id is " + jobId + " returning " + JSON.stringify(data));
 		res.status(200).send(data);
 		return;
 	} catch (err) {
-		logger.error("Error retrieving doer trips with job id=" + id + " error: " + err.message);
+		logger.error("Error retrieving doer trips with job id=" + jobId + " error: " + err.message);
 		res.status(500).send({
-			message: "Error retrieving doer trips with job id=" + id + " error: " + err.message,
+			message: "Error retrieving doer trips with job id=" + jobId + " error: " + err.message,
 		});
 		return;
 	}

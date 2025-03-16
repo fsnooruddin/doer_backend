@@ -41,9 +41,9 @@ async function create(req, res) {
 
 	try {
 		// Save OTP in the database
-		var new_otp = OTP.create(otp_row);
+		var new_otp = await OTP.create(otp_row);
 		logger.info("Success creating OTP with OTP data =" + req.body);
-		res.status(200).send(data);
+		res.status(200).send(new_otp);
 		return;
 	} catch (err) {
 		logger.error("Error creating OTP with OTP data =" + req.body + " error: " + err.OTP);
@@ -81,7 +81,7 @@ async function validate(req, res) {
 		return;
 	}
 
-	OTP.findOne({
+	var data = await OTP.findOne({
 		where: {
 			phone_number: phone_number,
 		},
@@ -97,8 +97,6 @@ async function validate(req, res) {
 				return;
 			}
 
-			console.log(new Date());
-			console.log(new Date(data.createdAt));
 			let diff = new Date() - new Date(data.createdAt);
 			console.log("date diff = " + diff / 1000);
 
@@ -108,8 +106,7 @@ async function validate(req, res) {
 				res.status(200).send("message: OTP expired");
 				return;
 			}
-
-			if (data.otp === otp) {
+            if (data.otp === otp) {
 				logger.info("OTP-controller OTP matches");
 				data.destroy();
 				res.status(200).send("message: OTP Matches");

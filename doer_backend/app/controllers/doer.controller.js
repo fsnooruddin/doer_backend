@@ -92,12 +92,13 @@ async function create(req, res) {
 	try {
 		// Save Doer in the database
 		const new_doer = await Doer.create(data_obj, { transaction });
-		console.log(JSON.stringify(new_doer));
+		logger.info("New doer is: " + JSON.stringify(new_doer));
 		let nObj = {};
 		for (let i = 0; i < Object.keys(data_obj.availability.slots).length; i++) {
 			nObj = data_obj.availability.slots[i];
 			nObj.doer_id = new_doer.doer_id;
-			console.log(JSON.stringify(nObj));
+			console.log("Creating availability: " + JSON.stringify(nObj));
+			console.log("Creating availability: " + JSON.stringify(nObj.slot));
 			// create availability windows.
 			let avail_obj = await Availability.create(nObj, { transaction });
 			logger.info("Create Doer ... add availability success ... " + JSON.stringify(avail_obj));
@@ -214,7 +215,7 @@ async function findByIdDBCall(id) {
  * @return {string|null} Doer - null if failure, JSON array object representing Doers offering services if success
  * @memberof Doer
  */
-function findByServices(req, res) {
+async function findByServices(req, res) {
 	var services = req.query.services;
 	if (services == null || services.trim() === "") {
 		logger.error("doer-controller findByServices -- services is null or empty!");
@@ -228,7 +229,7 @@ function findByServices(req, res) {
 	logger.info("Doer-controller findOne services = " + services);
 
 	try {
-		const response_data = Doer.findAll({
+		const response_data = await Doer.findAll({
 			where: { services: { [Op.iLike]: services } },
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
@@ -244,6 +245,7 @@ function findByServices(req, res) {
 		res.status(500).send({
 			message: "Error retrieving Doer with services =" + services + " error: " + err.message,
 		});
+		return;
 	}
 }
 
@@ -311,7 +313,7 @@ async function findByServicesAndDay(req, res) {
 // TODO
 async function updateAvailability(req, res) {
 	const id = req.query.id;
-	const avail = req.body.availability;
+	const avail = req.body;
 
 	if (id == null) {
 		logger.error("doer-controller updateAvailability missing doerId");
@@ -353,9 +355,16 @@ async function updateAvailability(req, res) {
 	logger.info("result of get doer in update avail = " + JSON.stringify(doer));
 	doer.availability = JSON.stringify(avail);
 	doer.changed("availability", true);
+	try {
 	const result = await doer.save();
 	logger.info("result of save doer in update avail = " + JSON.stringify(result));
-	res.status(200).send("successfully update doer availability. doer id = " + id);
+	res.status(200).send(result);
+	return;
+	} catch (err) {
+     		logger.error("Error update doer availability. doer_id = " + id + " error: " + err.message);
+     		res.status(400).send("Error update doer availability. doer_id = " + id + " error: " + err.message);
+     		return;
+     	}
 }
 
 /**

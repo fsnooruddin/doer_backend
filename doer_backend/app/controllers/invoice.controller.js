@@ -163,7 +163,7 @@ async function addTipToJob(req, res) {
 }
 
 async function approveInvoice(req, res) {
-	const invoiceId = req.query.invoiceId;
+	const invoiceId = req.query.id;
 	if (Utils.validateIntegerParam("Invoice Id", invoiceId) == false) {
 		logger.error("invoice-controller approveInvoice missing invoice Id or invoice Id not integer: " + invoiceId);
 		res.status(400).send({ message: "Error approveInvoice - invoice Id is missing or invoice id is not integer" });
@@ -184,7 +184,7 @@ async function approveInvoice(req, res) {
 }
 
 async function rejectInvoice(req, res) {
-	const invoiceId = req.query.invoiceId;
+	const invoiceId = req.query.id;
 	if (Utils.validateIntegerParam("Invoice Id", invoiceId) == false) {
 		logger.error("invoice-controller rejectInvoice missing invoice Id or invoice Id not integer: " + invoiceId);
 		res.status(400).send({ message: "Error rejectInvoice - invoice Id is missing or invoice id is not integer" });

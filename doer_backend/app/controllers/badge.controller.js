@@ -34,7 +34,7 @@ async function create(req, res) {
 	try {
 		// Save Badge in the database
 		let new_badge = await Badge.create(req.body);
-		logger.info("Success creating Badge with Badge data =" + req.body);
+		logger.info("Success creating Badge with Badge data =" + JSON.stringify(req.body));
 		res.status(200).send(new_badge);
 		return;
 	} catch (err) {
@@ -105,6 +105,7 @@ async function get(req, res) {
  */
 async function assignBadgeToUser(req, res) {
 	// Save Badge in the database
+	logger.info("badge-controller assignBadgeToUser, body = " + JSON.stringify(req.body));
 	UserBadgeAssociations.create(req.body)
 		.then((data) => {
 			logger.info("Success associating badge with user = " + JSON.stringify(req.body));
@@ -124,6 +125,7 @@ async function assignBadgeToUser(req, res) {
  * @memberof Badge
  */
 async function assignBadgeToDoer(req, res) {
+logger.info("badge-controller assignBadgeToDoer, body = " + JSON.stringify(req.body));
 	// Save Badge in the database
 	DoerBadgeAssociations.create(req.body)
 		.then((data) => {
