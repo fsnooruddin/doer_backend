@@ -1,5 +1,8 @@
-
 const logger = require("./Logger.js");
+const fs = require("fs");
+const FILE_PATH = "stats.json";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
 	escapeJSONString,
@@ -11,8 +14,51 @@ module.exports = {
 	getRateFromAvailabilitySlot,
 	validateIntegerParam,
 	getDistanceBetweenTwoPoint,
+	readStats,
+	dumpStats,
+	getRoute,
+	hashPassword,
+	comparePassword,
+	VerifyAuth,
 };
 
+async function VerifyAuth(req, res, next) {
+	const token = req.header("Authorization");
+	let secret = Buffer.from('fe1a1915a379f3be5394b64d14794932', 'hex')
+	console.log(token);
+	if (!token) return res.status(401).json({ error: "Access denied" });
+	try {
+		const decoded = await jwt.verify(token, "your-secret-key");
+		console.log("decoded token = " + JSON.stringify(decoded));
+		req.user = decoded;
+		console.log(req.user);
+		next();
+	} catch (err) {
+	    logger.error("error is: " + err);
+	    logger.error("error is: " + JSON.stringify(err));
+		res.status(401).json({ error: "Invalid token" });
+		return;
+	}
+}
+
+async function hashPassword(password) {
+	console.log(typeof password);
+	const saltRounds = 10;
+	const hashedPassword = await bcrypt.hash(password, saltRounds);
+	console.log(typeof hashedPassword);
+	console.log(hashedPassword);
+	return hashedPassword;
+}
+
+async function comparePassword(plainTextPassword, hashedPassword) {
+	try {
+		const result = await bcrypt.compare(plainTextPassword, hashedPassword);
+		return result; // Returns true if passwords match, false otherwise
+	} catch (error) {
+		console.error("Error comparing passwords:", error);
+		return false;
+	}
+}
 
 function escapeJSONString(server_return_string) {
 	var data_str = JSON.stringify(server_return_string);
@@ -34,15 +80,12 @@ function escapeJSONString(server_return_string) {
 }
 
 function getDistanceBetweenTwoPoint(lat1, lon1, lat2, lon2) {
+	const r = 6371; // km
+	const p = Math.PI / 180;
 
-  const r = 6371; // km
-  const p = Math.PI / 180;
+	const a = 0.5 - Math.cos((lat2 - lat1) * p) / 2 + (Math.cos(lat1 * p) * Math.cos(lat2 * p) * (1 - Math.cos((lon2 - lon1) * p))) / 2;
 
-  const a = 0.5 - Math.cos((lat2 - lat1) * p) / 2
-                + Math.cos(lat1 * p) * Math.cos(lat2 * p) *
-                  (1 - Math.cos((lon2 - lon1) * p)) / 2;
-
-  return 2 * r * Math.asin(Math.sqrt(a));
+	return 2 * r * Math.asin(Math.sqrt(a));
 }
 
 function filterByDistance(timeRequested, doers) {
@@ -82,7 +125,7 @@ async function filterByTime(dayRequested, timeRequested, doers) {
 			logger.trace("Processing Doer Availability" + "     " + JSON.stringify(d_entry));
 
 			console.log(typeof d_entry.availability);
-			console.log( d_entry.availability);
+			console.log(d_entry.availability);
 			console.log(JSON.parse(d_entry.availability));
 
 			var objs = JSON.parse(d_entry.availability);
@@ -135,16 +178,16 @@ function processTimeMatch(reqSlotDay, reqSlotTime, avail) {
 			dayMatch = true;
 		}
 
-        if(reqSlotTime >= a_entry.start_time && reqSlotTime <= a_entry.end_time) {
-            timeMatch = true;
-        }
+		if (reqSlotTime >= a_entry.start_time && reqSlotTime <= a_entry.end_time) {
+			timeMatch = true;
+		}
 
 		if (dayMatch === true && timeMatch === true) {
 			logger.info("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " matches " + JSON.stringify(a_entry));
 			return i;
 		}
 	}
-	logger.trace("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " doesn't matche " );
+	logger.trace("job request time slot: " + reqSlotDay + " , " + reqSlotTime + " doesn't matche ");
 	return -1;
 }
 
@@ -161,19 +204,46 @@ function getRateFromAvailabilitySlot(reqSlotDay, reqSlotTime, avail) {
 }
 
 function validateStringParam(paramName, paramValue) {
-	if (paramValue == null || !(typeof(paramValue) === "string")) {
+	if (paramValue == null || !(typeof paramValue === "string")) {
 		logger.error(paramName + " not an STRING, value is: " + paramValue);
 		return false;
 	} else {
-	    return true;
+		return true;
 	}
 }
 
 function validateIntegerParam(paramName, paramValue) {
 	if (paramValue == null || isNaN(paramValue) || !Number.isInteger(Number(paramValue))) {
-		logger.error(paramName + " not an INTEGER, value is: " + paramValue + " type = " + typeof(paramValue));
+		logger.error(paramName + " not an INTEGER, value is: " + paramValue + " type = " + typeof paramValue);
 		return false;
 	} else {
-	    return true;
+		return true;
 	}
+}
+
+// read json object from file
+function readStats() {
+	let result = {};
+	try {
+		result = JSON.parse(fs.readFileSync(FILE_PATH));
+	} catch (err) {
+		console.error(err);
+	}
+	return result;
+}
+
+// dump json object to file
+function dumpStats(stats) {
+	try {
+		fs.writeFileSync(FILE_PATH, JSON.stringify(stats), { flag: "w+" });
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+function getRoute(req) {
+	const route = req.route ? req.route.path : ""; // check if the handler exist
+	const baseUrl = req.baseUrl ? req.baseUrl : ""; // adding the base url if the handler is child of other handler
+
+	return route ? `${baseUrl === "/" ? "" : baseUrl}${route}` : "unknown route";
 }
