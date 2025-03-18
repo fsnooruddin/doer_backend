@@ -64,7 +64,7 @@ describe("ADDRESS API Tests -- NEGATIVE TESTS", function () {
 		const res = await request.get(test_uris.getAddressByIdUri + "?id=shshhs");
 		//  console.log(res.body);
 		expect(res.status).toBe(400);
-		
+
 	});
 
 
