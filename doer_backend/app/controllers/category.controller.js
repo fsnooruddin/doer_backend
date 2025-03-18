@@ -139,17 +139,13 @@ async function findOneByName(req, res) {
  * @memberof Category
  */
 async function getCategoryTree(req, res) {
-	const id = req.query.id;
-
-	if (id == null) {
+	console.log("getCategoryTree id = " + req.query.id);
+	if (Utils.validateIntegerParam("Category Id", req.query.id) == false) {
 		logger.error("category-controller getCategoryTree missing categoryId");
-		res.status(500).send({
-			message: "Error retrieving category tree Id is missing",
-		});
-
+		res.status(400).send({ message: "Error retrieving category tree Id is missing" });
 		return;
 	}
-
+	const id = req.query.id;
 	try {
 		const response_data = await Category.findAll({
 			where: {
