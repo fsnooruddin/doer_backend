@@ -1,6 +1,7 @@
 "use strict";
 const axios = require("axios");
 const child_categories_data = require("./categories.test.data.js");
+//const child_categories_data = require("./categories.small.test.data.js");
 const top_level_categories_data = require("./categories.top-level.test.data.js");
 
 async function rget(url) {
@@ -33,10 +34,10 @@ async function getParentId(parents) {
       console.log("calling for parent id = " + uri);
       const response_data = await rget(uri);
 
-    //  console.log("calling for parent id response = " + console.log(response_data));
-      if (response_data != null && response_data.length > 0) {
-        console.log("return parent id = " + response_data[0].category_id);
-        return response_data[0].category_id;
+      console.log("calling for parent id response = " + JSON.stringify(response_data));
+      if (response_data != null ) {
+        console.log("return parent id = " + response_data.category_id);
+        return response_data.category_id;
       } else
       {
         console.log("get parent id returning empty");
