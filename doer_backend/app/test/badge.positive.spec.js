@@ -11,41 +11,7 @@ var {
 	reqCreateBadgeAssociation_Malformed,
 } = require("./data/badge.test.data.js");
 
-var {
-	getCategoryByIdRequestUri,
-	getCategoryByNameRequestUri,
-	getCategoryTreeRequestUri,
-	getDoerByIdRequestUri,
-	getDoerByServicesRequestUri,
-	getDoerByServicesAndDayRequestUri,
-	getReviewsForDoerRequestUri,
-	getReviewByIdRequestUri,
-	rateDoerRequestUri,
-	createDoerReviewUri,
-	createDoerTripUri,
-	completeDoerTripUri,
-	updateDoerTripUri,
-	getDoerTripByJobIdUri,
-	updateDoerAvailabilityUri,
-	createJobRequestUri,
-	createDoerReviewUri,
-	acceptJobUri,
-	startJobUri,
-	completeJobUri,
-	updateDoerAvailabilityUri,
-	findEligibleDoersUri,
-	createMessageUri,
-	getMessageByIdUri,
-	getMessageByJobIdUri,
-	createDoerUri,
-	createOTPUri,
-	validateOTPUri,
-	createUserUri,
-	getUserByIdUri,
-	createBadgeUri,
-	getBadgeByIdUri,
-	assignBadgeUri,
-} = require("./data/test.uris.js");
+var test_uris = require("./data/test.uris.js");
 
 async function getData(url) {
 	try {
@@ -93,7 +59,7 @@ beforeAll(() => {
 describe("BADGE API Tests -- POSITIVE TESTS", () => {
 
 test("Create a new user", async () => {
-		const res = await request.post(createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 		global_userId = res.body.user_id;
@@ -101,20 +67,20 @@ test("Create a new user", async () => {
 
 	test("Create a new BADGE", async () => {
 	    reqCreateBadge_1.user_id = global_userId;
-		const res = await request.post(createBadgeUri).send(reqCreateBadge_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createBadgeUri).send(reqCreateBadge_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
 		global_badgeId = res.body.badge_id;
 	});
 
 	test("Create a new BADGE", async () => {
-		const res = await request.post(createBadgeUri).send(reqCreateBadge_2).set("Accept", "application/json");
+		const res = await request.post(test_uris.createBadgeUri).send(reqCreateBadge_2).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
 	});
 
 	test("Get BADGE by ID", async () => {
-		const res = await request.get(getBadgeByIdUri + "?id=" + global_badgeId);
+		const res = await request.get(test_uris.getBadgeByIdUri + "?id=" + global_badgeId);
 		console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
@@ -124,7 +90,7 @@ test("Create a new user", async () => {
 	reqCreateBadgeAssociation_1.user_id = global_userId;
 		reqCreateBadgeAssociation_1.badge_id = global_badgeId;
 		console.log(reqCreateBadgeAssociation_1);
-		const res = await request.post(assignBadgeUri).send(reqCreateBadgeAssociation_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.assignBadgeUserUri).send(reqCreateBadgeAssociation_1).set("Accept", "application/json");
 		console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("id");

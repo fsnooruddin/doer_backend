@@ -7,6 +7,18 @@ const reqCreateUser_1 = {
 	],
 };
 
+const reqRegisterUser_1 = {
+	username: "JohnDoe",
+	password: "555654444",
+	type: "user"
+};
+
+const reqLoginUser_1 = {
+	username: "JohnDoe",
+    	password: "555654444"
+};
+
+
 const reqCreateUser_Malformed = {
 	name: "user bill",
 };
@@ -14,4 +26,7 @@ const reqCreateUser_Malformed = {
 module.exports = {
 	reqCreateUser_1,
 	reqCreateUser_Malformed,
+	reqRegisterUser_1,
+	reqLoginUser_1
+
 };

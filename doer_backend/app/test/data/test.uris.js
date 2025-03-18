@@ -47,11 +47,15 @@ const assignBadgeDoerUri = "/badge/assignBadgeToDoer";
 const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";
 const updateAddressUri = "/address/update";
+const getAddressByIdUri = "/address/getById"
 
 const generateInvoiceUri = "/invoice/generate";
 const approveInvoiceUri = "/invoice/approve";
 const rejectInvoiceUri = "/invoice/reject";
 const getInvoiceUri = "/invoice/get";
+
+const registerUserUri = "/user/register";
+const loginUserUri = "/user/login";
 
 module.exports = {
 	getCategoryByIdRequestUri,
@@ -95,10 +99,13 @@ module.exports = {
 	createAddressUri,
 	removeAddressByIdUri,
 	updateAddressUri,
+	getAddressByIdUri,
 	cancelJobUri,
 	abandonJobUri,
 	generateInvoiceUri,
 	approveInvoiceUri,
 	rejectInvoiceUri,
-	getInvoiceUri
+	getInvoiceUri,
+	registerUserUri,
+	loginUserUri
 };

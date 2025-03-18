@@ -53,25 +53,25 @@ async function getData(url) {
 
 describe("SETUP API Tests -- NEGATIVE TESTS", () => {
 	test("Create a new Doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(reqCreateDoer_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 	});
 
 	test("Create a new user", async () => {
-		const res = await request.post(test_uriscreateUserUri).send(reqCreateUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
 
 	test("Create a new address for user", async () => {
-		const res = await request.post(test_uriscreateAddressUri).send(reqCreateAddress_3).set("Accept", "application/json");
+		const res = await request.post(test_uris.createAddressUri).send(global_modules["address.test.data"].reqCreateAddress_3).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
 
 	test("Create a new Job Request", async () => {
-		const res = await request.post(test_uriscreateJobUri).send(reqCreateJobRequest_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createJobUri).send(global_modules["job.test.data"].reqCreateJobRequest_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("job_id");
 	});
@@ -79,7 +79,7 @@ describe("SETUP API Tests -- NEGATIVE TESTS", () => {
 
 	test("Accept a job", async () => {
 		const res = await request
-			.post(acceptJobUri + "?doerId=1&jobId=1")
+			.post(test_uris.acceptJobUri + "?doerId=1&jobId=1")
 			.send("")
 			.set("Accept", "application/json");
 		expect(res.status).toBe(200);
