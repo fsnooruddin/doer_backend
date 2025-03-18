@@ -66,13 +66,14 @@ module.exports = (app) => {
 	router.get("/badge/getById", badges.get);
 	router.post("/badge/assignBadgeToUser", badges.assignBadgeToUser);
 	router.post("/badge/assignBadgeToDoer", badges.assignBadgeToDoer);
+    router.post("/badge/removeBadgeFromUser", badges.removeBadgeFromUser);
+	router.post("/badge/removeBadgeFromDoer", badges.removeBadgeFromDoer);
 
 	router.post("/image/upload", image_uploads.create);
 
 	router.post("/user/create", users.create);
-	router.get("/user/getById", Utils.VerifyAuth, (req, res) => {
-	users.findById(req, res);
-	});
+	router.get("/user/getById", users.findById);
+
 	router.get("/user/getAddresses", users.getAddresses);
 	router.post("/user/rate", users.rate);
 	router.get("/user/rating", users.getRating);
@@ -82,6 +83,7 @@ module.exports = (app) => {
     router.post("/address/create", addresses.create);
 	router.post("/address/remove", addresses.remove);
 	router.post("/address/update", addresses.update);
+	router.get("/address/getById", addresses.findById);
 
     router.post("/address/testings", addresses.testings);
     router.post("/address/find_testings", addresses.find_testings);
