@@ -1,3 +1,4 @@
+const Utils = require("../utils/Utils.js");
 module.exports = (app) => {
 
 	const doers = require("../controllers/doer.controller.js");
@@ -52,6 +53,7 @@ module.exports = (app) => {
 	router.get("/category/getById", categories.findOneById);
 	router.get("/category/getByName", categories.findOneByName);
 	router.get("/category/getTree", categories.getCategoryTree);
+	router.get("/category/getTopLevelCategories", categories.getTopLevelCategories);
 
 	router.post("/message/create", messages.create);
 	router.get("/message/getById", messages.findById);
@@ -68,10 +70,14 @@ module.exports = (app) => {
 	router.post("/image/upload", image_uploads.create);
 
 	router.post("/user/create", users.create);
-	router.get("/user/getById", users.findById);
+	router.get("/user/getById", Utils.VerifyAuth, (req, res) => {
+	users.findById(req, res);
+	});
 	router.get("/user/getAddresses", users.getAddresses);
 	router.post("/user/rate", users.rate);
 	router.get("/user/rating", users.getRating);
+	router.post("/user/register", users.register);
+	router.post("/user/login", users.login);
 
     router.post("/address/create", addresses.create);
 	router.post("/address/remove", addresses.remove);

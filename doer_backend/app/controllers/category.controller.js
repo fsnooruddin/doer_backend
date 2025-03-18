@@ -175,7 +175,7 @@ async function getTopLevelCategories(req, res) {
 	try {
 		const response_data = await Category.findAll({
 			where: {
-				parent_id: "",
+				parent_aliases: '',
 			},
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
