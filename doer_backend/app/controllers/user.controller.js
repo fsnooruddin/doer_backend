@@ -6,11 +6,13 @@
 
 const db = require("../models");
 const Utils = require("../utils/Utils.js");
+const jwt = require("jsonwebtoken");
 const User = db.users;
 const Job = db.job_requests;
 const Address = db.addresses;
 const Op = db.Sequelize.Op;
 const Rating = db.user_ratings;
+const UserCredentials = db.user_credentials;
 const logger = require("../utils/Logger.js");
 
 /**
@@ -238,6 +240,68 @@ async function getRating(req, res) {
 	}
 }
 
+async function register(req, res) {
+	const username = req.body.username;
+	const password = req.body.password;
+
+	console.log("body = " + JSON.stringify(req.body));
+	const hashedPassword = await Utils.hashPassword(password);
+	var creds = {
+		username: username,
+		password: hashedPassword,
+		type: req.body.type,
+	};
+	if (req.body.type == "user") {
+		creds.user_id = req.body.user_id;
+	} else {
+		creds.doer_id = req.body.doer_id;
+	}
+	console.log(JSON.stringify(creds));
+	try {
+		var data = await UserCredentials.create(creds);
+
+		console.log(JSON.stringify("new creds = " + data));
+		if (data == null) {
+			res.status(500).send({ message: "user-controller register user failed" });
+			return;
+		}
+		logger.error("user-controller register user success: " + JSON.stringify(data));
+		res.status(200).send(data);
+	} catch (err) {
+		logger.error("user-controller register user failed: " + " error: " + err.message);
+		res.status(500).send("failure to register user, error: " + err.message);
+		return;
+	}
+}
+
+async function login(req, res) {
+	const username = req.body.username;
+	const password = req.body.password;
+	console.log("body = " + JSON.stringify(req.body));
+	 let secret = Buffer.from('fe1a1915a379f3be5394b64d14794932', 'hex')
+	try {
+		var user = await UserCredentials.findOne({ where: { username: username } });
+		console.log("body = " + JSON.stringify(user));
+		var match = await Utils.comparePassword(password, user.password);
+		console.log("match is " + match);
+		if (match) {
+			const token = jwt.sign({ userId: user.id, type: user.type, username: user.username }, "your-secret-key", {
+				expiresIn: "1h",
+			});
+			logger.info("User is successfully logged in: " + token);
+			res.status(200).json({token});
+			return;
+		} else {
+			res.status(401).send("Authentication failed");
+			return;
+		}
+	} catch (err) {
+		logger.error("user-controller login user failed: " + " error: " + err.message);
+		res.status(500).send("failure to login user, error: " + err.message);
+		return;
+	}
+}
+
 module.exports = {
 	create,
 	findById,
@@ -245,4 +309,6 @@ module.exports = {
 	getJobHistory,
 	rate,
 	getRating,
+	register,
+	login,
 };

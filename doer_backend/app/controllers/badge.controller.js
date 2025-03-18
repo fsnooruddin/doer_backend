@@ -138,9 +138,54 @@ logger.info("badge-controller assignBadgeToDoer, body = " + JSON.stringify(req.b
 		});
 }
 
+
+/**
+ * Remove a Badge from a Doer
+ * @param {number} Badge.id - Badge to remove
+ * @param {number} Badge.doerId - Doer to remove badge from
+ * @return {string} badge - null if success, error string if error
+ * @memberof Badge
+ */
+async function removeBadgeFromDoer(req, res) {
+logger.info("badge-controller removeBadgeFromDoer, body = " + JSON.stringify(req.body));
+	// Save Badge in the database
+	DoerBadgeAssociations.delete(req.body)
+		.then((data) => {
+			logger.info("Success removing badge from doer = " + JSON.stringify(req.body));
+			res.status(200).send(data);
+		})
+		.catch((err) => {
+			logger.error("Error removing badge from doer = " + JSON.stringify(req.body) + " error: " + err.message);
+			res.status(500).send("Some error occurred while removing badge from doer = : " + err.message);
+		});
+}
+
+/**
+ * Remove a Badge from a User
+ * @param {number} Badge.id - Badge to remove
+ * @param {number} Badge.UserId - User to remove badge from
+ * @return {string} badge - null if success, error string if error
+ * @memberof Badge
+ */
+async function removeBadgeFromUser(req, res) {
+logger.info("badge-controller removeBadgeFromUser, body = " + JSON.stringify(req.body));
+	// Save Badge in the database
+	UserBadgeAssociations.delete(req.body)
+		.then((data) => {
+			logger.info("Success removing badge from User = " + JSON.stringify(req.body));
+			res.status(200).send(data);
+		})
+		.catch((err) => {
+			logger.error("Error removing badge from User = " + JSON.stringify(req.body) + " error: " + err.message);
+			res.status(500).send("Some error occurred while removing badge from User = : " + err.message);
+		});
+}
+
 module.exports = {
 	create,
 	get,
 	assignBadgeToUser,
 	assignBadgeToDoer,
+	removeBadgeFromUser,
+    removeBadgeFromDoer,
 };
