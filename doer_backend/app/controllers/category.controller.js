@@ -165,9 +165,36 @@ async function getCategoryTree(req, res) {
 	}
 }
 
+/**
+ * Get the Top level categories
+ * @return {array|null} error string - null if failure, array of categories if success
+ * @memberof Category
+ */
+async function getTopLevelCategories(req, res) {
+
+	try {
+		const response_data = await Category.findAll({
+			where: {
+				parent_id: "",
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		logger.info("category-controller getTopLevelCategories returning " + response_data);
+		res.send(response_data);
+	} catch (err) {
+		logger.error("Error retrieving getTopLevelCategories  error: " + err.message);
+		res.status(500).send({
+			message: "Error retrieving category tree  error: " + err.message,
+		});
+	}
+}
+
 module.exports = {
 	create,
 	findOneByName,
 	findOneById,
 	getCategoryTree,
+	getTopLevelCategories
 };
