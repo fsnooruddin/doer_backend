@@ -1,23 +1,34 @@
 const createJobRequest_1 = {
-  user_id: "1",
-  location: "[77.6879689, 27.4072289]",
-  time: "Sun, 12-5",
-  services: "Electrician",
-}
+                             "user_id": "1",
+                             "longitude": "94588",
+                             "latitude": "94588",
+                             "day": "Fri",
+                             "req_time": "12",
+
+                             "services": "Electrician",
+                             "description": "fix sink"
+                           }
 
 const createJobRequest_2 = {
-  user_id: "1",
-  location: "[37.863516, -122.034904]",
-  time: "Sat, 10-11",
-  services: "Plumbing",
-}
+                             "user_id": "1",
+                             "longitude": "94588",
+                             "latitude": "94588",
+                             "day": "Fri",
 
+                             "req_time": "5",
+                             "services": "Electrician",
+                             "description": "fix sink"
+                           }
 const createJobRequest_3 = {
-  user_id: "1",
-  location: "[37.863516, -122.034904]",
-  time: "Thu, 8-9",
-  services: "Flooring",
-}
+                             "user_id": "1",
+                             "longitude": "94588",
+                             "latitude": "94588",
+                             "day": "Fri",
+                             "req_time": "6",
+
+                             "services": "Electrician",
+                             "description": "fix sink"
+                           }
 
 const createDoerTrip_1 = {
   doer_id: "1",
@@ -123,6 +134,19 @@ const createUser_3 = {
     	],
 }
 
+const reqCreateBadge_1 = {
+  name: "cool badge",
+  description: "Best badge Ever",
+  icon_url: "icon.pic"
+}
+
+const reqCreateBadge_2 = {
+  name: "awesome badge",
+ description: "Best badge Ever",
+   icon_url: "icon.pic"
+}
+
+
 module.exports = {
   createJobRequest_1,
   createJobRequest_2,
@@ -136,5 +160,7 @@ module.exports = {
   createMessage_2,
   createUser_1,
   createUser_2,
-  createUser_3
+  createUser_3,
+  reqCreateBadge_1,
+  reqCreateBadge_2
 };

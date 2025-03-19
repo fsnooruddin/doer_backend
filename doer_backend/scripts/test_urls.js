@@ -19,19 +19,28 @@ const getDoerTripByJobIdUrl = "http://127.0.0.1:8080/api/doer/trip/getByJobId";
 
 const updateDoerAvailabilityUrl = "http://127.0.0.1:8080/api/doer/updateDoerAvailability";
 
-const createJobRequestUrl = "http://127.0.0.1:8080/api/doer/job/create";
+const createJobRequestUrl = "/job/create";
 const acceptJobUrl = "http://127.0.0.1:8080/api/doer/job/accept";
 const startJobUrl = "http://127.0.0.1:8080/api/doer/job/start";
 const completeJobUrl = "http://127.0.0.1:8080/api/doer/job/complete";
 const findEligibleDoersUrl = "http://127.0.0.1:8080/api/doer/job/findEligibleDoers";
 
-const createMessageUrl = "http://127.0.0.1:8080/api/doer/message/create";
+
+const createMessageUrl = "/message/create";
 const getMessageByIdUrl = "http://127.0.0.1:8080/api/doer/message/getById";
 const getMessageByJobIdUrl = "http://127.0.0.1:8080/api/doer/message/getMessagesForJob";
 
-const createUserUrl = "http://127.0.0.1:8080/api/doer/user/create";
+
+const createAddressUrl = "/user/addAddress";
+const updateAddressUrl = "/user/updateAddress";
+const removeAddressUrl = "/user/removeAddress";
+
+const createUserUrl = "/user/create";
 
 module.exports = {
+    createAddressUrl,
+    updateAddressUrl,
+    removeAddressUrl,
 	getCategoryByIdRequestUrl,
 	getCategoryByNameRequestUrl,
 	getCategoryTreeRequestUrl,

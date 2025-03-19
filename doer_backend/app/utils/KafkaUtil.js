@@ -42,6 +42,34 @@ function sendJobRequestedMessage(job_id, user_id, time, location, services) {
 	sendMessage("job-messages", JSON.stringify(jobMessage));
 }
 
+function sendJobAcceptedMessage(job_id, doer_id, user_id, time, location, services, duration) {
+	var jobMessage = {
+		type: "jobCompleted",
+		job_id: job_id,
+		user_id: user_id,
+		time_requested: time,
+		location: location,
+		services: services,
+		duration: duration,
+	};
+
+	sendMessage("job-messages", JSON.stringify(jobMessage));
+}
+
+function sendJobStartedMessage(job_id, doer_id, user_id, time, location, services, duration) {
+	var jobMessage = {
+		type: "jobCompleted",
+		job_id: job_id,
+		user_id: user_id,
+		time_requested: time,
+		location: location,
+		services: services,
+		duration: duration,
+	};
+
+	sendMessage("job-messages", JSON.stringify(jobMessage));
+}
+
 /**
  * Send a message to the <u>kafka topic</u> <b><em>job-messages</em></b> when a job is completed
  * @param {number} job_id - Job id
@@ -53,6 +81,20 @@ function sendJobRequestedMessage(job_id, user_id, time, location, services) {
  * @memberof KafkaUtil
  */
 function sendJobCompletedMessage(job_id, doer_id, user_id, time, location, services, duration) {
+	var jobMessage = {
+		type: "jobCompleted",
+		job_id: job_id,
+		user_id: user_id,
+		time_requested: time,
+		location: location,
+		services: services,
+		duration: duration,
+	};
+
+	sendMessage("job-messages", JSON.stringify(jobMessage));
+}
+
+function sendInvoiceCreatedMessage(job_id, doer_id, user_id, time, location, services, duration) {
 	var jobMessage = {
 		type: "jobCompleted",
 		job_id: job_id,
@@ -113,4 +155,4 @@ async function sendMessage(ktopic, kmessage) {
 		}
 	});
 }
-module.exports = { init, sendMessage, KafkaUtils, sendJobRequestedMessage, sendJobCompletedMessage };
+module.exports = { init, sendJobRequestedMessage, sendJobAcceptedMessage, sendJobStartedMessage, sendJobCompletedMessage, sendInvoiceCreatedMessage };
