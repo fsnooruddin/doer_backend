@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 const fs = require("fs");
 const path = require("path");
 var { expect, jest, test } = require("@jest/globals");
@@ -74,7 +76,7 @@ function loadModules(directoryPath) {
 	fs.readdirSync(absolutePath).forEach((file) => {
 		const filePath = path.join(absolutePath, file);
 		const fileStat = fs.statSync(filePath);
-	//	console.log(filePath);
+		//	console.log(filePath);
 		if (fileStat.isFile() && path.extname(file) === ".js") {
 			const moduleName = path.basename(file, ".js");
 			global_modules[moduleName] = require(filePath);
@@ -83,7 +85,7 @@ function loadModules(directoryPath) {
 	// Accessing loaded modules
 	for (const moduleName in global_modules) {
 		if (global_modules.hasOwnProperty(moduleName)) {
-	//		console.log(`Loaded module: ${moduleName}`);
+			//		console.log(`Loaded module: ${moduleName}`);
 			// Use loadedglobal_modules[moduleName] to access the module's exports
 		}
 	}

@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const { reqCreateMessage_1, reqCreateMessage_Malformed } = require("./data/message.test.data.js");
@@ -63,4 +65,3 @@ describe("MESSAGE API Tests -- POSITIVE TESTS", () => {
 		expect(JSON.stringify(res.body)).toContain("message_id");
 	});
 });
-

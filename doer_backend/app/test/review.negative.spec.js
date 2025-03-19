@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const { reqCreateOTP_1, reqCreateOTPWrongNumber_1 } = require("./data/otp.test.data.js");
@@ -45,7 +47,6 @@ async function getData(url) {
 }
 
 let globalOTP = "";
-
 
 describe("OTP API Tests -- NEGATIVE TESTS", () => {
 	test("Validate a otp -- WRONG number", async () => {

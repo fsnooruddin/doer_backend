@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const { createDoerTrip_1, updateDoerTrip_1, updateDoerTrip_Malformed } = require("./data/doer_trip.test.data.js");
@@ -50,7 +52,6 @@ async function createDoerTripSuccess() {
 	expect(res.status).toBe(200);
 	expect(JSON.stringify(res.body)).toContain("doer_trip_id");
 }
-
 
 describe("DOER TRIP API -- NEGATIVE TESTS", function () {
 	it("send malformed location update", async () => {

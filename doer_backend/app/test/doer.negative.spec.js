@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const { reqCreateDoer_1, reqCreateDoer_2 } = require("./data/doer.test.data.js");

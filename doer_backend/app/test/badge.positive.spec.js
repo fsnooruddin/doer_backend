@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 const fs = require("fs");
 const path = require("path");
@@ -22,7 +24,6 @@ async function getData(url) {
 	}
 }
 
-
 var global_badgeId = null;
 var global_userId = null;
 const global_modules = {};
@@ -32,7 +33,7 @@ function loadModules(directoryPath) {
 	fs.readdirSync(absolutePath).forEach((file) => {
 		const filePath = path.join(absolutePath, file);
 		const fileStat = fs.statSync(filePath);
-	//	console.log(filePath);
+		//	console.log(filePath);
 		if (fileStat.isFile() && path.extname(file) === ".js") {
 			const moduleName = path.basename(file, ".js");
 			global_modules[moduleName] = require(filePath);
@@ -41,7 +42,7 @@ function loadModules(directoryPath) {
 	// Accessing loaded modules
 	for (const moduleName in global_modules) {
 		if (global_modules.hasOwnProperty(moduleName)) {
-	//		console.log(`Loaded module: ${moduleName}`);
+			//		console.log(`Loaded module: ${moduleName}`);
 			// Use loadedglobal_modules[moduleName] to access the module's exports
 		}
 	}
@@ -57,8 +58,7 @@ beforeAll(() => {
 });
 
 describe("BADGE API Tests -- POSITIVE TESTS", () => {
-
-test("Create a new user", async () => {
+	test("Create a new user", async () => {
 		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
@@ -66,7 +66,7 @@ test("Create a new user", async () => {
 	});
 
 	test("Create a new BADGE", async () => {
-	    reqCreateBadge_1.user_id = global_userId;
+		reqCreateBadge_1.user_id = global_userId;
 		const res = await request.post(test_uris.createBadgeUri).send(reqCreateBadge_1).set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
@@ -87,7 +87,7 @@ test("Create a new user", async () => {
 	});
 
 	test("Create a BADGE association", async () => {
-	reqCreateBadgeAssociation_1.user_id = global_userId;
+		reqCreateBadgeAssociation_1.user_id = global_userId;
 		reqCreateBadgeAssociation_1.badge_id = global_badgeId;
 		console.log(reqCreateBadgeAssociation_1);
 		const res = await request.post(test_uris.assignBadgeUserUri).send(reqCreateBadgeAssociation_1).set("Accept", "application/json");
@@ -96,4 +96,3 @@ test("Create a new user", async () => {
 		expect(JSON.stringify(res.body)).toContain("id");
 	});
 });
-

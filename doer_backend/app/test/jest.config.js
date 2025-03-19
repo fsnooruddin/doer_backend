@@ -16,7 +16,7 @@ module.exports = {
 		],
 	],
 	globals: {
-        __DEV__: true,
-        API_ENDPOINT: 'http://127.0.0.1:8080/api/doer',
-      },
+		__DEV__: true,
+		API_ENDPOINT: "http://127.0.0.1:8080/api/doer",
+	},
 };

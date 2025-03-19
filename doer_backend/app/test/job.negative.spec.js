@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const fs = require("fs");
@@ -22,7 +24,7 @@ function loadModules(directoryPath) {
 	// Accessing loaded modules
 	for (const moduleName in global_modules) {
 		if (global_modules.hasOwnProperty(moduleName)) {
-		//	console.log(`Loaded module: ${moduleName}`);
+			//	console.log(`Loaded module: ${moduleName}`);
 			// Use loadedglobal_modules[moduleName] to access the module's exports
 		}
 	}
@@ -36,7 +38,6 @@ beforeAll(() => {
 
 	loadModules("./data");
 });
-
 
 var test_uris = require("./data/test.uris.js");
 

@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const { reqCreateUser_1, reqCreateUser_Malformed } = require("./data/user.test.data.js");
@@ -56,4 +58,3 @@ describe("USER API Tests -- POSITIVE TESTS", () => {
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
 });
-

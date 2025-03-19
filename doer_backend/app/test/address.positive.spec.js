@@ -1,4 +1,4 @@
-var request = require("supertest")
+var request = require("supertest");
 request = request(API_ENDPOINT);
 
 var { expect, jest, test } = require("@jest/globals");
@@ -78,4 +78,3 @@ describe("ADDRESS API Tests -- POSITIVE TESTS", () => {
 		expect(res.status).toBe(200);
 	});
 });
-

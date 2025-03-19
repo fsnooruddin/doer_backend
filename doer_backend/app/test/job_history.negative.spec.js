@@ -1,10 +1,10 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest");
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const fs = require("fs");
 const path = require("path");
-
-
 
 var global_badgeId = null;
 var global_userId = null;
@@ -15,7 +15,7 @@ function loadModules(directoryPath) {
 	fs.readdirSync(absolutePath).forEach((file) => {
 		const filePath = path.join(absolutePath, file);
 		const fileStat = fs.statSync(filePath);
-	//	console.log(filePath);
+		//	console.log(filePath);
 		if (fileStat.isFile() && path.extname(file) === ".js") {
 			const moduleName = path.basename(file, ".js");
 			global_modules[moduleName] = require(filePath);
@@ -24,7 +24,7 @@ function loadModules(directoryPath) {
 	// Accessing loaded modules
 	for (const moduleName in global_modules) {
 		if (global_modules.hasOwnProperty(moduleName)) {
-		//	console.log(`Loaded module: ${moduleName}`);
+			//	console.log(`Loaded module: ${moduleName}`);
 			// Use loadedglobal_modules[moduleName] to access the module's exports
 		}
 	}
@@ -38,7 +38,6 @@ beforeAll(() => {
 
 	loadModules("./data");
 });
-
 
 var test_uris = require("./data/test.uris.js");
 
@@ -65,7 +64,10 @@ describe("SETUP API Tests -- NEGATIVE TESTS", () => {
 	});
 
 	test("Create a new address for user", async () => {
-		const res = await request.post(test_uris.createAddressUri).send(global_modules["address.test.data"].reqCreateAddress_3).set("Accept", "application/json");
+		const res = await request
+			.post(test_uris.createAddressUri)
+			.send(global_modules["address.test.data"].reqCreateAddress_3)
+			.set("Accept", "application/json");
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
@@ -76,7 +78,6 @@ describe("SETUP API Tests -- NEGATIVE TESTS", () => {
 		expect(JSON.stringify(res.body)).toContain("job_id");
 	});
 
-
 	test("Accept a job", async () => {
 		const res = await request
 			.post(test_uris.acceptJobUri + "?doerId=1&jobId=1")
@@ -84,5 +85,4 @@ describe("SETUP API Tests -- NEGATIVE TESTS", () => {
 			.set("Accept", "application/json");
 		expect(res.status).toBe(200);
 	});
-
 });
