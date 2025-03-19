@@ -278,16 +278,12 @@ async function login(req, res) {
 	const username = req.body.username;
 	const password = req.body.password;
 	console.log("body = " + JSON.stringify(req.body));
-	 let secret = Buffer.from('fe1a1915a379f3be5394b64d14794932', 'hex')
 	try {
 		var user = await UserCredentials.findOne({ where: { username: username } });
-		console.log("body = " + JSON.stringify(user));
+		logger.info("user-controller login call, user credentials  " + JSON.stringify(user));
 		var match = await Utils.comparePassword(password, user.password);
-		console.log("match is " + match);
 		if (match) {
-			const token = jwt.sign({ userId: user.id, type: user.type, username: user.username }, "your-secret-key", {
-				expiresIn: "1h",
-			});
+			const token = await jwt.sign({ userId: user.id, type: user.type, username: user.username }, "your-secret-key");
 			logger.info("User is successfully logged in: " + token);
 			res.status(200).json({token});
 			return;

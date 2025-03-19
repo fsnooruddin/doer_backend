@@ -1,4 +1,6 @@
-const request = require("supertest")("http://127.0.0.1:8080/api/doer");
+var request = require("supertest")
+request = request(API_ENDPOINT);
+
 var { expect, jest, test } = require("@jest/globals");
 
 const { reqCreateAddress_1, reqCreateAddress_Malformed } = require("./data/address.test.data.js");

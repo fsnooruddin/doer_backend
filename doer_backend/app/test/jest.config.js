@@ -1,9 +1,7 @@
 // jest.config.js
 module.exports = {
-//   setupFiles: ['./app/test/global/setup_test_data.js'],
 	verbose: true,
 	// The glob patterns Jest uses to detect test files
-//	testMatch: ["**/test/*job.spec.js"],
 	testMatch: ["**/(*.)+(spec).js?(x)"],
 	reporters: [
 		"default",
@@ -17,4 +15,8 @@ module.exports = {
 			},
 		],
 	],
+	globals: {
+        __DEV__: true,
+        API_ENDPOINT: 'http://127.0.0.1:8080/api/doer',
+      },
 };
