@@ -20,11 +20,12 @@ module.exports = {
 	hashPassword,
 	comparePassword,
 	VerifyAuth,
+	getAPICallCount,
 };
 
 async function VerifyAuth(req, res, next) {
 	const token = req.header("Authorization");
-	let secret = Buffer.from('fe1a1915a379f3be5394b64d14794932', 'hex')
+	let secret = Buffer.from("fe1a1915a379f3be5394b64d14794932", "hex");
 	console.log(token);
 	if (!token) return res.status(401).json({ error: "Access denied" });
 	try {
@@ -34,8 +35,8 @@ async function VerifyAuth(req, res, next) {
 		console.log(req.user);
 		next();
 	} catch (err) {
-	    logger.error("error is: " + err);
-	    logger.error("error is: " + JSON.stringify(err));
+		logger.error("error is: " + err);
+		logger.error("error is: " + JSON.stringify(err));
 		res.status(401).json({ error: "Invalid token" });
 		return;
 	}
@@ -246,4 +247,24 @@ function getRoute(req) {
 	const baseUrl = req.baseUrl ? req.baseUrl : ""; // adding the base url if the handler is child of other handler
 
 	return route ? `${baseUrl === "/" ? "" : baseUrl}${route}` : "unknown route";
+}
+
+function getAPICallCount(stats) {
+	var sum = 0;
+	Object.keys(stats).forEach(function (key) {
+		var parts = key.split(" ");
+
+		var num = parseInt(parts[2]);
+        console.log("0" + parts[0]);
+        console.log("1" + parts[1]);
+        console.log("2" + parts[2]);
+          console.log("3" + parts[3]);
+		if (num === parseInt(parts[2])) {
+			sum = sum + num;
+		}
+	});
+
+	console.log("sum = " + sum);
+
+	return sum;
 }

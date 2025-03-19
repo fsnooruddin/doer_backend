@@ -145,7 +145,7 @@ def query_api(term, location, searchlimit):
     print(output_prefix)
 
     # Open the JSON file
-    with open("california_zip_codes.json", "r") as f:
+    with open("test-text.out.txt", "r") as f:
         # Load JSON data from the file
         zip_code_data = json.load(f)
     f.close()
@@ -232,13 +232,15 @@ def getOpeningSchedule(zip_code_data):
     txt = "Sun,Mon,Tue,Wed,Thu,Fri,Sat" 
     days = txt.split(",")
     i = random.randint(0, len(zip_code_data))
-    print("index = ")
-    print(i)
+   # print("index = ")
+   # print(zip_code_data[i])
+
+    lat = zip_code_data[i]["latitude"]
+    long = zip_code_data[i]["longitude"]
     tout = "{\"slots\": ["
 
     for x in range(2):
-        i = random.randrange(7)
-        day = days[i]
+        day = days[random.randrange(7)]
 
         open_time = random.randrange(7, 12)
         close_time = random.randrange(12, 24)
@@ -246,7 +248,7 @@ def getOpeningSchedule(zip_code_data):
         out = ""
         out = "{ \"day\": " + "\"" + day + "\"" + "," + "\"start_time\": " + "\"" + str(open_time) + "\"," + "\"end_time\": " + "\"" + str(close_time) + "\""
         out = out + ", \"rate\": " + "\"" + str(random.randrange(50,100))+ "\""  + ","
-        out = out +  "\"latitude\": \"22.222\"" + "," + "\"longitude\":  \"333.333\""
+        out = out +  "\"latitude\": \"" + lat + "\"" + "," + "\"longitude\":  \"" + long + "\""
         out = out + ", \"radius\": " + "\"" + str(random.randrange(10,50)) + "\"}"
 
         if( x == 0 ):
@@ -311,13 +313,13 @@ def write_html_business(fh, tfh, response, zip_code_data):
     tfh.write(",")
     tfh.write('"review_count": "{0}"'.format(response['review_count']))
     tfh.write(",")
+    tfh.write('"minimum_charges": "{0}"'.format(random.randrange(50,100)))
+    tfh.write(",")
     tfh.write('"phone_number": "{0}"'.format(response['display_phone']))
     tfh.write(",")
     tfh.write('"rating": {0}'.format(rating))
     tfh.write(",")
     tfh.write('"availability": {0}'.format(getOpeningSchedule(zip_code_data)))
-    tfh.write(",")
-    tfh.write('"min_charges": "{0}"'.format(random.randrange(50,100)))
     tfh.write(",")
     tfh.write('"location": "{0}"'.format(location))
     tfh.write(",")

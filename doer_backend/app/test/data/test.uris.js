@@ -44,6 +44,10 @@ const getBadgeByIdUri = "/badge/getById";
 const assignBadgeUserUri = "/badge/assignBadgeToUser";
 const assignBadgeDoerUri = "/badge/assignBadgeToDoer";
 
+const createCertificateUri = "/certificate/create";
+const getCertificateByIdUri = "/certificate/getById";
+const assignCertificateDoerUri = "/certificate/assignCertificateToDoer";
+
 const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";
 const updateAddressUri = "/address/update";
@@ -96,6 +100,9 @@ module.exports = {
 	getBadgeByIdUri,
 	assignBadgeUserUri,
 	assignBadgeDoerUri,
+	createCertificateUri,
+    	getCertificateByIdUri,
+    	assignCertificateDoerUri,
 	createAddressUri,
 	removeAddressByIdUri,
 	updateAddressUri,

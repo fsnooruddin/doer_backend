@@ -13,6 +13,7 @@ module.exports = (app) => {
 	const users =  require("../controllers/user.controller.js");
     const addresses =  require("../controllers/address.controller.js");
     const invoices =  require("../controllers/invoice.controller.js");
+    const certificates =  require("../controllers/certificate.controller.js");
 
 	var router = require("express").Router();
 
@@ -68,6 +69,11 @@ module.exports = (app) => {
 	router.post("/badge/assignBadgeToDoer", badges.assignBadgeToDoer);
     router.post("/badge/removeBadgeFromUser", badges.removeBadgeFromUser);
 	router.post("/badge/removeBadgeFromDoer", badges.removeBadgeFromDoer);
+
+	    router.post("/certificate/create", certificates.create);
+    	router.get("/certificate/getById", certificates.get);
+    	router.post("/certificate/assignCertificateToDoer", certificates.assignCertificateToDoer);
+    	router.post("/certificate/removeCertificateFromDoer", certificates.removeCertificateFromDoer);
 
 	router.post("/image/upload", image_uploads.create);
 

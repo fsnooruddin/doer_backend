@@ -41,11 +41,11 @@ async function main() {
 	let rawdata = fs.readFileSync(args[0]);
 	let doer_data = JSON.parse(rawdata);
 
-	// console.log(JSON.stringify(doer_data));
+	console.log(JSON.stringify(doer_data));
 
 	for (let i = 0; i < doer_data.doers.length; i++) {
 		var entry = doer_data.doers[i];
-		entry.minimum_charges = entry.min_charges;
+		//entry.minimum_charges = entry.min_charges;
 		createDoer(entry);
 	}
 

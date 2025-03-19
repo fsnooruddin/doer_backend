@@ -4,7 +4,7 @@
  */
 
 const db = require("../models");
-const utils = require("../utils/Utils.js");
+const Utils = require("../utils/Utils.js");
 const Address = db.addresses;
 const Testing = db.tests;
 const Op = db.Sequelize.Op;
@@ -71,7 +71,7 @@ async function remove(req, res) {
 	}
 
 	try {
-		const ret_str = Address.destroy({
+		const ret_str = await Address.destroy({
 			where: {
 				address_id: id,
 			},
@@ -82,11 +82,13 @@ async function remove(req, res) {
 
 		logger.info("Address-controller remove -- Address id is " + id + " success");
 		res.status(200).send("success");
+		return;
 	} catch (err) {
 		logger.error("Error removing Address with Address id=" + id + " error: " + err.message);
-		res.status(500).send({
+		res.status(400).send({
 			Address: "message: Error removing Address with id=" + id + " error: " + err.message,
 		});
+		return;
 	}
 }
 
@@ -132,6 +134,47 @@ async function update(req, res) {
 		});
 	}
 }
+
+/**
+ * Find a single Address with an id
+ * @param {number} id - Address id to fetch
+ * @memberof Address
+ */
+async function findById(req, res) {
+	const id = req.query.id;
+	if (Utils.validateIntegerParam("address ID", id) == false) {
+		logger.error("address-controller address id is missing or not an integer");
+		res.status(400).send("Error retrieving address by id, address Id is missing or not an integer");
+		return;
+	}
+
+	logger.info("address_request-controller findById, address id = " + id);
+
+try {
+		var addr = await Address.findOne({
+    			where: {
+    				address_id: id,
+    			},
+    		});
+	if (data == null) {
+		logger.warn("address-controller findById returning null, id = " + id);
+		res.status(200).send("address find failed   " + id);
+		return;
+	} else {
+		logger.debug("address-controller findById returning " + JSON.stringify(data));
+		res.status(200).send(data);
+		return;
+	}
+	} catch (err) {
+    		logger.error("address-controller findById call failed. error = " + err.message);
+    		res.status(500).send({
+    			message: "Some error occurred while fetching the address." + err.message
+    		});
+    		return;
+    	}
+
+}
+
 
 async function testings(req, res) {
 	const data = req.body;
@@ -179,6 +222,7 @@ module.exports = {
 	create,
 	remove,
 	update,
+	findById,
 	testings,
 	find_testings,
 };

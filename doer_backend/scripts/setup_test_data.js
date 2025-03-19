@@ -1,22 +1,19 @@
-"use strict";
-//import fetch from 'node-fetch';
-const fs = require("fs");
-const axios = require("axios");
+const request = require("supertest")("http://127.0.0.1:8080/api/doer");
 
 var {
-createJobRequest_1,
-  createJobRequest_2,
-  createJobRequest_3,
-  createDoerTrip_1,
-  updateDoerTrip_1,
-  createDoerReview_1,
-  createDoerReview_2,
-  updateDoerAvailability_1,
-  createMessage_1,
-  createMessage_2,
-  createUser_1,
-  createUser_2,
-  createUser_3
+	createJobRequest_1,
+	createJobRequest_2,
+	createJobRequest_3,
+	createDoerTrip_1,
+	updateDoerTrip_1,
+	createDoerReview_1,
+	createDoerReview_2,
+	updateDoerAvailability_1,
+	createMessage_1,
+	createMessage_2,
+	createUser_1,
+	createUser_2,
+	createUser_3,
 } = require("./other_requests_data.js");
 
 var {
@@ -47,12 +44,12 @@ var {
 	createMessageUrl,
 	getMessageByIdUrl,
 	getMessageByJobIdUrl,
-	createUserUrl
+	createUserUrl,
 } = require("./test_urls.js");
 
 async function rget(url) {
 	try {
-		const response = await axios.get(url);
+		const response = await request.get(url);
 		return response.data;
 	} catch (error) {
 		console.error("GET from : " + url + " error is: " + error);
@@ -62,7 +59,7 @@ async function rget(url) {
 
 async function rpost(url, dataString) {
 	try {
-		const response = await axios.post(url, dataString);
+		const response = await request.post(url).send(dataString);
 		return response.data;
 	} catch (error) {
 		console.error("POST to : " + url + " error is: " + error);
@@ -85,36 +82,28 @@ async function makeCreateCall(endpoint, url, entry) {
 }
 
 async function makePostRequests() {
-
-console.log(createUserUrl);
-makeCreateCall("createUser", createUserUrl, createUser_1);
-    	console.log("\n\n\n **************** \n\n\n");
-
-    		makeCreateCall("createUser", createUserUrl, createUser_2);
-        	console.log("\n\n\n **************** \n\n\n");
-
-	makeCreateCall("createUser", createUserUrl, createUser_3);
-        	console.log("\n\n\n **************** \n\n\n");
-
-
-	makeCreateCall("createJob", createJobRequestUrl, createJobRequest_1);
+	console.log(createUserUrl);
+	await makeCreateCall("createUser", createUserUrl, createUser_1);
 	console.log("\n\n\n **************** \n\n\n");
 
-		makeCreateCall("createJob", createJobRequestUrl, createJobRequest_2);
-    	console.log("\n\n\n **************** \n\n\n");
-
-	makeCreateCall("createMessage", createMessageUrl, createMessage_1);
+	await makeCreateCall("createUser", createUserUrl, createUser_2);
 	console.log("\n\n\n **************** \n\n\n");
 
-    makeCreateCall("createMessage", createMessageUrl, createMessage_2);
+	await makeCreateCall("createUser", createUserUrl, createUser_3);
 	console.log("\n\n\n **************** \n\n\n");
 
+	await makeCreateCall("createJob", createJobRequestUrl, createJobRequest_1);
+	console.log("\n\n\n **************** \n\n\n");
 
+	await makeCreateCall("createJob", createJobRequestUrl, createJobRequest_2);
+	console.log("\n\n\n **************** \n\n\n");
 
+	await makeCreateCall("createMessage", createMessageUrl, createMessage_1);
+	console.log("\n\n\n **************** \n\n\n");
+
+	await makeCreateCall("createMessage", createMessageUrl, createMessage_2);
+	console.log("\n\n\n **************** \n\n\n");
 }
-
-
-
 
 async function main() {
 	makePostRequests();

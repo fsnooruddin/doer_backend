@@ -32,9 +32,9 @@ async function create(req, res) {
 
 	try {
 		// Save Certificate in the database
-		var new_cert = Certificate.create(req.body);
-		logger.info("Success creating Certificate with Certificate data =" + req.body);
-		res.status(200).send(new_cert);
+		let new_certificate = await Certificate.create(req.body);
+		logger.info("Success creating Certificate with Certificate data =" + JSON.stringify(req.body));
+		res.status(200).send(new_certificate);
 		return;
 	} catch (err) {
 		logger.error("Error creating Certificate with Certificate data =" + req.body + " error: " + err.message);
@@ -103,15 +103,38 @@ async function get(req, res) {
  * @memberof Certificate
  */
 async function assignCertificateToDoer(req, res) {
+logger.info("certificate-controller assignCertificateToDoer, body = " + JSON.stringify(req.body));
 	// Save Certificate in the database
 	DoerCertificateAssociations.create(req.body)
 		.then((data) => {
-			logger.info("Success associating certificate with doer = " + req.body);
+			logger.info("Success associating certificate with doer = " + JSON.stringify(req.body));
 			res.status(200).send(data);
 		})
 		.catch((err) => {
-			logger.error("Error associating certificate with doer =  =" + req.body + " error: " + err.message);
+			logger.error("Error associating certificate with doer =  =" + JSON.stringify(req.body) + " error: " + err.message);
 			res.status(500).send("Some error occurred while associating certificate with doer = : " + err.message);
+		});
+}
+
+
+/**
+ * Remove a Certificate from a Doer
+ * @param {number} Certificate.id - Certificate to remove
+ * @param {number} Certificate.doerId - Doer to remove certificate from
+ * @return {string} certificate - null if success, error string if error
+ * @memberof Certificate
+ */
+async function removeCertificateFromDoer(req, res) {
+logger.info("certificate-controller removeCertificateFromDoer, body = " + JSON.stringify(req.body));
+	// Save Certificate in the database
+	DoerCertificateAssociations.delete(req.body)
+		.then((data) => {
+			logger.info("Success removing certificate from doer = " + JSON.stringify(req.body));
+			res.status(200).send(data);
+		})
+		.catch((err) => {
+			logger.error("Error removing certificate from doer = " + JSON.stringify(req.body) + " error: " + err.message);
+			res.status(500).send("Some error occurred while removing certificate from doer = : " + err.message);
 		});
 }
 
@@ -119,4 +142,5 @@ module.exports = {
 	create,
 	get,
 	assignCertificateToDoer,
+    removeCertificateFromDoer,
 };

@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
@@ -10,6 +9,7 @@ const Backend = require("i18next-fs-backend");
 const i18nextMiddleware = require("i18next-http-middleware");
 const ku = require("./app/utils/KafkaUtil.js");
 const logger = require("./app/utils/Logger.js");
+const Utils = require("./app/utils/Utils.js");
 const app = express();
 const db = require("./app/models");
 
@@ -27,10 +27,25 @@ if (kafkaFlag) {
 require("./app/routes/doer.routes")(app);
 
 // Route Example
-app.get("/", (req, res) => {
-	const welcomeMessage = req.t("welcome", { ns: "common" });
-	const description = req.t("description", { ns: "common" });
-	res.send(`<h1>${welcomeMessage}</h1><p>${description}</p>`);
+function sessionChecker(req, res, next) {
+	console.log(`Session Checker: ${req.session.id}`.green);
+	console.log(req.session);
+	if (req.session.profile) {
+		console.log(`Found User Session`.green);
+		next();
+	} else {
+		console.log(`No User Session Found`.red);
+		res.redirect("/welcomeloggedout");
+	}
+}
+
+app.get("/", Utils.VerifyAuth, (req, res) => {
+    console.log(req.user);
+	res.status(200).json({ message: "Protected route accessed" });
+});
+
+app.get("/stats/", (req, res) => {
+	res.json(Utils.readStats());
 });
 
 // set port, listen for requests
@@ -47,6 +62,7 @@ function init_db() {
 	db.categories = require("./app/models/category.model.js")(db.sequelize, db.Sequelize);
 	db.otps = require("./app/models/otp.model.js")(db.sequelize, db.Sequelize);
 	db.badges = require("./app/models/badge.model.js")(db.sequelize, db.Sequelize);
+	db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
 	db.jobs = require("./app/models/job.model.js")(db.sequelize, db.Sequelize);
 	db.job_histories = require("./app/models/job_history.model.js")(db.sequelize, db.Sequelize);
 	db.doer_trips = require("./app/models/doer_trip.model.js")(db.sequelize, db.Sequelize);
@@ -60,10 +76,11 @@ function init_db() {
 	db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.doer_badge_associations = require("./app/models/doer_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.job_costs = require("./app/models/job_cost.model.js")(db.sequelize, db.Sequelize);
-	//db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
+	db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
 	db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
 	db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
-
+	db.user_credentials = require("./app/models/user_credential.model.js")(db.sequelize, db.Sequelize);
+    db.doer_certificate_associations = require("./app/models/doer_certificate_association.model.js")(db.sequelize, db.Sequelize);
 	db.doer_trips.hasMany(db.doer_trip_location_updates, { foreignKey: "doer_trip_id" });
 	db.doer_trip_location_updates.belongsTo(db.doer_trips, { foreignKey: "doer_trip_id" });
 
@@ -86,15 +103,16 @@ function init_db() {
 	db.doers.hasMany(db.reviews, { foreignKey: "doer_id", as: "reviews" });
 	db.reviews.hasOne(db.doers, { foreignKey: "doer_id", as: "doers" });
 
-	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id"});
-	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "user_id"});
+	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id" });
+	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "user_id" });
 
-	db.badges.belongsToMany(db.doers, { through: db.doer_badge_associations, foreignKey: "badge_id"});
-	db.doers.belongsToMany(db.badges, { through: db.doer_badge_associations, foreignKey: "doer_id"});
+	db.badges.belongsToMany(db.doers, { through: db.doer_badge_associations, foreignKey: "badge_id" });
+	db.doers.belongsToMany(db.badges, { through: db.doer_badge_associations, foreignKey: "doer_id" });
+
+    db.certificates.belongsToMany(db.doers, { through: db.doer_certificate_associations, foreignKey: "certificate_id" });
+	db.doers.belongsToMany(db.certificates, { through: db.doer_certificate_associations, foreignKey: "doer_id" });
 
 	db.jobs.hasMany(db.job_costs, { foreignKey: "job_id", as: "costs" });
-
-	//db.doers.hasMany(db.certificates, { foreignKey: "doer_id", as: "certificates" });
 
 	db.doers.hasMany(db.availability_slots, { foreignKey: "doer_id" });
 
@@ -154,7 +172,7 @@ function init_app() {
 				backend: {
 					loadPath: path.resolve("./app/resources/locales/{{ns}}/{{lng}}.json"),
 				},
-				debug: true,
+				debug: false,
 				detection: {
 					order: ["querystring", "cookie"],
 					caches: ["cookie"],
@@ -176,4 +194,21 @@ function init_app() {
 	// Middleware
 	app.use(cookieParser());
 	app.use(i18nextMiddleware.handle(i18next));
+
+	app.use((req, res, next) => {
+		res.on("finish", () => {
+			const stats = Utils.readStats();
+			const event = `${req.method} ${Utils.getRoute(req)} ${res.statusCode}`;
+			stats[event] = stats[event] ? stats[event] + 1 : 1;
+			stats['total'] = stats['total'] ? stats['total'] + 1 : 1;
+			Utils.dumpStats(stats);
+			 console.log("count was " + stats['total']);
+			if(stats['total'] % 100 === 0) {
+			    console.log("count was " + stats['total']);
+			    logger.warn("Memory usage is: " + JSON.stringify(process.memoryUsage()));
+
+			}
+		});
+		next();
+	});
 }

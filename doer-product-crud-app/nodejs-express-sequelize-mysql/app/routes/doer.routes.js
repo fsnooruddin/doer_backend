@@ -25,7 +25,6 @@ module.exports = app => {
 
         router.get("/finances", reservationRequests.getReservationFinances);
 
-
         // Retrieve a
         router.get("/find", doers.findByAvailability);
 
