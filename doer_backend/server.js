@@ -60,7 +60,7 @@ function init_db() {
 	db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.doer_badge_associations = require("./app/models/doer_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.job_costs = require("./app/models/job_cost.model.js")(db.sequelize, db.Sequelize);
-	db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
+	//db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
 	db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
 	db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
 
@@ -89,12 +89,12 @@ function init_db() {
 	db.badges.belongsToMany(db.users, { through: db.user_badge_associations, foreignKey: "badge_id"});
 	db.users.belongsToMany(db.badges, { through: db.user_badge_associations, foreignKey: "user_id"});
 
-	db.badges.belongsToMany(db.doers, { through: db.doer_badge_associations, foreignKey: "badge_id", as: "doer_badges", otherKey: "doer_id" });
-	db.doers.belongsToMany(db.badges, { through: db.doer_badge_associations, foreignKey: "badge_id", otherKey: "doer_id" });
+	db.badges.belongsToMany(db.doers, { through: db.doer_badge_associations, foreignKey: "badge_id"});
+	db.doers.belongsToMany(db.badges, { through: db.doer_badge_associations, foreignKey: "doer_id"});
 
 	db.jobs.hasMany(db.job_costs, { foreignKey: "job_id", as: "costs" });
 
-	db.doers.hasMany(db.certificates, { foreignKey: "doer_id", as: "certificates" });
+	//db.doers.hasMany(db.certificates, { foreignKey: "doer_id", as: "certificates" });
 
 	db.doers.hasMany(db.availability_slots, { foreignKey: "doer_id" });
 
