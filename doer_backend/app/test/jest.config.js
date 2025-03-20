@@ -18,7 +18,7 @@ module.exports = {
 	globals: {
 		__DEV__: true,
 		API_ENDPOINT: "http://127.0.0.1:8080/api/doer",
-		DOER_AUTH_TOKEN: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInR5cGUiOiJkb2VyIiwidXNlcm5hbWUiOiJCaWxseUhpbGwiLCJpYXQiOjE3NDI0MzAyNDB9.8DZ6GLT21oLUZXJ9rmbV-p9xHvZFL4QqOSKThgGtA3g",
+		DOER_AUTH_TOKEN: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2VySWQiOjEsInR5cGUiOiJkb2VyIiwidXNlcm5hbWUiOiJCaWxseUhpbGwiLCJpYXQiOjE3NDI1MDQ4NTB9.TNzPkd-W55NfXQXAkrt9QzzPPgKjaZesmRHx9mbrZl0",
 		USER_AUTH_TOKEN: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInR5cGUiOiJ1c2VyIiwidXNlcm5hbWUiOiJKb2huRG9lIiwiaWF0IjoxNzQyNDMwMjQwfQ.rIvyH1ajjuA2R11pW0Wfk6YfiubbubP-gMijEBrqrek",
 	},
 };

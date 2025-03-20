@@ -103,7 +103,7 @@ describe("JOB API Tests -- SUCCESS", () => {
 		const res = await request
 			.post(test_uris.acceptJobUri + "?doerId=" + global_doerId + "&jobId=" + global_jobId)
 			.send("")
-			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+			.set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		global_job_Id = res.body.job_id;
 	});
@@ -112,7 +112,7 @@ describe("JOB API Tests -- SUCCESS", () => {
 		const res = await request
 			.post(test_uris.acceptJobUri + "?doerId=" + global_doerId + "&jobId=" + global_jobId2)
 			.send("")
-			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+			.set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		global_job_Id = res.body.job_id;
 	});
@@ -121,7 +121,7 @@ describe("JOB API Tests -- SUCCESS", () => {
 		const res = await request
 			.post(test_uris.acceptJobUri + "?doerId=" + global_doerId + "&jobId=" + global_jobId3)
 			.send("")
-			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+			.set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		global_job_Id = res.body.job_id;
 	});
@@ -140,7 +140,7 @@ describe("JOB API Tests -- SUCCESS", () => {
 		const res = await request
 			.post(test_uris.abandonJobUri + "?jobId=" + global_jobId + "&doerId=" + global_doerId)
 			.send()
-			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+			.set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		//expect(JSON.stringify(res.body)).toContain("success");
 	});

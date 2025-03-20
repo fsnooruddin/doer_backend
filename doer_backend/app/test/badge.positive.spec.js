@@ -80,7 +80,7 @@ describe("BADGE API Tests -- POSITIVE TESTS", () => {
 	});
 
 	test("Get BADGE by ID", async () => {
-		const res = await request.get(test_uris.getBadgeByIdUri + "?id=" + global_badgeId);
+		const res = await request.get(test_uris.getBadgeByIdUri + "?id=" + global_badgeId).set("Authorization", USER_AUTH_TOKEN);
 		console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
