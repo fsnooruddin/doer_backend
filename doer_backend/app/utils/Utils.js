@@ -25,17 +25,14 @@ module.exports = {
 
 async function VerifyAuth(req, res, next) {
 	const token = req.header("Authorization");
-	let secret = Buffer.from("fe1a1915a379f3be5394b64d14794932", "hex");
-	console.log(token);
 	if (!token) return res.status(401).json({ error: "Access denied" });
 	try {
 		const decoded = await jwt.verify(token, "your-secret-key");
-		console.log("decoded token = " + JSON.stringify(decoded));
+		logger.trace("decoded token = " + JSON.stringify(decoded));
 		req.user = decoded;
-		console.log(req.user);
-		next();
+		logger.trace("user in verify auth is: " + JSON.stringify(req.user));
+        next();
 	} catch (err) {
-		logger.error("error is: " + err);
 		logger.error("error is: " + JSON.stringify(err));
 		res.status(401).json({ error: "Invalid token" });
 		return;
@@ -46,8 +43,6 @@ async function hashPassword(password) {
 	console.log(typeof password);
 	const saltRounds = 10;
 	const hashedPassword = await bcrypt.hash(password, saltRounds);
-	console.log(typeof hashedPassword);
-	console.log(hashedPassword);
 	return hashedPassword;
 }
 
