@@ -34,8 +34,8 @@ async function doer_findByServiceDayTimeDBCall(rservices, rday, rtime) {
 
 		for (let i = 0; i < doers_found[0].length; i++) {
 			var doer_slots = {};
-			console.log("FOUND DOERS >>>>>");
-			//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			logger.trace("FindBy Service, Day, Time Call FOUND DOERS >>>>>");
+					logger.trace("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 
 			doer_slots = await db.availability_slots.findAll({
 				where: {
@@ -45,9 +45,9 @@ async function doer_findByServiceDayTimeDBCall(rservices, rday, rtime) {
 					exclude: ["updatedAt", "createdAt"],
 				},
 			});
-			//	logger.info("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
+				logger.trace("doer-controller findByServicesAndDayDBCall -- availability " + JSON.stringify(doer_slots));
 			doers_found[0][i].availability = doer_slots;
-			logger.info("DBQuery-controller doer_findByServiceDayTimeDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+			logger.trace("DBQuery-controller doer_findByServiceDayTimeDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 		}
 	} catch (err) {
 		logger.error("DBQuery-controller doer_findByServiceDayTimeDBCall -- services is " + rservices + " error is " + err.message);
