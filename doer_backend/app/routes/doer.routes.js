@@ -14,6 +14,7 @@ module.exports = (app) => {
     const addresses =  require("../controllers/address.controller.js");
     const invoices =  require("../controllers/invoice.controller.js");
     const certificates =  require("../controllers/certificate.controller.js");
+    const auth = require("../controllers/authentication.controller.js");
 
 	var router = require("express").Router();
 
@@ -82,13 +83,14 @@ module.exports = (app) => {
 	router.get("/user/getAddresses", users.getAddresses);
 	router.post("/user/rate", users.rate);
 	router.get("/user/rating", users.getRating);
-	router.post("/user/register", users.register);
-	router.post("/user/login", users.login);
+
+	router.post("/auth/register", auth.register);
+	router.post("/auth/login", auth.login);
 
     router.post("/address/create", addresses.create);
 	router.post("/address/remove", addresses.remove);
 	router.post("/address/update", addresses.update);
-//	router.get("/address/getById", addresses.findById);
+	router.get("/address/getById", addresses.findById);
 
     router.post("/address/testings", addresses.testings);
     router.post("/address/find_testings", addresses.find_testings);
