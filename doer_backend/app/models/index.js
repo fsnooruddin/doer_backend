@@ -6,7 +6,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 	host: dbConfig.HOST,
 	dialect: dbConfig.dialect,
 	logging: (query, options) => {
-		logger.info(`${query} [${options.modelName}]`);
+		logger.trace(`${query} [${options.modelName}]`);
 	},
 });
 
