@@ -87,7 +87,10 @@ module.exports = (app) => {
 	router.post("/auth/register", auth.register);
 	router.post("/auth/login", auth.login);
 
-    router.post("/address/create", addresses.create);
+    router.post("/address/create", Utils.VerifyAuth, (req, res) => {
+
+                                     addresses.create(req, res);
+                                   });
 	router.post("/address/remove", addresses.remove);
 	router.post("/address/update", addresses.update);
 	router.get("/address/getById", addresses.findById);
