@@ -28,8 +28,7 @@ const logger = require("../utils/Logger.js");
  * @memberof Badge
  */
 async function create(req, res) {
-	logger.info("req body in create Badge: ");
-	logger.info(req.body);
+	logger.info("req body in create Badge: " + JSON.stringify(req.body));
 
 	try {
 		// Save Badge in the database
@@ -125,7 +124,7 @@ async function assignBadgeToUser(req, res) {
  * @memberof Badge
  */
 async function assignBadgeToDoer(req, res) {
-logger.info("badge-controller assignBadgeToDoer, body = " + JSON.stringify(req.body));
+	logger.info("badge-controller assignBadgeToDoer, body = " + JSON.stringify(req.body));
 	// Save Badge in the database
 	DoerBadgeAssociations.create(req.body)
 		.then((data) => {
@@ -138,7 +137,6 @@ logger.info("badge-controller assignBadgeToDoer, body = " + JSON.stringify(req.b
 		});
 }
 
-
 /**
  * Remove a Badge from a Doer
  * @param {number} Badge.id - Badge to remove
@@ -147,7 +145,7 @@ logger.info("badge-controller assignBadgeToDoer, body = " + JSON.stringify(req.b
  * @memberof Badge
  */
 async function removeBadgeFromDoer(req, res) {
-logger.info("badge-controller removeBadgeFromDoer, body = " + JSON.stringify(req.body));
+	logger.info("badge-controller removeBadgeFromDoer, body = " + JSON.stringify(req.body));
 	// Save Badge in the database
 	DoerBadgeAssociations.delete(req.body)
 		.then((data) => {
@@ -168,7 +166,7 @@ logger.info("badge-controller removeBadgeFromDoer, body = " + JSON.stringify(req
  * @memberof Badge
  */
 async function removeBadgeFromUser(req, res) {
-logger.info("badge-controller removeBadgeFromUser, body = " + JSON.stringify(req.body));
+	logger.info("badge-controller removeBadgeFromUser, body = " + JSON.stringify(req.body));
 	// Save Badge in the database
 	UserBadgeAssociations.delete(req.body)
 		.then((data) => {
@@ -187,5 +185,5 @@ module.exports = {
 	assignBadgeToUser,
 	assignBadgeToDoer,
 	removeBadgeFromUser,
-    removeBadgeFromDoer,
+	removeBadgeFromDoer,
 };

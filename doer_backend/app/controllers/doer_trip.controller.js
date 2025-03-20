@@ -138,16 +138,15 @@ async function updateDoerTripLocation(req, res) {
  */
 async function getDoerTripByJobId(req, res) {
 	const jobId = req.query.jobId;
-		if (Utils.validateIntegerParam("Job Id", jobId) == false) {
-    		logger.error("doer-trip-controller getDoerTripByJobId, missing job Id or job Id not integer: " + jobId);
-    		res.status(400).send({
-            			message: "doer-trip-controller getDoerTripByJobId, missing job Id or job Id not integer: " + jobId
-            		});
-            		return;
-    	}
+	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
+		logger.error("doer-trip-controller getDoerTripByJobId, missing job Id or job Id not integer: " + jobId);
+		res.status(400).send({
+			message: "doer-trip-controller getDoerTripByJobId, missing job Id or job Id not integer: " + jobId,
+		});
+		return;
+	}
 
 	logger.info("doer-trip-controller findById job id = " + jobId);
-
 
 	try {
 		const data = await DoerTrip.findAll({

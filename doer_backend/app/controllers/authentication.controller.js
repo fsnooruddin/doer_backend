@@ -36,9 +36,8 @@ async function register(req, res) {
 			creds.doer_id = req.body.id;
 			data = await DoerCredentials.create(creds);
 		}
-		console.log(JSON.stringify(creds));
+		console.log("auth-controller register, creds = " + JSON.stringify(creds));
 
-		console.log(JSON.stringify("new creds = " + data));
 		if (data == null) {
 			res.status(500).send({ message: "auth-controller register failed" });
 			return;
@@ -56,22 +55,28 @@ async function login(req, res) {
 	const username = req.body.username;
 	const password = req.body.password;
 
-	var user = null
+	var user = null;
 	try {
-	    if(req.body.type === "doer") {
-	        user = await DoerCredentials.findOne({ where: { username: username } });
-	    } else {
-		 user = await UserCredentials.findOne({ where: { username: username } });
-		 }
+		if (req.body.type === "doer") {
+			user = await DoerCredentials.findOne({ where: { username: username } });
+		} else {
+			user = await UserCredentials.findOne({ where: { username: username } });
+		}
 		logger.info("auth-controller login call, user credentials  " + JSON.stringify(user));
 		var match = await Utils.comparePassword(password, user.password);
 		if (match) {
-			const token = await jwt.sign({ userId: user.id, type: user.type, username: user.username }, "your-secret-key");
-			logger.info("User is successfully logged in: " + token);
-			res.status(200).json({ token });
-			return;
+			if (req.body.type === "doer") {
+				const token = await jwt.sign({ doerId: user.id, type: user.type, username: user.username }, "your-secret-key");
+				logger.info("User is successfully logged in: " + token);
+				res.status(200).json({ token });
+				return;
+			} else {
+				const token = await jwt.sign({ userId: user.id, type: user.type, username: user.username }, "your-secret-key");
+				logger.info("User is successfully logged in: " + token);
+				res.status(200).json({ token });
+			}
 		} else {
-		logger.info("User login failed ");
+			logger.info("User login failed ");
 			res.status(401).send("Authentication failed");
 			return;
 		}

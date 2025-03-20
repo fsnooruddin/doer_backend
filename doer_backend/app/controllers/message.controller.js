@@ -74,7 +74,7 @@ function findById(req, res) {
 		},
 	})
 		.then((data) => {
-			logger.info("message-controller findById -- message id is " + id + " returning " + data);
+			logger.info("message-controller findById -- message id is " + id + " returning " + JSON.stringify(data));
 			res.status(200).send(data);
 		})
 		.catch((err) => {

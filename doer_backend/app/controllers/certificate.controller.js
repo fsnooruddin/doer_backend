@@ -27,8 +27,7 @@ const logger = require("../utils/Logger.js");
  * @memberof Certificate
  */
 async function create(req, res) {
-	logger.info("req body in create Certificate: ");
-	logger.info(req.body);
+	logger.info("req body in create Certificate: " + JSON.stringify(req.body));
 
 	try {
 		// Save Certificate in the database
@@ -103,7 +102,7 @@ async function get(req, res) {
  * @memberof Certificate
  */
 async function assignCertificateToDoer(req, res) {
-logger.info("certificate-controller assignCertificateToDoer, body = " + JSON.stringify(req.body));
+	logger.info("certificate-controller assignCertificateToDoer, body = " + JSON.stringify(req.body));
 	// Save Certificate in the database
 	DoerCertificateAssociations.create(req.body)
 		.then((data) => {
@@ -116,7 +115,6 @@ logger.info("certificate-controller assignCertificateToDoer, body = " + JSON.str
 		});
 }
 
-
 /**
  * Remove a Certificate from a Doer
  * @param {number} Certificate.id - Certificate to remove
@@ -125,7 +123,7 @@ logger.info("certificate-controller assignCertificateToDoer, body = " + JSON.str
  * @memberof Certificate
  */
 async function removeCertificateFromDoer(req, res) {
-logger.info("certificate-controller removeCertificateFromDoer, body = " + JSON.stringify(req.body));
+	logger.info("certificate-controller removeCertificateFromDoer, body = " + JSON.stringify(req.body));
 	// Save Certificate in the database
 	DoerCertificateAssociations.delete(req.body)
 		.then((data) => {
@@ -142,5 +140,5 @@ module.exports = {
 	create,
 	get,
 	assignCertificateToDoer,
-    removeCertificateFromDoer,
+	removeCertificateFromDoer,
 };

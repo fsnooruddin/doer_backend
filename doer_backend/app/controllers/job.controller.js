@@ -184,7 +184,15 @@ async function findEligibleDoers(req, res) {
  * @memberof Job
  */
 async function acceptJob(req, res) {
-	const doerId = req.query.doerId;
+	if (req.user == null) {
+		logger.error("doer-controller acceptJob, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	console.log(Object.keys(req.user).length);
+
+	console.log(req.user);
+	const doerId = req.user.doerId;
 	const jobId = req.query.jobId;
 
 	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
@@ -222,7 +230,13 @@ async function acceptJob(req, res) {
  * @memberof Job
  */
 async function abandonJob(req, res) {
-	const doerId = req.query.doerId;
+	if (req.user == null) {
+		logger.error("doer-controller abandonJob, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	console.log("abandon job = " + JSON.stringify(req.user));
+	const doerId = req.user.doerId;
 	const jobId = req.query.jobId;
 	console.log("abandon job = " + doerId + "  job id " + jobId);
 	if (Utils.validateIntegerParam("Job Id", jobId) == false) {
@@ -260,7 +274,13 @@ async function abandonJob(req, res) {
  * @memberof Job
  */
 async function cancelJob(req, res) {
-	const userId = req.query.userId;
+	if (req.user == null) {
+		logger.error("address-controller update, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	const userId = req.user.userId;
+	logger.info("address-controller req user in update Address: " + JSON.stringify(req.user));
 	const jobId = req.query.jobId;
 
 	if (Utils.validateIntegerParam("Job Id", jobId) == false) {

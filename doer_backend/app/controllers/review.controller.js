@@ -34,7 +34,7 @@ async function create(req, res) {
 	try {
 		// Save review in the database
 		var new_review = await Review.create(data_obj);
-		logger.info("Success creating review with review data =" + req.body);
+		logger.info("Success creating review with review data =" + JSON.stringify(req.body));
 		res.status(200).send(new_review);
 		return;
 	} catch (err) {
@@ -89,7 +89,14 @@ function findById(req, res) {
  * @memberof Review
  */
 function findByDoerId(req, res) {
-	const id = req.query.doerId;
+	if (req.user == null) {
+		logger.error("review-controller update, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+
+	console.log("user = " + JSON.stringify(req.user));
+	const id = req.user.doerId;
 
 	if (utils.validateIntegerParam("doer ID", id) == false) {
 		logger.error("review-controller, findByDoerId by doer id is missing or not an integer");
@@ -108,7 +115,7 @@ function findByDoerId(req, res) {
 		},
 	})
 		.then((data) => {
-			logger.info("review-controller findByDoerId -- doer id is " + id + " returning " + data);
+			logger.info("review-controller findByDoerId -- doer id is " + id + " returning " + JSON.stringify(data));
 			res.status(200).send(data);
 			return;
 		})

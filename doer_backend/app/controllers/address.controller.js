@@ -30,7 +30,8 @@ const logger = require("../utils/Logger.js");
  * @memberof Address
  */
 async function create(req, res) {
-	logger.info("address-controller req body in create Address: " + req.body);
+	logger.info("address-controller req body in create Address: " + JSON.stringify(req.body));
+	logger.info("address-controller req user in create Address: " + JSON.stringify(req.user));
 
 	if (Object.keys(req.body).length === 0) {
 		logger.error("address-controller, req body is null");
@@ -45,7 +46,7 @@ async function create(req, res) {
 		res.status(200).send(new_address);
 		return;
 	} catch (err) {
-		logger.error("Error creating Address with Address data =" + req.body + " error: " + err.message);
+		logger.error("Error creating Address with Address data =" + JSON.stringify(req.body) + " error: " + err.message);
 		res.status(500).send("Some error occurred while creating the Address.");
 		return;
 	}
@@ -58,7 +59,7 @@ async function create(req, res) {
  * @memberof Address
  */
 async function remove(req, res) {
-	logger.info(req.body);
+	logger.info(JSON.stringify(req.body));
 	const id = req.query.id;
 
 	if (id == null) {
@@ -100,7 +101,13 @@ async function remove(req, res) {
  */
 async function update(req, res) {
 	logger.info(JSON.stringify(req.body));
+	if (req.user == null) {
+		logger.error("address-controller update, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
 	const id = req.query.id;
+	logger.info("address-controller req user in update Address: " + JSON.stringify(req.user));
 
 	if (id == null) {
 		logger.error("Error retrieving Addresss by ID, Address Id is missing");
@@ -150,31 +157,31 @@ async function findById(req, res) {
 
 	logger.info("address_request-controller findById, address id = " + id);
 
-try {
+	logger.info("address-controller req user in findById Address: " + JSON.stringify(req.user));
+
+	try {
 		var addr = await Address.findOne({
-    			where: {
-    				address_id: id,
-    			},
-    		});
-	if (data == null) {
-		logger.warn("address-controller findById returning null, id = " + id);
-		res.status(200).send("address find failed   " + id);
-		return;
-	} else {
-		logger.debug("address-controller findById returning " + JSON.stringify(data));
-		res.status(200).send(data);
+			where: {
+				address_id: id,
+			},
+		});
+		if (data == null) {
+			logger.warn("address-controller findById returning null, id = " + id);
+			res.status(200).send("address find failed   " + id);
+			return;
+		} else {
+			logger.debug("address-controller findById returning " + JSON.stringify(data));
+			res.status(200).send(data);
+			return;
+		}
+	} catch (err) {
+		logger.error("address-controller findById call failed. error = " + err.message);
+		res.status(500).send({
+			message: "Some error occurred while fetching the address." + err.message,
+		});
 		return;
 	}
-	} catch (err) {
-    		logger.error("address-controller findById call failed. error = " + err.message);
-    		res.status(500).send({
-    			message: "Some error occurred while fetching the address." + err.message
-    		});
-    		return;
-    	}
-
 }
-
 
 async function testings(req, res) {
 	const data = req.body;

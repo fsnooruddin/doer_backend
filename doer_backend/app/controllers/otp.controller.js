@@ -25,8 +25,7 @@ const otpGenerator = require("otp-generator");
  * @memberof OTP
  */
 async function create(req, res) {
-	console.log("req body in create OTP: ");
-	console.log(req.body);
+	logger.trace("req body in create OTP: " + JSON.stringify(req.body));
 
 	// Generate a 6-digit OTP
 	const otp = otpGenerator.generate(6, { digits: true, alphabets: true, upperCase: false, specialChars: false });
@@ -36,8 +35,7 @@ async function create(req, res) {
 		otp: otp,
 	};
 
-	console.log("new OTP in create OTP: ");
-	console.log(otp_row);
+	logger.trace("New OTP is: " + JSON.stringify(otp_row));
 
 	try {
 		// Save OTP in the database
@@ -69,7 +67,7 @@ async function create(req, res) {
  * @memberof OTP
  */
 async function validate(req, res) {
-	logger.info(req.body);
+	logger.info("OTP-controller, validate, body = " + JSON.stringify(req.body));
 	const phone_number = req.body.phone_number;
 	const otp = req.body.otp;
 	if (phone_number == null) {
@@ -98,15 +96,14 @@ async function validate(req, res) {
 			}
 
 			let diff = new Date() - new Date(data.createdAt);
-			console.log("date diff = " + diff / 1000);
 
-			if (data.diff > 300) {
-				logger.info("OTP-controller OTP expired");
+			if (diff > 300) {
+				logger.info("OTP-controller OTP expired, elapsed = " + diff);
 				data.destroy();
 				res.status(200).send("message: OTP expired");
 				return;
 			}
-            if (data.otp === otp) {
+			if (data.otp === otp) {
 				logger.info("OTP-controller OTP matches");
 				data.destroy();
 				res.status(200).send("message: OTP Matches");

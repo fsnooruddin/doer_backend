@@ -97,8 +97,7 @@ async function create(req, res) {
 		for (let i = 0; i < Object.keys(data_obj.availability.slots).length; i++) {
 			nObj = data_obj.availability.slots[i];
 			nObj.doer_id = new_doer.doer_id;
-			console.log("Creating availability: " + JSON.stringify(nObj));
-			console.log("Creating availability: " + JSON.stringify(nObj.slot));
+			logger.info("Creating availability: " + JSON.stringify(nObj));
 			// create availability windows.
 			let avail_obj = await Availability.create(nObj, { transaction });
 			logger.info("Create Doer ... add availability success ... " + JSON.stringify(avail_obj));
@@ -106,12 +105,11 @@ async function create(req, res) {
 		nObj = {};
 		nObj = data_obj.rating;
 		nObj.doer_id = new_doer.doer_id;
-		console.log(JSON.stringify(nObj));
 		let rating_obj = await Rating.create(nObj, { transaction });
 		logger.info("Create Doer ... add rating success ... " + JSON.stringify(rating_obj));
 
 		// all done, commit transaction, return success
-		transaction.commit();
+		await transaction.commit();
 		res.status(200).send(new_doer);
 		return;
 	} catch (err) {
@@ -356,15 +354,15 @@ async function updateAvailability(req, res) {
 	doer.availability = JSON.stringify(avail);
 	doer.changed("availability", true);
 	try {
-	const result = await doer.save();
-	logger.info("result of save doer in update avail = " + JSON.stringify(result));
-	res.status(200).send(result);
-	return;
+		const result = await doer.save();
+		logger.info("result of save doer in update avail = " + JSON.stringify(result));
+		res.status(200).send(result);
+		return;
 	} catch (err) {
-     		logger.error("Error update doer availability. doer_id = " + id + " error: " + err.message);
-     		res.status(400).send("Error update doer availability. doer_id = " + id + " error: " + err.message);
-     		return;
-     	}
+		logger.error("Error update doer availability. doer_id = " + id + " error: " + err.message);
+		res.status(400).send("Error update doer availability. doer_id = " + id + " error: " + err.message);
+		return;
+	}
 }
 
 /**

@@ -65,7 +65,12 @@ async function create(req, res) {
  * @memberof User
  */
 async function findById(req, res) {
-	const id = req.query.id;
+	if (req.user == null) {
+		logger.error("address-controller update, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	const id = req.user.userId;
 
 	if (id == null) {
 		logger.error("user-controller findById missing userId");
@@ -98,7 +103,12 @@ async function findById(req, res) {
  * @memberof User
  */
 async function getAddresses(req, res) {
-	const id = req.query.userId;
+	if (req.user == null) {
+		logger.error("address-controller update, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	const id = req.user.userId;
 
 	if (Utils.validateIntegerParam("user Id", id) == false) {
 		logger.error("address_request-controller accept address missing user Id or user id is not integer: " + userId);
@@ -122,7 +132,12 @@ async function getAddresses(req, res) {
  * @memberof User
  */
 async function getJobHistory(req, res) {
-	const id = req.query.id;
+	if (req.user == null) {
+		logger.error("address-controller update, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	const id = req.user.userId;
 
 	if (id == null) {
 		logger.error("user-controller findById missing userId");
@@ -156,7 +171,12 @@ async function getJobHistory(req, res) {
  * @memberof User
  */
 async function rate(req, res) {
-	const id = req.query.id;
+	if (req.user == null) {
+		logger.error("address-controller update, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	const id = req.user.userId;
 	if (id == null || isNaN(parseInt(id))) {
 		logger.error("user-controller rating missing userId or userId not integer " + id);
 		res.status(500).send({
@@ -207,7 +227,12 @@ async function rate(req, res) {
  * @memberof User
  */
 async function getRating(req, res) {
-	const id = req.query.id;
+	if (req.user == null) {
+		logger.error("user-controller getRating, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	const id = req.user.userId;
 	if (id == null || isNaN(parseInt(id))) {
 		logger.error("user-controller getRating missing userId or userId not integer " + id);
 		res.status(500).send({
@@ -240,64 +265,6 @@ async function getRating(req, res) {
 	}
 }
 
-async function register(req, res) {
-	const username = req.body.username;
-	const password = req.body.password;
-
-	console.log("body = " + JSON.stringify(req.body));
-	const hashedPassword = await Utils.hashPassword(password);
-	var creds = {
-		username: username,
-		password: hashedPassword,
-		type: req.body.type,
-	};
-	if (req.body.type == "user") {
-		creds.user_id = req.body.user_id;
-	} else {
-		creds.doer_id = req.body.doer_id;
-	}
-	console.log(JSON.stringify(creds));
-	try {
-		var data = await UserCredentials.create(creds);
-
-		console.log(JSON.stringify("new creds = " + data));
-		if (data == null) {
-			res.status(500).send({ message: "user-controller register user failed" });
-			return;
-		}
-		logger.error("user-controller register user success: " + JSON.stringify(data));
-		res.status(200).send(data);
-	} catch (err) {
-		logger.error("user-controller register user failed: " + " error: " + err.message);
-		res.status(500).send("failure to register user, error: " + err.message);
-		return;
-	}
-}
-
-async function login(req, res) {
-	const username = req.body.username;
-	const password = req.body.password;
-	console.log("body = " + JSON.stringify(req.body));
-	try {
-		var user = await UserCredentials.findOne({ where: { username: username } });
-		logger.info("user-controller login call, user credentials  " + JSON.stringify(user));
-		var match = await Utils.comparePassword(password, user.password);
-		if (match) {
-			const token = await jwt.sign({ userId: user.id, type: user.type, username: user.username }, "your-secret-key");
-			logger.info("User is successfully logged in: " + token);
-			res.status(200).json({token});
-			return;
-		} else {
-			res.status(401).send("Authentication failed");
-			return;
-		}
-	} catch (err) {
-		logger.error("user-controller login user failed: " + " error: " + err.message);
-		res.status(500).send("failure to login user, error: " + err.message);
-		return;
-	}
-}
-
 module.exports = {
 	create,
 	findById,
@@ -305,6 +272,4 @@ module.exports = {
 	getJobHistory,
 	rate,
 	getRating,
-	register,
-	login,
 };

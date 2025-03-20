@@ -171,11 +171,10 @@ async function getCategoryTree(req, res) {
  * @memberof Category
  */
 async function getTopLevelCategories(req, res) {
-
 	try {
 		const response_data = await Category.findAll({
 			where: {
-				parent_aliases: '',
+				parent_aliases: "",
 			},
 			attributes: {
 				exclude: ["updatedAt", "createdAt"],
@@ -196,5 +195,5 @@ module.exports = {
 	findOneByName,
 	findOneById,
 	getCategoryTree,
-	getTopLevelCategories
+	getTopLevelCategories,
 };
