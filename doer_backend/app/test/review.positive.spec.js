@@ -46,7 +46,7 @@ var test_uris = require("./data/test.uris.js");
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -55,7 +55,7 @@ async function getData(url) {
 
 describe("REVIEW API Tests -- POSITIVE TESTS", () => {
 	test("Create a new doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//   console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
@@ -65,7 +65,7 @@ describe("REVIEW API Tests -- POSITIVE TESTS", () => {
 	test("Create a new review", async () => {
 		var rev_data = global_modules["review.test.data"].reqCreateReview_1;
 		rev_data.doer_id = global_doerId;
-		const res = await request.post(test_uris.createDoerReviewUri).send(rev_data).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerReviewUri).send(rev_data).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("review_id");
 		global_reviewId = res.body.review_id;

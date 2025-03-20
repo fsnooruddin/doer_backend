@@ -49,7 +49,7 @@ var {
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -58,12 +58,12 @@ async function getData(url) {
 
 describe("BADGE API Tests -- NEGATIVE TESTS", function () {
 	test("Create a new BADGE, malformed body", async () => {
-		const res = await request.post(createBadgeUri).send(reqCreateBadge_Malformed).set("Accept", "application/json");
+		const res = await request.post(createBadgeUri).send(reqCreateBadge_Malformed).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(500);
 	});
 
 	test("Create a new BADGE association, malformed body", async () => {
-		const res = await request.post(createBadgeUri).send(reqCreateBadgeAssociation_Malformed).set("Accept", "application/json");
+		const res = await request.post(createBadgeUri).send(reqCreateBadgeAssociation_Malformed).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(500);
 	});
 

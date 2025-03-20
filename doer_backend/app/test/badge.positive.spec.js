@@ -17,7 +17,7 @@ var test_uris = require("./data/test.uris.js");
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -59,7 +59,7 @@ beforeAll(() => {
 
 describe("BADGE API Tests -- POSITIVE TESTS", () => {
 	test("Create a new user", async () => {
-		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 		global_userId = res.body.user_id;
@@ -67,14 +67,14 @@ describe("BADGE API Tests -- POSITIVE TESTS", () => {
 
 	test("Create a new BADGE", async () => {
 		reqCreateBadge_1.user_id = global_userId;
-		const res = await request.post(test_uris.createBadgeUri).send(reqCreateBadge_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createBadgeUri).send(reqCreateBadge_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
 		global_badgeId = res.body.badge_id;
 	});
 
 	test("Create a new BADGE", async () => {
-		const res = await request.post(test_uris.createBadgeUri).send(reqCreateBadge_2).set("Accept", "application/json");
+		const res = await request.post(test_uris.createBadgeUri).send(reqCreateBadge_2).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
 	});
@@ -90,7 +90,7 @@ describe("BADGE API Tests -- POSITIVE TESTS", () => {
 		reqCreateBadgeAssociation_1.user_id = global_userId;
 		reqCreateBadgeAssociation_1.badge_id = global_badgeId;
 		console.log(reqCreateBadgeAssociation_1);
-		const res = await request.post(test_uris.assignBadgeUserUri).send(reqCreateBadgeAssociation_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.assignBadgeUserUri).send(reqCreateBadgeAssociation_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("id");

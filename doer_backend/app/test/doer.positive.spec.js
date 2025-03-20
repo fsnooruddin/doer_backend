@@ -46,7 +46,7 @@ var test_uris = require("./data/test.uris.js");
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -55,14 +55,14 @@ async function getData(url) {
 
 describe("DOER API Tests -- POSITIVE TESTS", () => {
 	test("Create a new doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//   console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 	});
 
 	test("Create a new doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_2).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_2).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//   console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
@@ -70,14 +70,14 @@ describe("DOER API Tests -- POSITIVE TESTS", () => {
 	});
 
 	test("Create a new doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_3).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_3).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//   console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 	});
 
 	test("Create a new user", async () => {
-		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 		global_userId = res.body.user_id;
@@ -86,7 +86,7 @@ describe("DOER API Tests -- POSITIVE TESTS", () => {
 	test("Create a new Job Request", async () => {
 		var job_req = global_modules["job.test.data"].reqCreateJobRequest_3;
 		job_req.user_id = global_userId;
-		const res = await request.post(test_uris.createJobUri).send(job_req).set("Accept", "application/json");
+		const res = await request.post(test_uris.createJobUri).send(job_req).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("job_id");
 		global_jobId = res.body.job_id;
@@ -118,7 +118,7 @@ describe("DOER API Tests -- POSITIVE TESTS", () => {
 		const res = await request
 			.post(test_uris.acceptJobUri + "?doerId=" + global_doerId + "&jobId=" + global_jobId)
 			.send("")
-			.set("Accept", "application/json");
+			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 	});
 
@@ -133,7 +133,7 @@ describe("DOER API Tests -- POSITIVE TESTS", () => {
 		const res = await request
 			.post(test_uris.abandonJobUri + "?jobId=" + global_jobId + "&doerId=" + global_doerId)
 			.send()
-			.set("Accept", "application/json");
+			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 	});
 
@@ -155,13 +155,13 @@ describe("DOER API Tests -- POSITIVE TESTS", () => {
 		const res = await request
 			.post(test_uris.updateDoerAvailabilityUri + "?id=" + global_doerId)
 			.send(global_modules["availability_slots.test.data"].availability_slot_1)
-			.set("Accept", "application/json");
+			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.text)).toContain("doer_id");
 	});
 
 	test("Create a new BADGE", async () => {
-		const res = await request.post(test_uris.createBadgeUri).send(global_modules["badge.test.data"].reqCreateBadge_2).set("Accept", "application/json");
+		const res = await request.post(test_uris.createBadgeUri).send(global_modules["badge.test.data"].reqCreateBadge_2).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("badge_id");
 		global_badgeId = res.body.badge_id;
@@ -172,7 +172,7 @@ describe("DOER API Tests -- POSITIVE TESTS", () => {
 		badge_req.doer_id = global_doerId;
 		badge_req.badge_id = global_badgeId;
 		console.log(badge_req);
-		const res = await request.post(test_uris.assignBadgeDoerUri).send(badge_req).set("Accept", "application/json");
+		const res = await request.post(test_uris.assignBadgeDoerUri).send(badge_req).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("id");

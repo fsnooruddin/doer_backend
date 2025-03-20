@@ -9,7 +9,7 @@ var test_uris = require("./data/test.uris.js");
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -51,7 +51,7 @@ beforeAll(() => {
 
 describe("CERTIFICATE API Tests -- POSITIVE TESTS", () => {
 	test("Create a new doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 		global_doerId = res.body.doer_id;
@@ -60,7 +60,7 @@ describe("CERTIFICATE API Tests -- POSITIVE TESTS", () => {
 	test("Create a new CERTIFICATE", async () => {
 		var data = global_modules["certificate.test.data"].reqCreateCertificate_1;
 		data.doer_id = global_doerId;
-		const res = await request.post(test_uris.createCertificateUri).send(data).set("Accept", "application/json");
+		const res = await request.post(test_uris.createCertificateUri).send(data).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("certificate_id");
 		global_badgeId = res.body.certificate_id;
@@ -70,7 +70,7 @@ describe("CERTIFICATE API Tests -- POSITIVE TESTS", () => {
 		const res = await request
 			.post(test_uris.createCertificateUri)
 			.send(global_modules["certificate.test.data"].reqCreateCertificate_2)
-			.set("Accept", "application/json");
+			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("certificate_id");
 	});
@@ -87,7 +87,7 @@ describe("CERTIFICATE API Tests -- POSITIVE TESTS", () => {
 		data.doer_id = global_doerId;
 		data.certificate_id = global_badgeId;
 		console.log(data);
-		const res = await request.post(test_uris.assignCertificateDoerUri).send(data).set("Accept", "application/json");
+		const res = await request.post(test_uris.assignCertificateDoerUri).send(data).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("id");

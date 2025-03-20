@@ -8,7 +8,7 @@ const path = require("path");
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -52,7 +52,7 @@ beforeAll(() => {
 
 describe("USER API Tests -- NEGATIVE TESTS", () => {
 	test("Create a new user", async () => {
-		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 		global_userId = res.body.user_id;

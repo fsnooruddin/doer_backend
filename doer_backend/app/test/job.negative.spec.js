@@ -43,7 +43,7 @@ var test_uris = require("./data/test.uris.js");
 
 async function postData(url, data) {
 	try {
-		const response = await request.post(url).send(data).set("Accept", "application/json");
+		const response = await request.post(url).send(data).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -52,7 +52,7 @@ async function postData(url, data) {
 
 describe("JOB API Tests -- NEGATIVE", () => {
 	test("Create a new Doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 		global_doerId = res.body.doer_id;

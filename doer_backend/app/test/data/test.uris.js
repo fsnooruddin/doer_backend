@@ -58,8 +58,8 @@ const approveInvoiceUri = "/invoice/approve";
 const rejectInvoiceUri = "/invoice/reject";
 const getInvoiceUri = "/invoice/get";
 
-const registerUserUri = "/user/register";
-const loginUserUri = "/user/login";
+const registerUserUri = "/auth/register";
+const loginUserUri = "/auth/login";
 
 module.exports = {
 	getCategoryByIdRequestUri,

@@ -39,7 +39,7 @@ var {
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -53,7 +53,7 @@ describe("OTP API Tests -- NEGATIVE TESTS", () => {
 		let validateOTPRequest = reqCreateOTPWrongNumber_1;
 		validateOTPRequest.otp = globalOTP;
 		console.log(validateOTPRequest);
-		const res = await request.post(validateOTPUri).send(reqCreateOTP_1).set("Accept", "application/json");
+		const res = await request.post(validateOTPUri).send(reqCreateOTP_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		console.log(JSON.stringify(res));
 		expect(res.status).toBe(500);
 

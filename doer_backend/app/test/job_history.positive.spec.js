@@ -43,7 +43,7 @@ var test_uris = require("./data/test.uris.js");
 
 async function getData(url) {
 	try {
-		const response = await request.get(url).set("Accept", "application/json");
+		const response = await request.get(url).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -52,13 +52,13 @@ async function getData(url) {
 
 describe("SETUP API Tests -- POSITIVE TESTS", () => {
 	test("Create a new Doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
 	});
 
 	test("Create a new user", async () => {
-		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
@@ -67,13 +67,13 @@ describe("SETUP API Tests -- POSITIVE TESTS", () => {
 		const res = await request
 			.post(test_uris.createAddressUri)
 			.send(global_modules["address.test.data"].reqCreateAddress_3)
-			.set("Accept", "application/json");
+			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
 
 	test("Create a new Job Request", async () => {
-		const res = await request.post(test_uris.createJobUri).send(global_modules["job.test.data"].reqCreateJobRequest_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.createJobUri).send(global_modules["job.test.data"].reqCreateJobRequest_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("job_id");
 	});
@@ -82,7 +82,7 @@ describe("SETUP API Tests -- POSITIVE TESTS", () => {
 		const res = await request
 			.post(test_uris.acceptJobUri + "?doerId=1&jobId=1")
 			.send("")
-			.set("Accept", "application/json");
+			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 	});
 });

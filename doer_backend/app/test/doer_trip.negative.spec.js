@@ -40,7 +40,7 @@ var {
 
 async function postData(url, data) {
 	try {
-		const response = await request.post(url).send(data).set("Accept", "application/json");
+		const response = await request.post(url).send(data).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -55,7 +55,7 @@ async function createDoerTripSuccess() {
 
 describe("DOER TRIP API -- NEGATIVE TESTS", function () {
 	it("send malformed location update", async () => {
-		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_Malformed).set("Accept", "application/json");
+		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_Malformed).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//console.log(res.body);
 		expect(res.status).toBe(500);
 		expect(JSON.stringify(res.body)).toContain("message");

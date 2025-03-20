@@ -58,7 +58,7 @@ var {
 
 async function postData(url, data) {
 	try {
-		const response = await request.post(url).send(data).set("Accept", "application/json");
+		const response = await request.post(url).send(data).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		return response;
 	} catch (error) {
 		throw error;
@@ -102,14 +102,14 @@ beforeAll(() => {
 
 describe("DOER TRIP API Tests -- POSITIVE TESTS", () => {
 	test("Create a new user", async () => {
-		const res = await request.post(createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json");
+		const res = await request.post(createUserUri).send(global_modules["user.test.data"].reqCreateUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 		global_userId = res.body.user_id;
 	});
 
 	test("Create a new doer", async () => {
-		const res = await request.post(createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json");
+		const res = await request.post(createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//   console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_id");
@@ -117,7 +117,7 @@ describe("DOER TRIP API Tests -- POSITIVE TESTS", () => {
 	});
 
 	test("Create a new job", async () => {
-		const res = await request.post(createJobUri).send(global_modules["job.test.data"].reqCreateJobRequest_1).set("Accept", "application/json");
+		const res = await request.post(createJobUri).send(global_modules["job.test.data"].reqCreateJobRequest_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("job_id");
 		global_jobId = res.body.job_id;
@@ -126,7 +126,7 @@ describe("DOER TRIP API Tests -- POSITIVE TESTS", () => {
 	it("should create a new doer trip", async () => {
 		createDoerTrip_1.doer_id = global_doerId;
 		createDoerTrip_1.job_id = global_jobId;
-		const res = await request.post(createDoerTripUri).send(createDoerTrip_1).set("Accept", "application/json");
+		const res = await request.post(createDoerTripUri).send(createDoerTrip_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		// console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_trip_id");
@@ -138,7 +138,7 @@ describe("DOER TRIP API Tests -- POSITIVE TESTS", () => {
 		console.log(JSON.stringify(updateDoerTrip_1));
 		updateDoerTrip_1.id = global_tripId;
 		console.log(JSON.stringify(updateDoerTrip_1));
-		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_1).set("Accept", "application/json");
+		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_trip_id");
@@ -148,7 +148,7 @@ describe("DOER TRIP API Tests -- POSITIVE TESTS", () => {
 		console.log(JSON.stringify(updateDoerTrip_2));
 		updateDoerTrip_2.id = global_tripId;
 		console.log(JSON.stringify(updateDoerTrip_2));
-		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_2).set("Accept", "application/json");
+		const res = await request.post(updateDoerTripUri).send(updateDoerTrip_2).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_trip_id");
@@ -158,7 +158,7 @@ describe("DOER TRIP API Tests -- POSITIVE TESTS", () => {
 		const res = await request
 			.get(getDoerTripByJobIdUri + "?jobId=" + global_jobId)
 			.send()
-			.set("Accept", "application/json");
+			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		//	console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("doer_trip_id");
