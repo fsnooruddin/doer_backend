@@ -1,4 +1,5 @@
 const winston = require("winston");
+const appConfig = require("../config/doer_app.config.js");
 
 const myCustomLevels = {
 	logLevels: {
@@ -28,7 +29,7 @@ const myFormat = printf(({ level, message, timestamp }) => {
 
 const logger = winston.createLogger({
 	levels: myCustomLevels.logLevels,
-	level: process.env.LOG_LEVEL || "trace",
+	level: process.env.LOG_LEVEL || appConfig.LOG_LEVEL,
 	format: combine(timestamp({ format: "YYYY-MM-DD hh:mm:ss.SSS A" }), myFormat),
 	transports: [new winston.transports.Console({ eol: "\n" }), new winston.transports.File({ filename: "/var/log/doer/doer.log" })],
 });

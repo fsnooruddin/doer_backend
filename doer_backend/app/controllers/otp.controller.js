@@ -9,6 +9,7 @@ const OTP = db.otps;
 const Op = db.Sequelize.Op;
 const logger = require("../utils/Logger.js");
 const otpGenerator = require("otp-generator");
+const appConfig = require("../config/doer_app.config.js");
 
 /**
  * Create a OTP.
@@ -97,7 +98,7 @@ async function validate(req, res) {
 
 			let diff = new Date() - new Date(data.createdAt);
 
-			if (diff > 300) {
+			if (diff > appConfig.API_STATS_FILE) {
 				logger.info("OTP-controller OTP expired, elapsed = " + diff);
 				data.destroy();
 				res.status(200).send("message: OTP expired");

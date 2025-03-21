@@ -1,8 +1,8 @@
-const logger = require("./Logger.js");
 const fs = require("fs");
-const FILE_PATH = "stats.json";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const logger = require("./Logger.js");
+const appConfig = require("../config/doer_app.config.js");
 
 module.exports = {
 	escapeJSONString,
@@ -27,7 +27,7 @@ async function VerifyAuth(req, res, next) {
 	const token = req.header("Authorization");
 	if (!token) return res.status(401).json({ error: "Access denied" });
 	try {
-		const decoded = await jwt.verify(token, "your-secret-key");
+		const decoded = await jwt.verify(token, appConfig.AUTH_TOKEN_SECRET);
 		logger.trace("decoded token = " + JSON.stringify(decoded));
 		req.user = decoded;
 		logger.trace("user in verify auth is: " + JSON.stringify(req.user));
@@ -221,7 +221,7 @@ function validateIntegerParam(paramName, paramValue) {
 function readStats() {
 	let result = {};
 	try {
-		result = JSON.parse(fs.readFileSync(FILE_PATH));
+		result = JSON.parse(fs.readFileSync(appConfig.API_STATS_FILE));
 	} catch (err) {
 		console.error(err);
 	}
@@ -231,7 +231,7 @@ function readStats() {
 // dump json object to file
 function dumpStats(stats) {
 	try {
-		fs.writeFileSync(FILE_PATH, JSON.stringify(stats), { flag: "w+" });
+		fs.writeFileSync(appConfig.API_STATS_FILE, JSON.stringify(stats), { flag: "w+" });
 	} catch (err) {
 		console.error(err);
 	}

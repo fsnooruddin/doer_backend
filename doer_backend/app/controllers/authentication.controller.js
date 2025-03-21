@@ -15,6 +15,7 @@ const Rating = db.user_ratings;
 const UserCredentials = db.user_credentials;
 const DoerCredentials = db.doer_credentials;
 const logger = require("../utils/Logger.js");
+const appConfig = require("../config/doer_app.config.js");
 
 async function register(req, res) {
 	const username = req.body.username;
@@ -63,23 +64,23 @@ async function login(req, res) {
 			user = await UserCredentials.findOne({ where: { username: username } });
 		}
 		logger.info("auth-controller login call, user credentials " + JSON.stringify(user));
-		if(user == null) {
-		logger.error("auth-controller login user failed, find creds failed...");
-        		res.status(401).send("failure to login user, couldn't find user, call register first.");
-        		return;
+		if (user == null) {
+			logger.error("auth-controller login user failed, find creds failed...");
+			res.status(401).send("failure to login user, couldn't find user, call register first.");
+			return;
 		}
 		var match = await Utils.comparePassword(password, user.password);
 		if (match) {
+			var nObj = {};
 			if (req.body.type === "doer") {
-				const token = await jwt.sign({ doerId: user.id, type: user.type, username: user.username }, "your-secret-key");
-				logger.info("User is successfully logged in: " + token);
-				res.status(200).json({ token });
-				return;
+				nObj = { doerId: user.id, type: user.type, username: user.username };
 			} else {
-				const token = await jwt.sign({ userId: user.id, type: user.type, username: user.username }, "your-secret-key");
-				logger.info("User is successfully logged in: " + token);
-				res.status(200).json({ token });
+				nObj = { userId: user.id, type: user.type, username: user.username };
 			}
+			const token = await jwt.sign(nObj, appConfig.AUTH_TOKEN_SECRET);
+			logger.info("User is successfully logged in: " + token);
+			res.status(200).json({ token });
+			return;
 		} else {
 			logger.info("User login failed ");
 			res.status(401).send("Authentication failed");
