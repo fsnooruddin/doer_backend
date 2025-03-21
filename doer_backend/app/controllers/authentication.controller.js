@@ -62,7 +62,12 @@ async function login(req, res) {
 		} else {
 			user = await UserCredentials.findOne({ where: { username: username } });
 		}
-		logger.info("auth-controller login call, user credentials  " + JSON.stringify(user));
+		logger.info("auth-controller login call, user credentials " + JSON.stringify(user));
+		if(user == null) {
+		logger.error("auth-controller login user failed, find creds failed...");
+        		res.status(401).send("failure to login user, couldn't find user, call register first.");
+        		return;
+		}
 		var match = await Utils.comparePassword(password, user.password);
 		if (match) {
 			if (req.body.type === "doer") {
