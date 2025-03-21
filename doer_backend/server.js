@@ -10,11 +10,14 @@ const i18nextMiddleware = require("i18next-http-middleware");
 const ku = require("./app/utils/KafkaUtil.js");
 const logger = require("./app/utils/Logger.js");
 const Utils = require("./app/utils/Utils.js");
-const app = express();
+const appConfig = require("./app/config/doer_app.config.js");
+
 const db = require("./app/models");
 
 let forceFlag = false;
 let kafkaFlag = false;
+
+const app = express();
 
 process_args();
 
@@ -26,32 +29,20 @@ if (kafkaFlag) {
 
 require("./app/routes/doer.routes")(app);
 
-// Route Example
-function sessionChecker(req, res, next) {
-	console.log(`Session Checker: ${req.session.id}`.green);
-	console.log(req.session);
-	if (req.session.profile) {
-		console.log(`Found User Session`.green);
-		next();
-	} else {
-		console.log(`No User Session Found`.red);
-		res.redirect("/welcomeloggedout");
-	}
-}
-
-app.get("/", Utils.VerifyAuth, (req, res) => {
-    console.log(req.user);
-	res.status(200).json({ message: "Protected route accessed" });
-});
-
 app.get("/stats/", (req, res) => {
 	res.json(Utils.readStats());
 });
 
+app.get("/", (req, res) => {
+    var str = req.t("welcome to our app!", { lng: "de" });
+	res.json("<html><bold>" + str + "</html></bold>");
+});
+
+
+
 // set port, listen for requests
-const PORT = 8080;
-app.listen(PORT, () => {
-	logger.info("Server is running on port: " + PORT);
+app.listen(appConfig.SERVER_PORT, () => {
+	logger.info("Server is running on port: " + appConfig.SERVER_PORT);
 });
 
 module.exports = app;
@@ -80,7 +71,8 @@ function init_db() {
 	db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
 	db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
 	db.user_credentials = require("./app/models/user_credential.model.js")(db.sequelize, db.Sequelize);
-    db.doer_certificate_associations = require("./app/models/doer_certificate_association.model.js")(db.sequelize, db.Sequelize);
+	db.doer_credentials = require("./app/models/doer_credential.model.js")(db.sequelize, db.Sequelize);
+	db.doer_certificate_associations = require("./app/models/doer_certificate_association.model.js")(db.sequelize, db.Sequelize);
 	db.doer_trips.hasMany(db.doer_trip_location_updates, { foreignKey: "doer_trip_id" });
 	db.doer_trip_location_updates.belongsTo(db.doer_trips, { foreignKey: "doer_trip_id" });
 
@@ -109,7 +101,7 @@ function init_db() {
 	db.badges.belongsToMany(db.doers, { through: db.doer_badge_associations, foreignKey: "badge_id" });
 	db.doers.belongsToMany(db.badges, { through: db.doer_badge_associations, foreignKey: "doer_id" });
 
-    db.certificates.belongsToMany(db.doers, { through: db.doer_certificate_associations, foreignKey: "certificate_id" });
+	db.certificates.belongsToMany(db.doers, { through: db.doer_certificate_associations, foreignKey: "certificate_id" });
 	db.doers.belongsToMany(db.certificates, { through: db.doer_certificate_associations, foreignKey: "doer_id" });
 
 	db.jobs.hasMany(db.job_costs, { foreignKey: "job_id", as: "costs" });
@@ -119,12 +111,12 @@ function init_db() {
 	db.sequelize
 		.sync({ force: forceFlag })
 		.then(() => {
-			logger.info("Synced db.");
+			logger.info("Created DB Schema, ready...");
 		})
 		.catch((err) => {
-			logger.fatal("Failed to sync db: " + err.message);
-			logger.fatal("Failed to sync db: " + err.stack.toString());
-			return;
+			logger.fatal("Failed to create schema db, error: " + err.message);
+			logger.fatal("Failed to create schema db, stack trace: " + err.stack.toString());
+			process.exit(1);
 		});
 }
 
@@ -186,8 +178,7 @@ function init_app() {
 					return logger.error("Couldn't initialize i18next, error is: " + err);
 				}
 				logger.info("i18next is ready...");
-				logger.info(t("welcome"));
-				logger.info(t("welcome", { lng: "de" }));
+				logger.info(t("welcome to our app!", { lng: "de" }));
 			}
 		);
 
@@ -200,13 +191,10 @@ function init_app() {
 			const stats = Utils.readStats();
 			const event = `${req.method} ${Utils.getRoute(req)} ${res.statusCode}`;
 			stats[event] = stats[event] ? stats[event] + 1 : 1;
-			stats['total'] = stats['total'] ? stats['total'] + 1 : 1;
+			stats["total"] = stats["total"] ? stats["total"] + 1 : 1;
 			Utils.dumpStats(stats);
-			 console.log("count was " + stats['total']);
-			if(stats['total'] % 100 === 0) {
-			    console.log("count was " + stats['total']);
-			    logger.warn("Memory usage is: " + JSON.stringify(process.memoryUsage()));
-
+			if (stats["total"] % 1000 === 0) {
+				logger.warn("Memory usage is: " + JSON.stringify(process.memoryUsage()));
 			}
 		});
 		next();
