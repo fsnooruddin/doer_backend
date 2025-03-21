@@ -54,13 +54,13 @@ let globalAddressId = "";
 
 describe("ADDRESS API Tests -- NEGATIVE TESTS", function () {
 	test("Create Address, missing req body", async () => {
-		const res = await request.post(test_uris.createAddressUri);
+		const res = await request.post(test_uris.createAddressUri).set("Authorization", USER_AUTH_TOKEN);
 
 		expect(res.status).toBe(400);
 	});
 
 	test("Get Address by ID,Address ID not INTEGER", async () => {
-		const res = await request.get(test_uris.getAddressByIdUri + "?id=shshhs");
+		const res = await request.get(test_uris.getAddressByIdUri + "?id=shshhs").set("Authorization", USER_AUTH_TOKEN);
 		//  console.log(res.body);
 		expect(res.status).toBe(400);
 	});

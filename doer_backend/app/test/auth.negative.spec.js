@@ -46,26 +46,26 @@ var test_uris = require("./data/test.uris.js");
 
 describe("AUTH API Tests -- POSITIVE TESTS", () => {
 	test("Register user", async () => {
-		const res = await request.post(test_uris.registerUserUri).send(global_modules["auth.test.data"].reqRegisterUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.registerUserUri).send(global_modules["auth.test.data"].reqRegisterUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("user_id");
 	});
 
 	test("Login user", async () => {
-		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginUser_1).set("Accept", "application/json");
+		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
     		expect(res.status).toBe(200);
     		console.log(res.body);
     		expect(JSON.stringify(res.body)).toContain("token");
 	});
 
 		test("Register doer", async () => {
-    		const res = await request.post(test_uris.registerUserUri).send(global_modules["auth.test.data"].reqRegisterDoer_1).set("Accept", "application/json");
+    		const res = await request.post(test_uris.registerUserUri).send(global_modules["auth.test.data"].reqRegisterDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
     		expect(res.status).toBe(200);
     		expect(JSON.stringify(res.body)).toContain("doer_id");
     	});
 
     	test("Login doer", async () => {
-    		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginDoer_1).set("Accept", "application/json");
+    		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
         		expect(res.status).toBe(200);
         		console.log(res.body);
         		expect(JSON.stringify(res.body)).toContain("token");

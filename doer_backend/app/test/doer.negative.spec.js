@@ -60,33 +60,33 @@ async function getData(url) {
 
 describe("DOER API Tests -- NEGATIVE TESTS", function () {
 	test("Get Doer by ID, missing ID", async () => {
-		const res = await request.get(getDoerByIdRequestUri);
+		const res = await request.get(getDoerByIdRequestUri).set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(500);
 	});
 
 	test("Search Doers by Service, missing service", async () => {
-		const res = await request.get(getDoerByServicesRequestUri);
+		const res = await request.get(getDoerByServicesRequestUri).set("Authorization", USER_AUTH_TOKEN);
 		//console.log(res.body);
 		expect(res.status).toBe(500);
 		expect(JSON.stringify(res.body)).toContain("message");
 	});
 
 	test("Search Doers by Service, service not string", async () => {
-		const res = await request.get(getDoerByServicesRequestUri + "?service=827727");
+		const res = await request.get(getDoerByServicesRequestUri + "?service=827727").set("Authorization", USER_AUTH_TOKEN);
 		//console.log(res.body);
 		expect(res.status).toBe(500);
 		expect(JSON.stringify(res.body)).toContain("message");
 	});
 
 	test("Get Doer by ID, missing Doer ID", async () => {
-		const res = await request.get(getDoerByIdRequestUri);
+		const res = await request.get(getDoerByIdRequestUri).set("Authorization", USER_AUTH_TOKEN);
 		//  console.log(res.body);
 		expect(res.status).toBe(500);
 		expect(JSON.stringify(res.body)).toContain("message");
 	});
 
 	test("Get Doer by ID, Doer ID not STRING", async () => {
-		const res = await request.get(getDoerByIdRequestUri + "?id=shshhs");
+		const res = await request.get(getDoerByIdRequestUri + "?id=shshhs").set("Authorization", USER_AUTH_TOKEN);
 		//  console.log(res.body);
 		expect(res.status).toBe(500);
 		expect(JSON.stringify(res.body)).toContain("message");

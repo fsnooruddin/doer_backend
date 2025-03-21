@@ -82,7 +82,7 @@ describe("SETUP API Tests -- NEGATIVE TESTS", () => {
 		const res = await request
 			.post(test_uris.acceptJobUri + "?doerId=1&jobId=1")
 			.send("")
-			.set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+			.set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 	});
 });
