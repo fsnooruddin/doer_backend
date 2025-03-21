@@ -5,8 +5,17 @@ const child_categories_data = require("./categories.test.data.js");
 const top_level_categories_data = require("./categories.top-level.test.data.js");
 
 async function rget(url) {
+const DOER_AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2VySWQiOjEsInR5cGUiOiJkb2VyIiwidXNlcm5hbWUiOiJCaWxseUhpbGwiLCJpYXQiOjE3NDI1MDQ4NTB9.TNzPkd-W55NfXQXAkrt9QzzPPgKjaZesmRHx9mbrZl0";
+
+   const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': DOER_AUTH_TOKEN
+      }
+   };
+
 	try {
-		const response = await axios.get(url);
+		const response = await axios.get(url, config);
 		return response.data;
 	} catch (error) {
 		console.error("GET from : " + url + " error is: " + error);
@@ -15,8 +24,17 @@ async function rget(url) {
 }
 
 async function rpost(url, dataString) {
+   const DOER_AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2VySWQiOjEsInR5cGUiOiJkb2VyIiwidXNlcm5hbWUiOiJCaWxseUhpbGwiLCJpYXQiOjE3NDI1MDQ4NTB9.TNzPkd-W55NfXQXAkrt9QzzPPgKjaZesmRHx9mbrZl0";
+
+   const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': DOER_AUTH_TOKEN
+      }
+   };
+
 	try {
-		const response = await axios.post(url, dataString);
+		const response = await axios.post(url, dataString, config);
 		return response.data;
 	} catch (error) {
 		console.error("POST to : " + url + " error is: " + error);

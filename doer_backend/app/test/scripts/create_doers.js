@@ -3,8 +3,17 @@
 const fs = require("fs");
 const axios = require("axios");
 
+const DOER_AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2VySWQiOjEsInR5cGUiOiJkb2VyIiwidXNlcm5hbWUiOiJCaWxseUhpbGwiLCJpYXQiOjE3NDI1MDQ4NTB9.TNzPkd-W55NfXQXAkrt9QzzPPgKjaZesmRHx9mbrZl0";
+
 async function rpost(url, dataString) {
-	const response = await axios.post("http://127.0.0.1:8080/api/doer/doer/create", dataString);
+   const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': DOER_AUTH_TOKEN
+      }
+   };
+
+	const response = await axios.post("http://127.0.0.1:8080/api/doer/doer/create", dataString, config);
 
 	return response.data;
 }
