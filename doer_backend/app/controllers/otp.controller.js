@@ -79,48 +79,46 @@ async function validate(req, res) {
 
 		return;
 	}
-
-	var data = await OTP.findOne({
-		where: {
-			phone_number: phone_number,
-		},
-		attributes: {
-			exclude: ["updatedAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("OTP-controller findById -- OTP phone_number is " + phone_number + " returning " + JSON.stringify(data));
-
-			if (data == null) {
-				res.status(500).send("message: OTP not found for phone_number is " + phone_number);
-				return;
-			}
-
-			let diff = new Date() - new Date(data.createdAt);
-
-			if (diff > appConfig.API_STATS_FILE) {
-				logger.info("OTP-controller OTP expired, elapsed = " + diff);
-				data.destroy();
-				res.status(200).send("message: OTP expired");
-				return;
-			}
-			if (data.otp === otp) {
-				logger.info("OTP-controller OTP matches");
-				data.destroy();
-				res.status(200).send("message: OTP Matches");
-				return;
-			} else {
-				logger.info("OTP-controller OTP NO matches");
-				res.status(200).send("message: OTP Miss Match");
-				return;
-			}
-		})
-		.catch((err) => {
-			logger.error("Error validating OTP with OTP phone_number=" + phone_number + " error: " + err.message);
-			res.status(500).send({
-				OTP: "message: Error validating OTP with phone_number=" + phone_number + " error: " + err.message,
-			});
+	try {
+		const data = await OTP.findOne({
+			where: {phone_number: phone_number,},
+			attributes: {exclude: ["updatedAt"],},
 		});
+
+		logger.info("OTP-controller findById -- OTP phone_number is " + phone_number + " returning " + JSON.stringify(data));
+
+		if (data == null) {
+			res.status(500).send("message: OTP not found for phone_number is " + phone_number);
+			return;
+		}
+
+		let diff = new Date() - new Date(data.createdAt);
+
+		if (diff > appConfig.API_STATS_FILE) {
+			logger.info("OTP-controller OTP expired, elapsed = " + diff);
+			data.destroy();
+			res.status(200).send("message: OTP expired");
+			return;
+		}
+
+		if (data.otp === otp) {
+			logger.info("OTP-controller OTP matches");
+			data.destroy(); //prevent resue
+			res.status(200).send("message: OTP Matches");
+			return;
+		} else {
+			logger.info("OTP-controller OTP NO matches");
+			res.status(200).send("message: OTP Miss Match");
+			return;
+		}
+
+	} catch (err) {
+		logger.error("Error validating OTP with OTP phone_number=" + phone_number + " error: " + err.message);
+		res.status(500).send({
+			OTP: "message: Error validating OTP with phone_number=" + phone_number + " error: " + err.message,
+		});
+		return;
+	}
 }
 
 module.exports = {

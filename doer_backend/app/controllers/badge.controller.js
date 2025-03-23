@@ -62,37 +62,37 @@ async function create(req, res) {
 async function get(req, res) {
 	const id = req.query.id;
 
-	if (id == null) {
-		logger.error("Error retrieving Badges by ID, Badge Id is missing");
-		res.status(400).send("Error retrieving Badges by id, Badge Id is missing");
+	if (utils.validateIntegerParam("badge ID", id) == false) {
+		logger.error("Error retrieving Badges by ID, Badge Id is missing or not integer.");
+		res.status(400).send("Error retrieving Badges by id, Badge Id is missing or not integer.");
 		return;
 	}
 
-	Badge.findOne({
-		where: {
-			badge_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("Badge-controller findById -- Badge id is " + id + " returning " + JSON.stringify(data));
-
-			if (data == null) {
-				res.status(500).send("message: Badge not found for id is " + id);
-				return;
-			}
-
-			res.status(200).send(data);
-			return;
-		})
-		.catch((err) => {
-			logger.error("Error validating Badge with Badge id=" + id + " error: " + err.message);
-			res.status(500).send({
-				Badge: "message: Error validating Badge with id=" + id + " error: " + err.message,
-			});
+	try {
+		const data = await Badge.findOne({
+			where: {
+				badge_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt"],
+			},
 		});
+
+		logger.info("Badge-controller findById -- Badge id is " + id + " returning " + JSON.stringify(data));
+
+		if (data == null) {
+			res.status(400).send("message: Badge not found for id is " + id);
+			return;
+		}
+
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error validating Badge with Badge id=" + id + " error: " + err.message);
+		res.status(500).send({
+			Badge: "message: Error validating Badge with id=" + id + " error: " + err.message,
+		});
+	}
 }
 
 /**
@@ -105,15 +105,22 @@ async function get(req, res) {
 async function assignBadgeToUser(req, res) {
 	// Save Badge in the database
 	logger.info("badge-controller assignBadgeToUser, body = " + JSON.stringify(req.body));
-	UserBadgeAssociations.create(req.body)
-		.then((data) => {
-			logger.info("Success associating badge with user = " + JSON.stringify(req.body));
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error associating badge with user =  =" + JSON.stringify(req.body) + " error: " + err.message);
-			res.status(500).send("Some error occurred while associating badge with user = : " + err.message);
-		});
+
+	try {
+		const data = await UserBadgeAssociations.create(req.body);
+
+		if (data == null) {
+			logger.error("failed to assign badge to user, create return null.");
+			res.status(400).send("assign badge to user failed.");
+			return;
+		}
+
+		logger.info("Success associating badge with user = " + JSON.stringify(req.body));
+		res.status(200).send(data);
+	} catch (err) {
+		logger.error("Error associating badge with user = " + JSON.stringify(req.body) + " error: " + err.message);
+		res.status(500).send("Error occurred while associating badge with user = : " + err.message);
+	}
 }
 
 /**
@@ -125,16 +132,21 @@ async function assignBadgeToUser(req, res) {
  */
 async function assignBadgeToDoer(req, res) {
 	logger.info("badge-controller assignBadgeToDoer, body = " + JSON.stringify(req.body));
-	// Save Badge in the database
-	DoerBadgeAssociations.create(req.body)
-		.then((data) => {
-			logger.info("Success associating badge with doer = " + JSON.stringify(req.body));
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error associating badge with doer =  =" + JSON.stringify(req.body) + " error: " + err.message);
-			res.status(500).send("Some error occurred while associating badge with doer = : " + err.message);
-		});
+	try {
+		const data = await DoerBadgeAssociations.create(req.body);
+		if (data == null) {
+			logger.error("failed to assign badge to doer, create return null.");
+			res.status(400).send("assign badge to doer failed.");
+			return;
+		}
+		logger.info("Success associating badge with doer = " + JSON.stringify(req.body));
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error associating badge with doer =  =" + JSON.stringify(req.body) + " error: " + err.message);
+		res.status(500).send("Some error occurred while associating badge with doer = : " + err.message);
+		return;
+	}
 }
 
 /**
@@ -147,15 +159,21 @@ async function assignBadgeToDoer(req, res) {
 async function removeBadgeFromDoer(req, res) {
 	logger.info("badge-controller removeBadgeFromDoer, body = " + JSON.stringify(req.body));
 	// Save Badge in the database
-	DoerBadgeAssociations.delete(req.body)
-		.then((data) => {
-			logger.info("Success removing badge from doer = " + JSON.stringify(req.body));
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error removing badge from doer = " + JSON.stringify(req.body) + " error: " + err.message);
-			res.status(500).send("Some error occurred while removing badge from doer = : " + err.message);
-		});
+	try {
+		const data = DoerBadgeAssociations.delete(req.body);
+		if (data == null) {
+			logger.error("failed to remove badge from doer, create return null.");
+			res.status(400).send("remove badge from doer failed.");
+			return;
+		}
+		logger.info("Success removing badge from doer = " + JSON.stringify(req.body));
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error removing badge from doer = " + JSON.stringify(req.body) + " error: " + err.message);
+		res.status(500).send("Some error occurred while removing badge from doer = : " + err.message);
+		return;
+	}
 }
 
 /**
@@ -168,15 +186,23 @@ async function removeBadgeFromDoer(req, res) {
 async function removeBadgeFromUser(req, res) {
 	logger.info("badge-controller removeBadgeFromUser, body = " + JSON.stringify(req.body));
 	// Save Badge in the database
-	UserBadgeAssociations.delete(req.body)
-		.then((data) => {
-			logger.info("Success removing badge from User = " + JSON.stringify(req.body));
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error removing badge from User = " + JSON.stringify(req.body) + " error: " + err.message);
-			res.status(500).send("Some error occurred while removing badge from User = : " + err.message);
-		});
+
+	try {
+		const data = UserBadgeAssociations.delete(req.body);
+		if (data == null) {
+			logger.error("failed to remove badge from user, create return null.");
+			res.status(400).send("remove badge from user failed.");
+			return;
+		}
+
+		logger.info("Success removing badge from User = " + JSON.stringify(req.body));
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error removing badge from User = " + JSON.stringify(req.body) + " error: " + err.message);
+		res.status(500).send("Some error occurred while removing badge from User = : " + err.message);
+		return;
+	}
 }
 
 module.exports = {

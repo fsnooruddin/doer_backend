@@ -35,7 +35,7 @@ async function create(req, res) {
 	try {
 		var new_message = await Message.create(data_obj);
 
-		logger.info("Success creating message");
+		logger.info("Success creating message: " + JSON.stringify(new_message));
 		res.status(200).send(new_message);
 		return;
 	} catch (err) {
@@ -53,7 +53,7 @@ async function create(req, res) {
  *
  * @memberof Message
  */
-function findById(req, res) {
+async function findById(req, res) {
 	const id = req.query.id;
 	if (Utils.validateIntegerParam("Message Id", id) == false) {
 		logger.error("Error retrieving messages by ID, message Id is missing");
@@ -65,24 +65,30 @@ function findById(req, res) {
 	}
 	logger.info("message-controller findById message id = " + id);
 
-	Message.findOne({
-		where: {
-			message_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("message-controller findById -- message id is " + id + " returning " + JSON.stringify(data));
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error retrieving message with message id=" + id + " error: " + err.message);
-			res.status(500).send({
-				message: "Error retrieving message with id=" + id + " error: " + err.message,
-			});
+	try {
+		const data = await Message.findOne({
+			where: { message_id: id },
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
 		});
+
+		if (data == null) {
+			logger.warn("data from findById message is = null , message id = " + id);
+			res.status(400).send("Couldn't find message");
+			return;
+		}
+
+		logger.info("message-controller findById -- message id is " + id + " returning " + JSON.stringify(data));
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error retrieving message with message id=" + id + " error: " + err.message);
+		res.status(500).send({
+			message: "Error retrieving message with id=" + id + " error: " + err.message,
+		});
+		return;
+	}
 }
 
 /**
@@ -90,7 +96,7 @@ function findById(req, res) {
  * @param {number} jobId - Id of Job for which to get messages
  * @memberof Message
  */
-function findByJobId(req, res) {
+async function findByJobId(req, res) {
 	const id = req.query.jobId;
 
 	if (Utils.validateIntegerParam("Job Id", id) == false) {
@@ -103,26 +109,30 @@ function findByJobId(req, res) {
 	}
 	logger.info("message-controller findByJobId job id = " + id);
 
-	Message.findAll({
-		where: {
-			job_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("message-controller findByJobId -- job id is " + id + " returning " + JSON.stringify(data));
-			res.status(200).send(data);
-			return;
-		})
-		.catch((err) => {
-			logger.error("Error retrieving message with job id=" + id + " error: " + err.message);
-			res.status(500).send({
-				message: "Error retrieving message with job id=" + id + " error: " + err.message,
-			});
-			return;
+	try {
+		const data = await Message.findAll({
+			where: { job_id: id },
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
 		});
+
+		if (data == null) {
+			logger.warn("data from find message for job is = null , job id = " + id);
+			res.status(400).send("Couldn't find messages for job");
+			return;
+		}
+
+		logger.info("message-controller findByJobId -- job id is " + id + " returning " + JSON.stringify(data));
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error retrieving message with job id=" + id + " error: " + err.message);
+		res.status(500).send({
+			message: "Error retrieving message with job id=" + id + " error: " + err.message,
+		});
+		return;
+	}
 }
 
 module.exports = {

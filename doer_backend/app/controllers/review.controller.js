@@ -26,8 +26,7 @@ const logger = require("../utils/Logger.js");
  * @memberof Review
  */
 async function create(req, res) {
-	logger.info("req body in create review: ");
-	logger.info(req.body);
+	logger.info("req body in create review: " + JSON.stringify(req.body));
 
 	const data_obj = JSON.parse(utils.escapeJSONString(JSON.stringify(req.body)));
 
@@ -52,7 +51,7 @@ async function create(req, res) {
  * @return {string|null} Review - null if failure, JSON object representing Review if success
  * @memberof Review
  */
-function findById(req, res) {
+async function findById(req, res) {
 	const id = req.query.id;
 	if (utils.validateIntegerParam("review ID", id) == false) {
 		logger.error("review-controller review id is missing or not an integer");
@@ -62,24 +61,29 @@ function findById(req, res) {
 
 	logger.info("review-controller findById review id = " + id);
 
-	Review.findOne({
-		where: {
-			review_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("review-controller findById -- review id is " + id + " returning " + data);
-			res.status(200).send(data);
-		})
-		.catch((err) => {
-			logger.error("Error retrieving review with review id=" + id + " error: " + err.message);
-			res.status(500).send({
-				message: "Error retrieving review with id=" + id + " error: " + err.message,
-			});
+	try {
+		const data = await Review.findOne({
+			where: { review_id: id },
+			attributes: { exclude: ["updatedAt", "createdAt"] },
 		});
+
+		if (data == null) {
+			logger.warn("data from find review is = null , review id = " + id);
+			res.status(400).send("Couldn't find review");
+			return;
+		}
+
+		logger.info("review-controller findById -- review id is " + id + " returning " + JSON.stringify(data));
+		res.status(200).send(data);
+
+		return;
+	} catch (err) {
+		logger.error("Error retrieving review with review id=" + id + " error: " + err.message);
+		res.status(500).send({
+			message: "Error retrieving review with id=" + id + " error: " + err.message,
+		});
+		return;
+	}
 }
 
 /**
@@ -88,7 +92,7 @@ function findById(req, res) {
  * @return {string|null} Review - null if failure, JSON object representing Review if success
  * @memberof Review
  */
-function findByDoerId(req, res) {
+async function findByDoerId(req, res) {
 	if (req.user == null) {
 		logger.error("review-controller update, missing token");
 		res.status(400).send({ Message: "Missing Token" });
@@ -106,26 +110,24 @@ function findByDoerId(req, res) {
 
 	logger.info("review-controller findByDoerId doer id = " + id);
 
-	Review.findAll({
-		where: {
-			doer_id: id,
-		},
-		attributes: {
-			exclude: ["updatedAt", "createdAt"],
-		},
-	})
-		.then((data) => {
-			logger.info("review-controller findByDoerId -- doer id is " + id + " returning " + JSON.stringify(data));
-			res.status(200).send(data);
-			return;
-		})
-		.catch((err) => {
-			logger.error("Error retrieving review with doer id=" + id + " error: " + err.message);
-			res.status(500).send({
-				message: "Error retrieving review with doer id=" + id + " error: " + err.message,
-			});
-			return;
+	try {
+		const data = await Review.findAll({
+			where: { doer_id: id },
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
 		});
+
+		logger.info("review-controller findByDoerId -- doer id is " + id + " returning " + JSON.stringify(data));
+		res.status(200).send(data);
+		return;
+	} catch (err) {
+		logger.error("Error retrieving review with doer id=" + id + " error: " + err.message);
+		res.status(500).send({
+			message: "Error retrieving review with doer id=" + id + " error: " + err.message,
+		});
+		return;
+	}
 }
 
 module.exports = {
