@@ -89,7 +89,7 @@ describe("REVIEW API Tests -- POSITIVE TESTS", () => {
 
 	test("Get Review by DOER ID", async () => {
 		const res = await request.get(test_uris.getReviewsForDoerRequestUri + "?doerId=" + global_doerId).set("Authorization", global_token);
-		//  console.log(res.body);
+		 console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("review_id");
 	});

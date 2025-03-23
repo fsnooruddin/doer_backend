@@ -53,14 +53,14 @@ describe("MESSAGE API Tests -- POSITIVE TESTS", () => {
 
 	test("Get Message by ID", async () => {
 		const res = await request.get(getMessageByIdUri + "?id=1").set("Authorization", USER_AUTH_TOKEN);
-		//  console.log(res.body);
+		  console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("message_id");
 	});
 
 	test("Get Message by JOB ID", async () => {
 		const res = await request.get(getMessageByJobIdUri + "?jobId=1").set("Authorization", USER_AUTH_TOKEN);
-		//  console.log(res.body);
+		  console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("message_id");
 	});

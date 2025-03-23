@@ -19,7 +19,6 @@ const path = require("path");
 
 var test_uris = require("./data/test.uris.js");
 
-
 async function postData(url, data) {
 	try {
 		const response = await request.post(url).send(data).set("Accept", "application/json");
@@ -68,7 +67,6 @@ let globalAddressId = "";
 
 describe("ADDRESS API Tests -- POSITIVE TESTS", () => {
 	test("Create a new address", async () => {
-	    console.log()
 		const res = await request.post(test_uris.createAddressUri).send(global_modules["address.test.data"].reqCreateAddress_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("address_id");

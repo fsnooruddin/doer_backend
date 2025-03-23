@@ -75,6 +75,6 @@ describe("BADGE API Tests -- NEGATIVE TESTS", function () {
 	test("Get Badge by ID,Badge ID not INTEGER", async () => {
 		const res = await request.get(getBadgeByIdUri + "?id=shshhs").set("Authorization", USER_AUTH_TOKEN);
 		//  console.log(res.body);
-		expect(res.status).toBe(500);
+		expect(res.status).toBe(400);
 	});
 });

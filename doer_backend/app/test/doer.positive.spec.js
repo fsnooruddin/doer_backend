@@ -170,7 +170,7 @@ describe("DOER API Tests -- POSITIVE TESTS", () => {
 		var badge_req = global_modules["badge.test.data"].reqCreateBadgeAssociation_1;
 		badge_req.doer_id = global_doerId;
 		badge_req.badge_id = global_badgeId;
-		console.log(badge_req);
+		console.log("badge body = " + badge_req);
 		const res = await request.post(test_uris.assignBadgeDoerUri).send(badge_req).set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
 		console.log(res.body);
 		expect(res.status).toBe(200);
