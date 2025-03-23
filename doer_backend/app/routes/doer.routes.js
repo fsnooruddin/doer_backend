@@ -12,7 +12,6 @@ module.exports = (app) => {
 	const users = require("../controllers/user.controller.js");
 	const addresses = require("../controllers/address.controller.js");
 	const invoices = require("../controllers/invoice.controller.js");
-	const certificates = require("../controllers/certificate.controller.js");
 	const auth = require("../controllers/authentication.controller.js");
 
 	var router = require("express").Router();
@@ -193,21 +192,6 @@ module.exports = (app) => {
 		badges.removeBadgeFromDoer(req, res);
 	});
 
-	router.post("/certificate/create", Utils.VerifyAuth, (req, res) => {
-		certificates.create(req, res);
-	});
-
-	router.get("/certificate/getById", Utils.VerifyAuth, (req, res) => {
-		certificates.get(req, res);
-	});
-
-	router.post("/certificate/assignCertificateToDoer", Utils.VerifyAuth, (req, res) => {
-		certificates.assignCertificateToDoer(req, res);
-	});
-
-	router.post("/certificate/removeCertificateFromDoer", Utils.VerifyAuth, (req, res) => {
-		certificates.removeCertificateFromDoer(req, res);
-	});
 
 	router.post("/image/upload", Utils.VerifyAuth, (req, res) => {
 		image_uploads.create(req, res);
