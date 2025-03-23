@@ -86,8 +86,8 @@ async function doer_findByServiceDayDBCall(rservices, rday) {
 
 		for (let i = 0; i < doers_found[0].length; i++) {
 			var doer_slots = {};
-			console.log("FOUND DOERS >>>>>");
-			//		logger.info("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+
+			logger.trace("doer-controller findByServicesAndDayDBCall -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
 
 			doer_slots = await db.availability_slots.findAll({
 				where: {
