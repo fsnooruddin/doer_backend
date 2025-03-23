@@ -34,8 +34,12 @@ app.get("/stats/", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    var str = req.t("welcome to our app!", { lng: "de" });
-	res.json("<html><bold>" + str + "</html></bold>");
+    var str = req.t("welcome", { lng: "de" });
+	res.send("<h1>" + str + "</h1>");
+    str = req.t("welcome", { lng: "fr" });
+	res.send("<h1>" + str + "</h1>");
+    str = req.t("welcome", { lng: "es" });
+	res.send("<h1>" + str + "</h1>");
 });
 
 
@@ -53,7 +57,6 @@ function init_db() {
 	db.categories = require("./app/models/category.model.js")(db.sequelize, db.Sequelize);
 	db.otps = require("./app/models/otp.model.js")(db.sequelize, db.Sequelize);
 	db.badges = require("./app/models/badge.model.js")(db.sequelize, db.Sequelize);
-	db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
 	db.jobs = require("./app/models/job.model.js")(db.sequelize, db.Sequelize);
 	db.job_histories = require("./app/models/job_history.model.js")(db.sequelize, db.Sequelize);
 	db.doer_trips = require("./app/models/doer_trip.model.js")(db.sequelize, db.Sequelize);
@@ -67,12 +70,10 @@ function init_db() {
 	db.user_badge_associations = require("./app/models/user_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.doer_badge_associations = require("./app/models/doer_badge_association.model.js")(db.sequelize, db.Sequelize);
 	db.job_costs = require("./app/models/job_cost.model.js")(db.sequelize, db.Sequelize);
-	db.certificates = require("./app/models/certificate.model.js")(db.sequelize, db.Sequelize);
 	db.tests = require("./app/models/testing.model.js")(db.sequelize, db.Sequelize);
 	db.availability_slots = require("./app/models/availability_slot.model.js")(db.sequelize, db.Sequelize);
 	db.user_credentials = require("./app/models/user_credential.model.js")(db.sequelize, db.Sequelize);
 	db.doer_credentials = require("./app/models/doer_credential.model.js")(db.sequelize, db.Sequelize);
-	db.doer_certificate_associations = require("./app/models/doer_certificate_association.model.js")(db.sequelize, db.Sequelize);
 	db.doer_trips.hasMany(db.doer_trip_location_updates, { foreignKey: "doer_trip_id" });
 	db.doer_trip_location_updates.belongsTo(db.doer_trips, { foreignKey: "doer_trip_id" });
 
@@ -100,9 +101,6 @@ function init_db() {
 
 	db.badges.belongsToMany(db.doers, { through: db.doer_badge_associations, foreignKey: "badge_id" });
 	db.doers.belongsToMany(db.badges, { through: db.doer_badge_associations, foreignKey: "doer_id" });
-
-	db.certificates.belongsToMany(db.doers, { through: db.doer_certificate_associations, foreignKey: "certificate_id" });
-	db.doers.belongsToMany(db.certificates, { through: db.doer_certificate_associations, foreignKey: "doer_id" });
 
 	db.jobs.hasMany(db.job_costs, { foreignKey: "job_id", as: "costs" });
 
