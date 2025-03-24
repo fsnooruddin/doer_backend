@@ -51,10 +51,15 @@ async function postData(url, data) {
 }
 
 describe("JOB API Tests -- NEGATIVE", () => {
-	test("Create a new Doer", async () => {
-		const res = await request.post(test_uris.createDoerUri).send(global_modules["doer.test.data"].reqCreateDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
-		expect(res.status).toBe(200);
-		expect(JSON.stringify(res.body)).toContain("doer_id");
-		global_doerId = res.body.doer_id;
-	});
+
+    	test("Create a new Job Request -- malformed body", async () => {
+    		const res = await request.post(test_uris.createJobUri).send(global_modules["user.test.data"].reqCreateJobRequest_1_malformed).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+    		expect(res.status).toBe(400);
+    	});
+
+test("Create a new Job Request -- malformed body", async () => {
+    		const res = await request.post(test_uris.createJobUri).send(global_modules["user.test.data"].reqCreateJobRequest_2_malformed).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+    		expect(res.status).toBe(400);
+    	});
+
 });
