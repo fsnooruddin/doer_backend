@@ -30,8 +30,16 @@ const logger = require("../utils/Logger.js");
  * @memberof Address
  */
 async function create(req, res) {
-	logger.info("address-controller req body in create Address: " + JSON.stringify(req.body));
-	logger.info("address-controller req user in create Address: " + JSON.stringify(req.user));
+	logger.trace("address-controller req body in create Address: " + JSON.stringify(req.body));
+	logger.trace("address-controller req user in create Address: " + JSON.stringify(req.user));
+
+if (req.user == null) {
+		logger.error("address-controller create, missing token");
+		res.status(400).send({ Message: "Missing Token" });
+		return;
+	}
+	const id = req.user.userId;
+
 
 	if (Object.keys(req.body).length === 0) {
 		logger.error("address-controller, req body is null");
@@ -40,6 +48,9 @@ async function create(req, res) {
 	}
 
 	try {
+	    var nObj = req.body;
+	    nObj.user_id = id;
+	    logger.info("address-controller create, saving new address: " + JSON.stringify(nObj));
 		// Save Address in the database
 		let new_address = await Address.create(req.body);
 		logger.info("Success creating Address with Address data =" + JSON.stringify(new_address));
