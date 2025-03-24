@@ -23,6 +23,10 @@ module.exports = (sequelize, Sequelize) => {
 				type: Sequelize.INTEGER,
 				allowNull: true,
 			},
+			tags: {
+            				type: Sequelize.STRING,
+            				allowNull: true,
+            			},
 		},
 		{
 			timestamps: false,

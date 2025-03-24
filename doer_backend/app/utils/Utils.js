@@ -13,6 +13,7 @@ module.exports = {
 	filterByDistance,
 	getRateFromAvailabilitySlot,
 	validateIntegerParam,
+	validateStringParam,
 	getDistanceBetweenTwoPoint,
 	readStats,
 	dumpStats,

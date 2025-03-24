@@ -68,14 +68,18 @@ async function findOneById(req, res) {
 	const id = req.query.id;
 	if (id == null) {
 		logger.error("category-controller findOneById missing categoryId");
-		res.status(500).send({ message: "Error retrieving category Id is missing" });
+		res.status(400).send({ message: "Error retrieving category Id is missing" });
 		return;
 	}
 
 	logger.info("category-controller findOneById id = " + id);
 	try {
 		var response_data = await Category.findByPk(id);
-
+        if(response_data == null) {
+        logger.error("category-controller findOneById couldn't find category with id: " + id);
+        		res.status(400).send({ message: "category-controller findOneById couldn't find category with id: " + id });
+        		return;
+        }
 		logger.info("category-controller findOneById id = " + id + " response data is = " + JSON.stringify(response_data));
 
 		var entry = JSON.parse(JSON.stringify(response_data));
@@ -180,7 +184,7 @@ async function getTopLevelCategories(req, res) {
 				exclude: ["updatedAt", "createdAt"],
 			},
 		});
-		logger.info("category-controller getTopLevelCategories returning " + response_data);
+		logger.info("category-controller getTopLevelCategories returning " + JSON.stringify(response_data));
 		res.send(response_data);
 	} catch (err) {
 		logger.error("Error retrieving getTopLevelCategories  error: " + err.message);
@@ -190,10 +194,90 @@ async function getTopLevelCategories(req, res) {
 	}
 }
 
+/**
+ * Add tag(s) to category
+ * @params {number} id -- Category id to add tag to
+ * @params {string} tags -- comma seperated list of tags
+ * @return {array|null} error string - null if failure, array of categories if success
+ * @memberof Category
+ */
+async function addTags(req, res) {
+    console.log("category addTags");
+	const id = req.query.id;
+	if (Utils.validateIntegerParam("Category Id", id) == false) {
+		logger.error("category-controller addTagToCategory missing categoryId or id not integer: " + id);
+		res.status(400).send({ message: "Error adding tag to category Id is missing" });
+		return;
+	}
+	const new_tags = req.query.tags;
+	if(new_tags == null) {
+		logger.error("category-controller addTagToCategory missing tags");
+		res.status(400).send({ message: "Error adding tag to category tag(s) missing" });
+		return;
+	}
+
+	logger.info("category-controller addTagToCategory id = " + id + " tags are: " + new_tags);
+	try {
+		const response_data = await Category.update({tags: new_tags},
+		{
+			where: {
+				category_id: id,
+			},
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		logger.info("category-controller addTagToCategory returning " + JSON.stringify(response_data));
+		res.send(response_data);
+	} catch (err) {
+		logger.error("Error addTagToCategory  error: " + err.message);
+		res.status(500).send({
+			message: "Error addTagToCategory error: " + err.message,
+		});
+	}
+}
+
+
+/**
+ * Get category(s) by tag(s)
+ * @params {string} tags -- comma seperated list of tags to search for
+ * @return {array|null} error string - null if failure, array of categories if success
+ * @memberof Category
+ */
+async function getByTags(req, res) {
+    console.log("category addTags");
+
+	const search_tags = req.query.tags;
+	if(Utils.validateStringParam("Search Tags", search_tags) == false) {
+		logger.error("category-controller getByTags missing tags or tags are empty");
+		res.status(400).send({ message: "Error searching category by tag(s) missing, tags missing or empty" });
+		return;
+	}
+
+	logger.info("category-controller getByTags tags are: " + search_tags);
+	try {
+		const response_data = await Category.findAll({ where: {tags: { [Op.iLike]: search_tags } },
+			attributes: {
+				exclude: ["updatedAt", "createdAt"],
+			},
+		});
+		logger.info("category-controller getByTags returning " + JSON.stringify(response_data));
+		res.send(response_data);
+	} catch (err) {
+		logger.error("Error addTagToCategory  error: " + err.message);
+		res.status(500).send({
+			message: "Error addTagToCategory error: " + err.message,
+		});
+	}
+}
+
+
 module.exports = {
 	create,
 	findOneByName,
 	findOneById,
 	getCategoryTree,
 	getTopLevelCategories,
+	addTags,
+	getByTags
 };

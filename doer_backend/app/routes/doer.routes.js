@@ -128,6 +128,7 @@ module.exports = (app) => {
 		doer_trips.getDoerTripByDoerId(req, res);
 	});
 
+
 	router.post("/category/create", Utils.VerifyAuth, (req, res) => {
 		categories.create(req, res);
 	});
@@ -147,6 +148,15 @@ module.exports = (app) => {
 	router.get("/category/getTopLevelCategories", Utils.VerifyAuth, (req, res) => {
 		categories.getTopLevelCategories(req, res);
 	});
+
+	router.post("/category/addTags", Utils.VerifyAuth, (req, res) => {
+		categories.addTags(req, res);
+	});
+
+	router.get("/category/getByTags", Utils.VerifyAuth, (req, res) => {
+    		categories.getByTags(req, res);
+    	});
+
 
 	router.post("/message/create", Utils.VerifyAuth, (req, res) => {
 		messages.create(req, res);
