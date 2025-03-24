@@ -3,7 +3,7 @@
 const fs = require("fs");
 const axios = require("axios");
 
-const DOER_AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2VySWQiOjEsInR5cGUiOiJkb2VyIiwidXNlcm5hbWUiOiJCaWxseUhpbGwiLCJpYXQiOjE3NDI1MDQ4NTB9.TNzPkd-W55NfXQXAkrt9QzzPPgKjaZesmRHx9mbrZl0";
+const DOER_AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2VySWQiOjQ5LCJ0eXBlIjoiZG9lciIsInVzZXJuYW1lIjoiQmlsbHlIaWxsIiwiaWF0IjoxNzQyNTI5MDQzfQ.Tj3RsARAP9huj5qiMIabSVC-OTEt7Q2R2mAp4nF7ZQ4";
 
 async function rpost(url, dataString) {
    const config = {
