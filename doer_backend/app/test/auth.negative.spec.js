@@ -62,6 +62,6 @@ test("Login doer with empty body", async () => {
     		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginUser_wrong_password_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
         		expect(res.status).toBe(400);
         		console.log(res.body);
-
+        expect(res.text).toContain("failed");
     	});
 });

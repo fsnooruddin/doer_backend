@@ -69,23 +69,4 @@ describe("AUTH API Tests -- POSITIVE TESTS", () => {
 		expect(JSON.stringify(res.body)).toContain("token");
 	});
 
-	test("Login doer", async () => {
-		const res = await request
-			.post(test_uris.loginUserUri)
-			.send(global_modules["auth.test.data"].reqLoginDoer_wrong_password_1)
-			.set("Accept", "application/json");
-		expect(res.status).toBe(401);
-		// console.log(res.text);
-		expect(res.text).toContain("failed");
-	});
-
-	test("Login doer", async () => {
-		const res = await request
-			.post(test_uris.loginUserUri)
-			.send(global_modules["auth.test.data"].reqLoginDoer_wrong_password_1)
-			.set("Accept", "application/json");
-		expect(res.status).toBe(401);
-
-		expect(res.text).toContain("failed");
-	});
 });
