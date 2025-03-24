@@ -28,10 +28,19 @@ const reqCreateJobRequest_3 = {
 	description: "plant roses",
 };
 
-const reqCreateJobRequest_Malformed = {
+const reqCreateJobRequest_1_malformed = {
 	user_id: "2",
 	time: "M, 12-5",
 	services: "Landscaping",
+};
+
+const reqCreateJobRequest_2_malformed = {
+	user_id: "2",
+	longitude: "-117.91450359999999",
+	latitude: "33.8352932",
+	day: "Sun",
+	req_time: "10",
+	description: "plant roses",
 };
 
 const reqCreateJobCost_1 = {
@@ -58,6 +67,7 @@ module.exports = {
 	reqCreateJobRequest_3,
 	reqCreateJobCost_1,
 	reqCreateJobCost_2,
-	reqCreateJobRequest_Malformed,
+	reqCreateJobRequest_1_malformed,
+	reqCreateJobRequest_2_malformed,
 	reqCreateJobCostTip_1,
 };
