@@ -18,17 +18,24 @@ const logger = require("../utils/Logger.js");
 const appConfig = require("../config/doer_app.config.js");
 
 async function register(req, res) {
+	logger.trace("auth-controller, register, req body = " + JSON.stringify(req.body));
+	if (req.body == null) {
+		logger.error("auth-controller, register body is null...");
+		res.status(400).send({ message: "auth-controller, register body is null." });
+		return;
+	}
+
 	const username = req.body.username;
 	const password = req.body.password;
 
-	console.log("body = " + JSON.stringify(req.body));
-	const hashedPassword = await Utils.hashPassword(password);
-	var creds = {
-		username: username,
-		password: hashedPassword,
-		type: req.body.type,
-	};
 	try {
+		const hashedPassword = await Utils.hashPassword(password);
+		var creds = {
+			username: username,
+			password: hashedPassword,
+			type: req.body.type,
+		};
+
 		var data = null;
 		if (req.body.type == "user") {
 			creds.user_id = req.body.id;
@@ -37,7 +44,7 @@ async function register(req, res) {
 			creds.doer_id = req.body.id;
 			data = await DoerCredentials.create(creds);
 		}
-		console.log("auth-controller register, creds = " + JSON.stringify(creds));
+		logger.info("auth-controller register, creds = " + JSON.stringify(creds));
 
 		if (data == null) {
 			res.status(500).send({ message: "auth-controller register failed" });
@@ -53,6 +60,13 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
+    logger.trace("auth-controller, login, req body = " + JSON.stringify(req.body));
+	if (req.body == null) {
+		logger.error("auth-controller, login body is null...");
+		res.status(400).send({ message: "auth-controller, login body is null." });
+		return;
+	}
+
 	const username = req.body.username;
 	const password = req.body.password;
 
@@ -66,7 +80,7 @@ async function login(req, res) {
 		logger.info("auth-controller login call, user credentials " + JSON.stringify(user));
 		if (user == null) {
 			logger.error("auth-controller login user failed, find creds failed...");
-			res.status(401).send("failure to login user, couldn't find user, call register first.");
+			res.status(400).send("failure to login user, couldn't find user, call register first.");
 			return;
 		}
 		var match = await Utils.comparePassword(password, user.password);
@@ -83,7 +97,7 @@ async function login(req, res) {
 			return;
 		} else {
 			logger.info("User login failed ");
-			res.status(401).send("Authentication failed");
+			res.status(400).send("Authentication failed");
 			return;
 		}
 	} catch (err) {

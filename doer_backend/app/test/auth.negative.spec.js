@@ -44,30 +44,24 @@ beforeAll(() => {
 
 var test_uris = require("./data/test.uris.js");
 
-describe("AUTH API Tests -- POSITIVE TESTS", () => {
-	test("Register user", async () => {
-		const res = await request.post(test_uris.registerUserUri).send(global_modules["auth.test.data"].reqRegisterUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
-		expect(res.status).toBe(200);
-		expect(JSON.stringify(res.body)).toContain("user_id");
+describe("AUTH API Tests -- NEGATIVE TESTS", () => {
+	test("Register user malformed request", async () => {
+		const res = await request.post(test_uris.registerUserUri).send(global_modules["auth.test.data"].reqRegisterDoer_1_malformed).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+		expect(res.status).toBe(500);
+
 	});
 
-	test("Login user", async () => {
-		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginUser_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
-    		expect(res.status).toBe(200);
-    		console.log(res.body);
-    		expect(JSON.stringify(res.body)).toContain("token");
-	});
+test("Login doer with empty body", async () => {
+    		const res = await request.post(test_uris.loginUserUri).send("").set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+        		expect(res.status).toBe(500);
+        		console.log(res.body);
 
-		test("Register doer", async () => {
-    		const res = await request.post(test_uris.registerUserUri).send(global_modules["auth.test.data"].reqRegisterDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
-    		expect(res.status).toBe(200);
-    		expect(JSON.stringify(res.body)).toContain("doer_id");
     	});
 
-    	test("Login doer", async () => {
-    		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginDoer_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
-        		expect(res.status).toBe(200);
+    	test("Login doer with malformed request", async () => {
+    		const res = await request.post(test_uris.loginUserUri).send(global_modules["auth.test.data"].reqLoginUser_wrong_password_1).set("Accept", "application/json").set("Authorization", USER_AUTH_TOKEN);
+        		expect(res.status).toBe(400);
         		console.log(res.body);
-        		expect(JSON.stringify(res.body)).toContain("token");
+
     	});
 });

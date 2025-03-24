@@ -13,6 +13,12 @@ const reqRegisterDoer_1 = {
 	id: "23"
 };
 
+const reqRegisterDoer_1_malformed = {
+	username: "BillyHill",
+	password: "555654444",
+	id: "23"
+};
+
 const reqLoginUser_1 = {
 	username: "JohnDoe",
     	password: "555654444",
@@ -43,6 +49,6 @@ module.exports = {
 	reqLoginUser_1,
 	reqLoginDoer_1,
 	reqLoginUser_wrong_password_1,
-	reqLoginDoer_wrong_password_1
-
+	reqLoginDoer_wrong_password_1,
+    reqRegisterDoer_1_malformed
 };
