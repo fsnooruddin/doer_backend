@@ -51,7 +51,7 @@ const assignCertificateDoerUri = "/certificate/assignCertificateToDoer";
 const createAddressUri = "/address/create";
 const removeAddressByIdUri = "/address/remove";
 const updateAddressUri = "/address/update";
-const getAddressByIdUri = "/address/getById"
+const getAddressByIdUri = "/address/getById";
 
 const generateInvoiceUri = "/invoice/generate";
 const approveInvoiceUri = "/invoice/approve";
@@ -61,7 +61,14 @@ const getInvoiceUri = "/invoice/get";
 const registerUserUri = "/auth/register";
 const loginUserUri = "/auth/login";
 
+const uploadMetaDataUri = "/marketing/metadata/upload";
+const uploadImageDataUri = "/marketing/image/upload";
+const getMarketingContentUri = "/marketing/getMarketingContent";
+
 module.exports = {
+	uploadMetaDataUri,
+	uploadImageDataUri,
+	getMarketingContentUri,
 	getCategoryByIdRequestUri,
 	getCategoryByNameRequestUri,
 	getCategoryTreeRequestUri,
@@ -101,8 +108,8 @@ module.exports = {
 	assignBadgeUserUri,
 	assignBadgeDoerUri,
 	createCertificateUri,
-    	getCertificateByIdUri,
-    	assignCertificateDoerUri,
+	getCertificateByIdUri,
+	assignCertificateDoerUri,
 	createAddressUri,
 	removeAddressByIdUri,
 	updateAddressUri,
@@ -114,5 +121,5 @@ module.exports = {
 	rejectInvoiceUri,
 	getInvoiceUri,
 	registerUserUri,
-	loginUserUri
+	loginUserUri,
 };

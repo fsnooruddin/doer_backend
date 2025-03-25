@@ -8,7 +8,7 @@ module.exports = (app) => {
 	const messages = require("../controllers/message.controller.js");
 	const otps = require("../controllers/otp.controller.js");
 	const badges = require("../controllers/badge.controller.js");
-	const image_uploads = require("../controllers/image_upload.controller.js");
+	const marketing_content = require("../controllers/marketing_content.controller.js");
 	const users = require("../controllers/user.controller.js");
 	const addresses = require("../controllers/address.controller.js");
 	const invoices = require("../controllers/invoice.controller.js");
@@ -203,9 +203,21 @@ module.exports = (app) => {
 	});
 
 
-	router.post("/image/upload", Utils.VerifyAuth, (req, res) => {
-		image_uploads.create(req, res);
+	router.post("/marketing/image/upload", Utils.VerifyAuth, (req, res) => {
+		marketing_content.imageUpload(req, res);
 	});
+
+    router.post("/marketing/metadata/upload", Utils.VerifyAuth, (req, res) => {
+		marketing_content.metaDataUpload(req, res);
+	});
+
+	router.get("/marketing/getMarketingContent", Utils.VerifyAuth, (req, res) => {
+    		marketing_content.getMarketingContent(req, res);
+    	});
+
+router.post("/marketing/associateImageAndMarketingContent", Utils.VerifyAuth, (req, res) => {
+    		marketing_content.associateImageAndMarketingContent(req, res);
+    	});
 
 	router.post("/user/create", Utils.VerifyAuth, (req, res) => {
 		users.create(req, res);
