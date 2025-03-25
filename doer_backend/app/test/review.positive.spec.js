@@ -66,9 +66,14 @@ describe("REVIEW API Tests -- POSITIVE TESTS", () => {
 		var req_doer = global_modules["auth.test.data"].reqLoginDoer_1;
 		req_doer.id = global_doerId;
 		console.log(JSON.stringify(req_doer));
+
 		res = await request.post(test_uris.registerUserUri).send(req_doer).set("Accept", "application/json");
 		res = await request.post(test_uris.loginUserUri).send(req_doer).set("Accept", "application/json");
+		//console.log(JSON.stringify(res));
+
 		global_token = JSON.parse(res.text).token;
+
+		console.log(global_token);
 	});
 
 	test("Create a new review", async () => {
@@ -88,7 +93,7 @@ describe("REVIEW API Tests -- POSITIVE TESTS", () => {
 	});
 
 	test("Get Review by DOER ID", async () => {
-		const res = await request.get(test_uris.getReviewsForDoerRequestUri + "?doerId=" + global_doerId).set("Authorization", global_token);
+		const res = await request.get(test_uris.getReviewsForDoerRequestUri).set("Authorization", global_token);
 		 console.log(res.body);
 		expect(res.status).toBe(200);
 		expect(JSON.stringify(res.body)).toContain("review_id");
