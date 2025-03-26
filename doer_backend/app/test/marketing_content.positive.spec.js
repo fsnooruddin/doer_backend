@@ -69,7 +69,7 @@ describe("MARKETING CONTENT API Tests -- POSITIVE TESTS", () => {
 
 
 		test("Associate Image data to meta data", async () => {
-            		const res = await request.post(test_uris.associateImageAndMetaDataUri + "?content_id=" + global_contentId + "&img_name=" + global_imageName).set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
+            		const res = await request.post(test_uris.associateImageAndMetaDataUri + "?content_id=" + global_contentId + "&img_name=" + "image.png").set("Accept", "application/json").set("Authorization", DOER_AUTH_TOKEN);
             		expect(res.status).toBe(200);
             		expect(JSON.stringify(res.body)).toContain("success");
             	});

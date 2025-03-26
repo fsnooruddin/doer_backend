@@ -5,4 +5,6 @@ module.exports = {
   OTP_EXPIRE_TIME: "300", //seconds
   API_STATS_FILE: "stats.json",
   LOG_LEVEL: "debug",
+  UPLOAD_DIR: "uploads",
+  UPLOAD_SERVE_PATH: "static"
 };

@@ -9,7 +9,7 @@ const Op = db.Sequelize.Op;
 const logger = require("../utils/Logger.js");
 const path = require('path');
 const MarketingContent = db.marketing_content;
-
+const appConfig = require("../config/doer_app.config.js");
 /**
  * Create a Image Upload
  * @param {object} Image Upload - JSON representing Image Upload
@@ -45,18 +45,9 @@ async function imageUpload(req, res) {
 	}
 
 	if (uploadedFile.mimetype.includes("image")) {
-		var full_path = path.join(__dirname , '..', "upload/" + uploadedFile.name);
+		var full_path = path.join(__dirname , '..', appConfig.UPLOAD_DIR + "/" + uploadedFile.name);
 		logger.info("marketing-content controller, image upload full_path: " + full_path);
 		uploadedFile.mv(full_path);
-		// Go up one directory
-        const parentDir = path.join(__dirname, '..');
-
-        // Go up two directories
-        const grandparentDir = path.join(__dirname, '..', '..');
-
-        console.log('Current directory:', __dirname);
-        console.log('Parent directory:', parentDir);
-        console.log('Grandparent directory:', grandparentDir);
 		res.status(200).send({ message: "Marketing content, image upload success, filaname: " + full_path });
 		return;
 	} else {
@@ -137,7 +128,8 @@ async function associateImageAndMetaData(req, res) {
     		const response_data = await MarketingContent.update({image_name: image_name}, { where: { marketing_content_id: id } });
     		logger.info("marketing-content-controller associateImageAndMarketingContent, returning..." +
     		JSON.stringify(response_data));
-    		res.status(200).send({content_id: id, image_name: image_name});
+    		var img_uri = "http://" + appConfig.SERVER_HOSTNAME + ":" + appConfig.SERVER_PORT + "/" + appConfig.UPLOAD_SERVE_PATH + "/" + image_name;
+    		res.status(200).send({content_id: id, image_name: img_uri});
     		return;
     	} catch (err) {
     		logger.error("marketing-content-controller associateImageAndMarketingContent call failed. error = " + err.message);
