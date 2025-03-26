@@ -47,6 +47,8 @@ if (req.user == null) {
 		return;
 	}
 
+    // TODO: add schema validation here using joi and the models/address.model.js schema
+
 	try {
 	    var nObj = req.body;
 	    nObj.user_id = id;
