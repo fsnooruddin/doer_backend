@@ -132,13 +132,12 @@ async function associateImageAndMetaData(req, res) {
 
 	let id = req.query.content_id;
 	let image_name = req.query.img_name;
-    console.log(id);
-    console.log(image_name);
+    logger.info("marketing_content-controller associateImageAndMetaData , id = " + id + " image_name = " + image_name);
     	try {
     		const response_data = await MarketingContent.update({image_name: image_name}, { where: { marketing_content_id: id } });
     		logger.info("marketing-content-controller associateImageAndMarketingContent, returning..." +
     		JSON.stringify(response_data));
-    		res.status(200).send({message: "success associating image and meta data"});
+    		res.status(200).send({content_id: id, image_name: image_name});
     		return;
     	} catch (err) {
     		logger.error("marketing-content-controller associateImageAndMarketingContent call failed. error = " + err.message);
