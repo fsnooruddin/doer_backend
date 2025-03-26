@@ -33,19 +33,6 @@ async function create(req, res) {
 
 	const data_obj = JSON.parse(Utils.escapeJSONString(JSON.stringify(req.body)));
 
-	/*
-    if(validation.error === undefined) {
-        console.log("doer schema validation succeeded");
-    } else {
-        console.log("\t doer schema validation failed");
-        console.log(validation.error.details[0].message);
-        res.status(400).send({
-                    message: "input data failed doer scheme validation: " + validation.error.details[0].message
-                });
-        return;
-    }
-*/
-
 	try {
 		// Save category in the database
 		const response_data = await Category.create(data_obj);
