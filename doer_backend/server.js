@@ -76,6 +76,7 @@ function init_db() {
 	db.doer_credentials = require("./app/models/doer_credential.model.js")(db.sequelize, db.Sequelize);
 	db.doer_trips.hasMany(db.doer_trip_location_updates, { foreignKey: "doer_trip_id" });
 	db.doer_trip_location_updates.belongsTo(db.doer_trips, { foreignKey: "doer_trip_id" });
+	db.marketing_content = require("./app/models/marketing_content.model.js")(db.sequelize, db.Sequelize);
 
 	db.jobs.hasMany(db.doer_trips, { foreignKey: "job_id", as: "doer_trips" });
 	db.doer_trips.belongsTo(db.jobs, { foreignKey: "job_id", as: "doer_trips" });
@@ -150,7 +151,12 @@ function init_app() {
 	app.use(express.urlencoded({ extended: true }));
 
 	// setup file upload handler
-	app.use(fileUpload());
+	app.use(fileUpload({ // Configure file uploads with maximum file size 10MB
+                          limits: { fileSize: 10 * 1024 * 1024 },
+
+                          // Temporarily store uploaded files to disk, rather than buffering in memory
+                          useTempFiles : true,
+                          tempFileDir : '/tmp/'}));
 
 	i18next
 		.use(Backend)
