@@ -215,8 +215,8 @@ module.exports = (app) => {
     		marketing_content.getMarketingContent(req, res);
     	});
 
-router.post("/marketing/associateImageAndMarketingContent", Utils.VerifyAuth, (req, res) => {
-    		marketing_content.associateImageAndMarketingContent(req, res);
+        router.post("/marketing/associateImageAndMetaData", Utils.VerifyAuth, (req, res) => {
+    		marketing_content.associateImageAndMetaData(req, res);
     	});
 
 	router.post("/user/create", Utils.VerifyAuth, (req, res) => {

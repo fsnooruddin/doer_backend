@@ -64,11 +64,13 @@ const loginUserUri = "/auth/login";
 const uploadMetaDataUri = "/marketing/metadata/upload";
 const uploadImageDataUri = "/marketing/image/upload";
 const getMarketingContentUri = "/marketing/getMarketingContent";
+const associateImageAndMetaDataUri = "/marketing/associateImageAndMetaData";
 
 module.exports = {
 	uploadMetaDataUri,
 	uploadImageDataUri,
 	getMarketingContentUri,
+	associateImageAndMetaDataUri,
 	getCategoryByIdRequestUri,
 	getCategoryByNameRequestUri,
 	getCategoryTreeRequestUri,

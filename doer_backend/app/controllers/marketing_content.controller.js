@@ -7,6 +7,7 @@ const db = require("../models");
 const utils = require("../utils/Utils.js");
 const Op = db.Sequelize.Op;
 const logger = require("../utils/Logger.js");
+const path = require('path');
 const MarketingContent = db.marketing_content;
 
 /**
@@ -44,10 +45,19 @@ async function imageUpload(req, res) {
 	}
 
 	if (uploadedFile.mimetype.includes("image")) {
-		var full_path = __dirname + "/upload/" + uploadedFile.name;
+		var full_path = path.join(__dirname , '..', "upload/" + uploadedFile.name);
 		logger.info("marketing-content controller, image upload full_path: " + full_path);
-		uploadedFile.mv(__dirname + "/upload/" + uploadedFile.name);
-		res.status(200).send({ message: "Marketing content, image upload success." });
+		uploadedFile.mv(full_path);
+		// Go up one directory
+        const parentDir = path.join(__dirname, '..');
+
+        // Go up two directories
+        const grandparentDir = path.join(__dirname, '..', '..');
+
+        console.log('Current directory:', __dirname);
+        console.log('Parent directory:', parentDir);
+        console.log('Grandparent directory:', grandparentDir);
+		res.status(200).send({ message: "Marketing content, image upload success, filaname: " + full_path });
 		return;
 	} else {
 		logger.error("marketing-content controller, error uploading image, file uploaded is not an image.");
@@ -118,7 +128,7 @@ async function getMarketingContent(req, res) {
     	}
 }
 
-async function associateImageAndMarketingContent(req, res) {
+async function associateImageAndMetaData(req, res) {
 
 	let id = req.query.content_id;
 	let image_name = req.query.img_name;
@@ -128,7 +138,7 @@ async function associateImageAndMarketingContent(req, res) {
     		const response_data = await MarketingContent.update({image_name: image_name}, { where: { marketing_content_id: id } });
     		logger.info("marketing-content-controller associateImageAndMarketingContent, returning..." +
     		JSON.stringify(response_data));
-    		res.status(200).send(response_data);
+    		res.status(200).send({message: "success associating image and meta data"});
     		return;
     	} catch (err) {
     		logger.error("marketing-content-controller associateImageAndMarketingContent call failed. error = " + err.message);
@@ -141,5 +151,5 @@ module.exports = {
 	imageUpload,
 	metaDataUpload,
 	getMarketingContent,
-	associateImageAndMarketingContent
+	associateImageAndMetaData
 };
