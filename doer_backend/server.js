@@ -33,15 +33,6 @@ app.get("/stats/", (req, res) => {
 	res.json(Utils.readStats());
 });
 
-app.get("/", (req, res) => {
-    var str = req.t("welcome", { lng: "de" });
-	res.send("<h1>" + str + "</h1>");
-    str = req.t("welcome", { lng: "fr" });
-	res.send("<h1>" + str + "</h1>");
-    str = req.t("welcome", { lng: "es" });
-	res.send("<h1>" + str + "</h1>");
-});
-
 
 
 // set port, listen for requests
@@ -157,6 +148,11 @@ function init_app() {
                           // Temporarily store uploaded files to disk, rather than buffering in memory
                           useTempFiles : true,
                           tempFileDir : '/tmp/'}));
+
+    // serve static files
+    var staticPath = path.join(__dirname, appConfig.UPLOAD_DIR);
+    logger.info("Static path is: " + staticPath);
+    app.use(appConfig.UPLOAD_SERVE_PATH, express.static(staticPath));
 
 	i18next
 		.use(Backend)
