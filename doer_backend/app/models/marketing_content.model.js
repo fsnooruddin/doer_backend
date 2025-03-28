@@ -21,6 +21,9 @@ module.exports = (sequelize, Sequelize) => {
 		end_date: {
         		type: Sequelize.STRING,
         		},
+        			tags: {
+                        		type: Sequelize.STRING,
+                        		},
 	});
 	return MarketingContent;
 };

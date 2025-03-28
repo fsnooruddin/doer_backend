@@ -8,6 +8,7 @@ const Category = db.categories;
 const logger = require("../utils/Logger.js");
 const Op = db.Sequelize.Op;
 const i18next = require("i18next");
+const dbQuery = require("../utils/DBQuery.js");
 
 /**
  * Create a new Category
@@ -168,7 +169,7 @@ async function getTopLevelCategories(req, res) {
 				parent_aliases: "",
 			},
 			attributes: {
-				exclude: ["updatedAt", "createdAt"],
+				exclude: ["updatedAt", "createdAt", "parent_aliases", "parent_id", "tags"],
 			},
 		});
 		logger.info("category-controller getTopLevelCategories returning " + JSON.stringify(response_data));
@@ -242,20 +243,8 @@ async function getByTags(req, res) {
 	}
 
 	logger.info("category-controller getByTags tags are: " + search_tags);
-	try {
-		const response_data = await Category.findAll({ where: {tags: { [Op.iLike]: search_tags } },
-			attributes: {
-				exclude: ["updatedAt", "createdAt"],
-			},
-		});
-		logger.info("category-controller getByTags returning " + JSON.stringify(response_data));
-		res.send(response_data);
-	} catch (err) {
-		logger.error("Error addTagToCategory  error: " + err.message);
-		res.status(500).send({
-			message: "Error addTagToCategory error: " + err.message,
-		});
-	}
+    var ret_categories = category_getCategoriesByTagDBCall(search_tags);
+    res.status(200).send(ret_categories);
 }
 
 

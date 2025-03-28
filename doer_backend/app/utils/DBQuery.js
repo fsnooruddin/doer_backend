@@ -110,9 +110,112 @@ async function doer_findByServiceDayDBCall(rservices, rday) {
 	return doers_found[0];
 }
 
+async function doer_getDoersByTagDBCall(rtag) {
+    logger.info("DBQuery doer_getDoersByTag tag = " + rtag);
+
+    var doers_found = {};
+    try {
+        doers_found = await db.sequelize.query(
+            `SELECT  "doer"."doer_id",
+                             "doer"."name",
+                             "doer"."phone_number",
+                             "doer"."location",
+                             "doer"."services",
+                             "doer"."minimum_charges",
+                             "doer"."img_url",
+                             "doer"."tags"
+                             FROM "doers" AS "doer"
+                             WHERE "doer"."tags" ILIKE :tag`,
+            {
+                replacements: { tag: `%${rtag}%` },
+            }
+        );
+
+        for (let i = 0; i < doers_found[0].length; i++) {
+            var doer_slots = {};
+            logger.trace("doer_getDoersByTag -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+
+            doer_slots = await db.availability_slots.findAll({
+                where: {
+                    doer_id: doers_found[0][i].doer_id,
+                },
+                attributes: {
+                    exclude: ["updatedAt", "createdAt"],
+                },
+            });
+            doers_found[0][i].availability = doer_slots;
+            logger.trace("DBQuery doer_getDoersByTag -- SUCCESS returning: " + JSON.stringify(doers_found[0][i]));
+        }
+    } catch (err) {
+        logger.error("DBQuery doer_getDoersByTag -- tag is " + rtag + " error is " + err.message);
+        return null;
+    }
+
+    logger.info("DBQuery doer_getDoersByTag -- SUCCESS returning SIZE: " + doers_found[0].length);
+    return doers_found[0];
+}
+
+async function marketing_getContentsByTagDBCall(rtag) {
+    logger.info("DBQuery marketing_getContentDBCall tag = " + rtag);
+
+    logger.info("DBQuery marketing_getContentDBCall");
+
+    var content_found = {};
+    try {
+        content_found = await db.sequelize.query(
+            `SELECT  "marketing_contents"."marketing_content_id",
+                             "marketing_contents"."title",
+                             "marketing_contents"."description",
+                             "marketing_contents"."image_name",
+                             "marketing_contents"."start_date",
+                             "marketing_contents"."end_date"
+                             FROM "marketing_contents" AS "marketing_contents"
+                                 WHERE "marketing_contents"."tags" ILIKE :tag`,
+{
+                            replacements: { tag: `%${rtag}%` },
+}
+        );
+    } catch (err) {
+        logger.error("DBQuery-controller marketing_getContentDBCall -- error is " + err.message);
+        return null;
+    }
+
+    logger.info("DBQuery-controller marketing_getContentDBCall -- SUCCESS returning SIZE: " + content_found[0].length);
+    return content_found[0];
+}
+
+async function category_getCategoriesByTagDBCall(rtag) {
+    logger.info("DBQuery category_getCategoriesByTagDBCall tag = " + rtag);
+
+    var content_found = {};
+    try {
+        content_found = await db.sequelize.query(
+            `SELECT  "categories"."category_id",
+                             "categories"."name",
+                             "categories"."alias"
+
+                             FROM "categories" AS "categories"
+                                 WHERE "categories"."tags" ILIKE :tag`,
+{
+                            replacements: { tag: `%${rtag}%` },
+}
+        );
+    } catch (err) {
+        logger.error("DBQuery-controller category_getCategoriesByTagDBCall -- error is " + err.message);
+        return null;
+    }
+
+    logger.info("DBQuery-controller category_getCategoriesByTagDBCall -- SUCCESS returning SIZE: " + content_found[0].length);
+    return content_found[0];
+}
+
 module.exports = {
     doer_findByServiceDayTimeDBCall,
-    doer_findByServiceDayDBCall
+    doer_findByServiceDayDBCall,
+    doer_getDoersByTagDBCall,
+    marketing_getContentsByTagDBCall,
+    category_getCategoriesByTagDBCall,
+
 };
 
 

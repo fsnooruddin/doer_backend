@@ -6,5 +6,5 @@ module.exports = {
   API_STATS_FILE: "stats.json",
   LOG_LEVEL: "debug",
   UPLOAD_DIR: "uploads",
-  UPLOAD_SERVE_PATH: "static"
+  UPLOAD_SERVE_PATH: "/static",
 };

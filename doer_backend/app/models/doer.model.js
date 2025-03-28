@@ -29,6 +29,10 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.STRING,
 			allowNull: true,
 		},
+				tags: {
+        			type: Sequelize.STRING,
+        			allowNull: true,
+        		},
 	});
 
 	return Doer;

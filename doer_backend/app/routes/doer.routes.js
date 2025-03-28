@@ -13,6 +13,7 @@ module.exports = (app) => {
 	const addresses = require("../controllers/address.controller.js");
 	const invoices = require("../controllers/invoice.controller.js");
 	const auth = require("../controllers/authentication.controller.js");
+	const screen_content = require("../controllers/screen_content.controller.js");
 
 	var router = require("express").Router();
 
@@ -265,6 +266,10 @@ module.exports = (app) => {
 
 	router.post("/address/find_testings", Utils.VerifyAuth, (req, res) => {
 		addresses.find_testings(req, res);
+	});
+
+	router.get("/content/getContentForInitialScreen", Utils.VerifyAuth, (req, res) => {
+		screen_content.getContentForInitialScreen(req, res);
 	});
 
 	app.use("/api/doer", router);
